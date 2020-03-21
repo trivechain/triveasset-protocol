@@ -1,0 +1,35 @@
+{
+  "name": "triveasset-protocol",
+  "version": "1.0.0",
+  "description": "The encoding/decoding functions for the triveasset scheme transfer set of OP_CODES",
+  "main": "index.js",
+  "dependencies": {
+    "bitcoinjs-lib": "^2.2.0",
+    "bs58check": "1.0.8",
+    "clone": "^2.1.2",
+    "crypto-hashing": "0.3.1",
+    "debug": "^4.1.1",
+    "mocha": "^7.1.1",
+    "sffc-encoder": "^0.1.12",
+    "triveasset-errors": "git+https://github.com/trivechain/triveasset-errors.git"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha",
+    "coverage": "istanbul cover _mocha -- -R spec",
+    "coveralls": "cat ./coverage/lcov.info | coveralls"
+  },
+  "author": "jsheng08",
+  "license": "Apache-2.0",
+  "keywords": [
+    "triveasset",
+    "trivechain",
+    "blockchain"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trivechain/triveasset-protocol.git"
+  }
+}
