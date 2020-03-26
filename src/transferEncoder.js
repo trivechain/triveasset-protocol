@@ -1,3 +1,5 @@
+'use strict'
+
 var TYPE_MASK = 0xf0
 var TRANSFER_MASK = 0x10
 var BURN_MASK = 0x20

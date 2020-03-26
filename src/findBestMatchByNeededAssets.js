@@ -1,3 +1,5 @@
+'use strict'
+
 var _ = require('lodash')
 var bitcoinjs = require('bitcoinjs-lib')
 var Buffer = require('safe-buffer').Buffer

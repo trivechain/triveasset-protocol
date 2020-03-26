@@ -1,22 +1,22 @@
+'use strict'
+
 var bitcoin = require('bitcoinjs-lib')
 var bs58check = require('bs58check')
 var hash = require('crypto-hashing')
 var debug = require('debug')('assetIdEncoder')
 var UNLOCKEPADDING = {
   aggregatable: 0x2e37,
-  hybrid: 0x2e6b,
   dispersed: 0x2e4e
 }
 var LOCKEPADDING = {
   aggregatable: 0x20ce,
-  hybrid: 0x2102,
   dispersed: 0x20e4
 }
-var BTC_P2PKH = 0x41
-var BTC_TESTNET_P2PKH = 0x8c
-var BTC_P2SH = 0x12
-var BTC_TESTNET_P2SH = 0x13
-var NETWORKVERSIONS = [BTC_P2PKH, BTC_TESTNET_P2PKH, BTC_P2SH, BTC_TESTNET_P2SH]
+var TRVC_P2PKH = 0x41
+var TRVC_TESTNET_P2PKH = 0x7f
+var TRVC_P2SH = 0x12
+var TRVC_TESTNET_P2SH = 0x7d
+var NETWORKVERSIONS = [TRVC_P2PKH, TRVC_TESTNET_P2PKH, TRVC_P2SH, TRVC_TESTNET_P2SH]
 var POSTFIXBYTELENGTH = 2
 
 var padLeadingZeros = function (hex, byteSize) {
@@ -80,13 +80,13 @@ var createIdFromAddress = function (address, padding, divisibility) {
   var version = parseInt(versionBuffer.toString('hex'), 16)
   debug('version = ', version)
   if (NETWORKVERSIONS.indexOf(version) === -1) throw new Error('Unrecognized address network')
-  if (version === BTC_P2SH || version === BTC_TESTNET_P2SH) {
+  if (version === TRVC_P2SH || version === TRVC_TESTNET_P2SH) {
     var scriptHash = addressBuffer.slice(versionBuffer.length, 21)
     var scriptHashOutput = bitcoin.script.scriptHashOutput(scriptHash)
     debug('scriptHashOutput = ', scriptHashOutput)
     return hashAndBase58CheckEncode(scriptHashOutput, padding, divisibility)
   }
-  if (version === BTC_P2PKH || version === BTC_TESTNET_P2PKH) {
+  if (version === TRVC_P2PKH || version === TRVC_TESTNET_P2PKH) {
     var pubKeyHash = addressBuffer.slice(versionBuffer.length, 21)
     var pubKeyHashOutput = bitcoin.script.pubKeyHashOutput(pubKeyHash)
     debug('pubKeyHashOutput = ', pubKeyHashOutput)
@@ -106,15 +106,15 @@ var hashAndBase58CheckEncode = function (payloadToHash, padding, divisibility) {
   return bs58check.encode(concatenation)
 }
 
-module.exports = function (bitcoinTransaction) {
-  debug('bitcoinTransaction.txid = ', bitcoinTransaction.txid)
-  if (!bitcoinTransaction.ccdata) throw new Error('Missing Colored Coin Metadata')
-  if (bitcoinTransaction.ccdata[0].type !== 'issuance') throw new Error('Not An issuance transaction')
-  if (typeof bitcoinTransaction.ccdata[0].lockStatus === 'undefined') throw new Error('Missing Lock Status data')
-  var lockStatus = bitcoinTransaction.ccdata[0].lockStatus
-  var aggregationPolicy = bitcoinTransaction.ccdata[0].aggregationPolicy || 'aggregatable'
-  var divisibility = bitcoinTransaction.ccdata[0].divisibility || 0
-  var firstInput = bitcoinTransaction.vin[0]
+module.exports = function (trivechainTransaction) {
+  debug('trivechainTransaction.txid = ', trivechainTransaction.txid)
+  if (!trivechainTransaction.ccdata) throw new Error('Missing Colored Coin Metadata')
+  if (trivechainTransaction.ccdata[0].type !== 'issuance') throw new Error('Not An issuance transaction')
+  if (typeof trivechainTransaction.ccdata[0].lockStatus === 'undefined') throw new Error('Missing Lock Status data')
+  var lockStatus = trivechainTransaction.ccdata[0].lockStatus
+  var aggregationPolicy = trivechainTransaction.ccdata[0].aggregationPolicy || 'aggregatable'
+  var divisibility = aggregationPolicy == 'aggregatable' && trivechainTransaction.ccdata[0].divisibility ? trivechainTransaction.ccdata[0].divisibility : 0
+  var firstInput = trivechainTransaction.vin[0]
   var padding
   if (lockStatus) {
     padding = LOCKEPADDING[aggregationPolicy]

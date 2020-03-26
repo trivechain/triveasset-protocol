@@ -1,3 +1,5 @@
+'use strict'
+
 var bitcoinjs = require('bitcoinjs-lib')
 var BigNumber = require('bignumber.js')
 var _ = require('lodash')
@@ -71,8 +73,8 @@ TriveAssetBuilder.prototype.buildIssueTransaction = function (args) {
     args.fee = parseInt(args.fee)
   }
 
-  args.divisibility = args.divisibility || 0
   args.aggregationPolicy = args.aggregationPolicy || 'aggregatable'
+  args.divisibility = args.aggregationPolicy == 'aggregatable' && args.divisibility ? args.divisibility : 0
 
   var txb = new bitcoinjs.TransactionBuilder(
     self.network === 'testnet' ? 

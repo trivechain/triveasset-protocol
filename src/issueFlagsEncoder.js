@@ -1,6 +1,7 @@
+'use strict'
+
 var aggregationPolicies = [
   'aggregatable',
-  'hybrid',
   'dispersed'
 ]
 
@@ -15,6 +16,7 @@ module.exports = {
     var aggregationPolicy = flags.aggregationPolicy || aggregationPolicies[0]
     if (divisibility < 0 || divisibility > 15) throw new Error('Divisibility not in range')
     if ((aggregationPolicy = aggregationPolicies.indexOf(aggregationPolicy)) < 0) throw new Error('Invalid aggregation policy')
+    if (aggregationPolicy === 1) divisibility = 0
     var result = divisibility << 1
     var lockStatusFlag = 0
     lockStatus && (lockStatusFlag = 1)

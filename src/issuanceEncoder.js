@@ -1,3 +1,9 @@
+'use strict'
+
+var sffc = require('sffc-encoder')
+var issueFlagsCodex = require('./issueFlagsEncoder.js')
+var paymentCodex = require('./paymentEncoder.js')
+
 var OP_CODES = [
   new Buffer([0x00]), // wild-card to be defined
   new Buffer([0x01]), // All Hashes in OP_RETURN - Pay-to-PubkeyHash
@@ -9,10 +15,6 @@ var OP_CODES = [
   new Buffer([0x07]), // All Hashes with IPFS in OP_RETURN - Pay-to-PubkeyHash
   new Buffer([0x08]), // IPFS Hash in Pay-to-Script-Hash multi-sig output (1 out of 2)
 ]
-
-var sffc = require('sffc-encoder')
-var issueFlagsCodex = require('./issueFlagsEncoder.js')
-var paymentCodex = require('./paymentEncoder.js')
 
 var consumer = function (buff) {
   var curr = 0

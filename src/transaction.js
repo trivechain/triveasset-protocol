@@ -1,3 +1,5 @@
+'use strict'
+
 var PROTOCOL = 0x5441
 var VERSION = 0x03
 var MAXBYTESIZE = 80
