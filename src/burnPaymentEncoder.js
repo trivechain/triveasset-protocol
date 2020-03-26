@@ -1,5 +1,3 @@
-'use strict'
-
 var basePaymentEncoder = require('./paymentEncoder')
 var clone = require('clone')
 

@@ -1,5 +1,3 @@
-'use strict'
-
 var bitcoin = require('bitcoinjs-lib')
 var bs58check = require('bs58check')
 var hash = require('crypto-hashing')

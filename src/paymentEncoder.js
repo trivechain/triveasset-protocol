@@ -1,5 +1,3 @@
-'use strict'
-
 var flagMask = 0xe0
 var skipFlag = 0x80
 var rangeFlag = 0x40

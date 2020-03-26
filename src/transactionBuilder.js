@@ -1,5 +1,3 @@
-'use strict'
-
 var bitcoinjs = require('bitcoinjs-lib')
 var BigNumber = require('bignumber.js')
 var _ = require('lodash')
@@ -12,7 +10,7 @@ var errors = require('triveasset-errors')
 var bufferReverse = require('buffer-reverse')
 
 var TA_TX_VERSION = 0x03
-const trivechainTestnetNetwork = {
+var trivechainTestnetNetwork = {
   messagePrefix: '\x18Trivechain Signed Message:\n',
   bip32: {
     public: 0x043587cf,
@@ -24,7 +22,7 @@ const trivechainTestnetNetwork = {
   dustThreshold: 546
 }
 
-const trivechainMainnetNetwork = {
+var trivechainMainnetNetwork = {
   messagePrefix: '\x18Trivechain Signed Message:\n',
   bip32: {
     public: 0x0488b21e,
