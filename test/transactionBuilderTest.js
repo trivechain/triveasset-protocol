@@ -65,21 +65,21 @@
 //     var result = transactionBuilder.buildIssueTransaction(issueArgs)
 //     assert(result.txHex)
 //     var tx = Transaction.fromHex(result.txHex)
-//     assert.equal(tx.ins.length, 1)
-//     assert.equal(tx.outs.length, 3) // OP_RETURN + 2 changes
+//     assert.strictEqual(tx.ins.length, 1)
+//     assert.strictEqual(tx.outs.length, 3) // OP_RETURN + 2 changes
 //     assert(result.assetId)
 //     assert.deepEqual(result.coloredOutputIndexes, [2])
 //     var sumValueInputs = issueArgs.utxos[0].value
 //     var sumValueOutputs = _.sumBy(tx.outs, function (output) { return output.value })
-//     assert.equal(sumValueInputs - sumValueOutputs, issueArgs.fee)
+//     assert.strictEqual(sumValueInputs - sumValueOutputs, issueArgs.fee)
 //     var opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
 //     var taTransaction = TA.fromHex(opReturnScriptBuffer)
-//     assert.equal(taTransaction.type, 'issuance')
-//     assert.equal(taTransaction.amount, issueArgs.amount)
+//     assert.strictEqual(taTransaction.type, 'issuance')
+//     assert.strictEqual(taTransaction.amount, issueArgs.amount)
 //     // default values
-//     assert.equal(taTransaction.lockStatus, true)
-//     assert.equal(taTransaction.divisibility, 0)
-//     assert.equal(taTransaction.aggregationPolicy, 'aggregatable')
+//     assert.strictEqual(taTransaction.lockStatus, true)
+//     assert.strictEqual(taTransaction.divisibility, 0)
+//     assert.strictEqual(taTransaction.aggregationPolicy, 'aggregatable')
 //     done()
 //   })
 
@@ -89,8 +89,8 @@
 //     var result = transactionBuilder.buildIssueTransaction(args)
 //     assert(result.txHex)
 //     var tx = Transaction.fromHex(result.txHex)
-//     assert.equal(tx.ins.length, 1)
-//     assert.equal(tx.ins[0].script.toString('hex'), args.utxos[0].scriptPubKey.hex)
+//     assert.strictEqual(tx.ins.length, 1)
+//     assert.strictEqual(tx.ins[0].script.toString('hex'), args.utxos[0].scriptPubKey.hex)
 //     done()
 //   })
 
@@ -100,8 +100,8 @@
 //     var result = transactionBuilder.buildIssueTransaction(args)
 //     assert(result.txHex)
 //     var tx = Transaction.fromHex(result.txHex)
-//     assert.equal(tx.ins.length, 1)
-//     assert.equal(tx.outs.length, 2) // OP_RETURN + 1 change
+//     assert.strictEqual(tx.ins.length, 1)
+//     assert.strictEqual(tx.outs.length, 2) // OP_RETURN + 1 change
 //     assert.deepEqual(result.coloredOutputIndexes, [1])
 //     done()
 //   })
@@ -114,8 +114,8 @@
 //     var tx = Transaction.fromHex(result.txHex)
 //     var opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
 //     var taTransaction = TA.fromHex(opReturnScriptBuffer)
-//     assert.equal(taTransaction.sha2.toString('hex'), args.sha2)
-//     assert.equal(taTransaction.torrentHash.toString('hex'), args.torrentHash)
+//     assert.strictEqual(taTransaction.sha2.toString('hex'), args.sha2)
+//     assert.strictEqual(taTransaction.torrentHash.toString('hex'), args.torrentHash)
 //     done()
 //   })
 
@@ -127,8 +127,8 @@
 //     var tx = Transaction.fromHex(result.txHex)
 //     var opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
 //     var taTransaction = TA.fromHex(opReturnScriptBuffer)
-//     assert.equal(taTransaction.sha2.toString('hex'), args.sha2)
-//     assert.equal(taTransaction.torrentHash.toString('hex'), args.torrentHash)
+//     assert.strictEqual(taTransaction.sha2.toString('hex'), args.sha2)
+//     assert.strictEqual(taTransaction.torrentHash.toString('hex'), args.torrentHash)
 //     done()
 //   })
 // })
@@ -197,20 +197,20 @@
 //     var result = transactionBuilder.buildSendTransaction(sendArgs)
 //     assert(result.txHex)
 //     var tx = Transaction.fromHex(result.txHex)
-//     assert.equal(tx.ins.length, 1)
-//     assert.equal(tx.outs.length, 4) // transfer + OP_RETURN + 2 changes
+//     assert.strictEqual(tx.ins.length, 1)
+//     assert.strictEqual(tx.outs.length, 4) // transfer + OP_RETURN + 2 changes
 //     assert.deepEqual(result.coloredOutputIndexes, [0, 3])
 //     var sumValueInputs = sendArgs.utxos[0].value
 //     var sumValueOutputs = _.sumBy(tx.outs, function (output) { return output.value })
-//     assert.equal(sumValueInputs - sumValueOutputs, sendArgs.fee)
+//     assert.strictEqual(sumValueInputs - sumValueOutputs, sendArgs.fee)
 //     var opReturnScriptBuffer = script.decompile(tx.outs[1].script)[1]
 //     var taTransaction = TA.fromHex(opReturnScriptBuffer)
-//     assert.equal(taTransaction.type, 'transfer')
-//     assert.equal(taTransaction.payments[0].range, false)
-//     assert.equal(taTransaction.payments[0].output, 0)
-//     assert.equal(taTransaction.payments[0].input, 0)
-//     assert.equal(taTransaction.payments[0].percent, false)
-//     assert.equal(taTransaction.payments[0].amount, sendArgs.to[0].amount)
+//     assert.strictEqual(taTransaction.type, 'transfer')
+//     assert.strictEqual(taTransaction.payments[0].range, false)
+//     assert.strictEqual(taTransaction.payments[0].output, 0)
+//     assert.strictEqual(taTransaction.payments[0].input, 0)
+//     assert.strictEqual(taTransaction.payments[0].percent, false)
+//     assert.strictEqual(taTransaction.payments[0].amount, sendArgs.to[0].amount)
 //     done()
 //   })
 
@@ -263,8 +263,8 @@
 //     var tx = Transaction.fromHex(result.txHex)
 //     var opReturnScriptBuffer = script.decompile(tx.outs[tx.outs.length - 3].script)[1]
 //     var taTransaction = TA.fromHex(opReturnScriptBuffer)
-//     assert.equal(taTransaction.multiSig[0].hashType, 'sha2')
-//     assert.equal(taTransaction.multiSig[1].hashType, 'torrentHash')
+//     assert.strictEqual(taTransaction.multiSig[0].hashType, 'sha2')
+//     assert.strictEqual(taTransaction.multiSig[1].hashType, 'torrentHash')
 //     done()
 //   })
 
@@ -276,8 +276,8 @@
 //     var tx = Transaction.fromHex(result.txHex)
 //     var opReturnScriptBuffer = script.decompile(tx.outs[1].script)[1]
 //     var taTransaction = TA.fromHex(opReturnScriptBuffer)
-//     assert.equal(taTransaction.sha2.toString('hex'), args.sha2)
-//     assert.equal(taTransaction.torrentHash.toString('hex'), args.torrentHash)
+//     assert.strictEqual(taTransaction.sha2.toString('hex'), args.sha2)
+//     assert.strictEqual(taTransaction.torrentHash.toString('hex'), args.torrentHash)
 //     done()
 //   })
 
@@ -287,8 +287,8 @@
 //     var result = transactionBuilder.buildSendTransaction(args)
 //     assert(result.txHex)
 //     var tx = Transaction.fromHex(result.txHex)
-//     assert.equal(tx.ins.length, 1)
-//     assert.equal(tx.ins[0].script.toString('hex'), args.utxos[0].scriptPubKey.hex)
+//     assert.strictEqual(tx.ins.length, 1)
+//     assert.strictEqual(tx.ins[0].script.toString('hex'), args.utxos[0].scriptPubKey.hex)
 //     done()
 //   })
 
@@ -298,8 +298,8 @@
 //     var result = transactionBuilder.buildSendTransaction(args)
 //     assert(result.txHex)
 //     var tx = Transaction.fromHex(result.txHex)
-//     assert.equal(tx.ins.length, 1)
-//     assert.equal(tx.outs.length, 3) // transfer + OP_RETURN + 1 change
+//     assert.strictEqual(tx.ins.length, 1)
+//     assert.strictEqual(tx.outs.length, 3) // transfer + OP_RETURN + 1 change
 //     assert.deepEqual(result.coloredOutputIndexes, [0, 2])
 //     done()
 //   })
@@ -342,18 +342,18 @@
 //     var result = transactionBuilder.buildBurnTransaction(burnArgs)
 //     assert(result.txHex)
 //     var tx = Transaction.fromHex(result.txHex)
-//     assert.equal(tx.ins.length, 1)
-//     assert.equal(tx.outs.length, 3) // OP_RETURN + 2 changes
+//     assert.strictEqual(tx.ins.length, 1)
+//     assert.strictEqual(tx.outs.length, 3) // OP_RETURN + 2 changes
 //     assert.deepEqual(result.coloredOutputIndexes, [2])
 //     var sumValueInputs = sendArgs.utxos[0].value
 //     var sumValueOutputs = _.sumBy(tx.outs, function (output) { return output.value })
-//     assert.equal(sumValueInputs - sumValueOutputs, burnArgs.fee)
+//     assert.strictEqual(sumValueInputs - sumValueOutputs, burnArgs.fee)
 //     var opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
 //     var taTransaction = TA.fromHex(opReturnScriptBuffer)
-//     assert.equal(taTransaction.type, 'burn')
-//     assert.equal(taTransaction.payments[0].burn, true)
-//     assert.equal(taTransaction.payments[0].input, 0)
-//     assert.equal(taTransaction.payments[0].amount, burnArgs.burn[0].amount)
+//     assert.strictEqual(taTransaction.type, 'burn')
+//     assert.strictEqual(taTransaction.payments[0].burn, true)
+//     assert.strictEqual(taTransaction.payments[0].input, 0)
+//     assert.strictEqual(taTransaction.payments[0].amount, burnArgs.burn[0].amount)
 //     done()
 //   })
 // })

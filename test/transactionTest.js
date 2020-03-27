@@ -3,8 +3,8 @@
 
 // describe('Create Transaction from raw data', function () {
 //   this.timeout(0)
-//   var torrentHash = new Buffer(20)
-//   var sha2 = new Buffer(32)
+//   var torrentHash = Buffer.from(20)
+//   var sha2 = Buffer.from(32)
 //   var hex3 = '434301028d5e6b9e6543d917e9a1a35e3680dabc4922750c201201201210'
 //   var data = {
 //     type: 'issuance',
@@ -59,7 +59,7 @@
 //       if (val.length % 2 == 1) {
 //         val = '0'+val
 //       }
-//       return new Buffer(val, 'hex')
+//       return Buffer.from(val, 'hex')
 //     }
 
 //     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length - 1))
@@ -68,7 +68,7 @@
 //     assert.deepEqual(toBuffer('01'), consume(1))  //issuance OP_CODE
 //     consume(20) //torrent-hash
 //     consume(32) //sha2
-//     assert.deepEqual(new Buffer('433b00', 'hex'), consume(3))
+//     assert.deepEqual(Buffer.from('433b00', 'hex'), consume(3))
 //     done()
 //   })
 
@@ -88,8 +88,8 @@
 //     delete transactionJson2.torrentHash
 //     assert.deepEqual(multiSig, [], 'Not Equal')
 //     assert.deepEqual(transactionJson1, transactionJson2, 'Not Equal')
-//     assert.equal(transactionJson2.amount, 123, 'Wrong total amount of units')
-//     assert.equal(transactionJson1.amount, 123, 'Wrong total amount of units')
+//     assert.strictEqual(transactionJson2.amount, 123, 'Wrong total amount of units')
+//     assert.strictEqual(transactionJson1.amount, 123, 'Wrong total amount of units')
 
 //     done()
 //   })
@@ -163,7 +163,7 @@
 //     // // console.log('Second transaction code: ', code)
 //     transactionJson2 = Transaction.fromHex(code.codeBuffer).toJson()
 //     // // console.log('second transaction decoded back: ', transactionJson2)
-//     assert.equal(transactionJson1.type, 'burn')
+//     assert.strictEqual(transactionJson1.type, 'burn')
 //     assert.deepEqual(transactionJson1, transactionJson2, 'Not Equal')
 //     done()
 //   })

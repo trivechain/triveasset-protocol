@@ -1,39 +1,51 @@
 {
-  "name": "triveasset-protocol",
-  "version": "1.0.0",
-  "description": "The encoding/decoding functions for the triveasset scheme transfer set of OP_CODES",
-  "main": "index.js",
-  "dependencies": {
-    "bignumber.js": "^9.0.0",
-    "bitcoinjs-lib": "2.3.0",
-    "bs58check": "1.0.8",
-    "clone": "^2.1.2",
-    "crypto-hashing": "0.3.1",
-    "debug": "^4.1.1",
-    "sffc-encoder": "^0.1.12",
-    "triveasset-errors": "git+https://github.com/trivechain/triveasset-errors.git"
-  },
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "test": "mocha",
-    "coverage": "istanbul cover _mocha -- -R spec",
-    "coveralls": "cat ./coverage/lcov.info | coveralls"
-  },
-  "author": "jsheng08",
-  "license": "Apache-2.0",
-  "keywords": [
-    "triveasset",
-    "trivechain",
-    "blockchain"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/trivechain/triveasset-protocol.git"
-  },
-  "devDependencies": {
-    "mocha": "^7.1.1",
-    "prettier": "^2.0.2"
-  }
+    "name": "triveasset-protocol",
+    "version": "1.0.0",
+    "description": "The encoding/decoding functions for the triveasset scheme transfer set of OP_CODES",
+    "main": "index.js",
+    "dependencies": {
+        "bignumber.js": "^9.0.0",
+        "bitcoinjs-lib": "2.3.0",
+        "bs58check": "1.0.8",
+        "clone": "^2.1.2",
+        "crypto-hashing": "0.3.1",
+        "debug": "^4.1.1",
+        "sffc-encoder": "^0.1.12",
+        "triveasset-errors": "git+https://github.com/trivechain/triveasset-errors.git"
+    },
+    "directories": {
+        "test": "test"
+    },
+    "scripts": {
+        "test": "mocha",
+        "coverage": "istanbul cover _mocha -- -R spec",
+        "coveralls": "cat ./coverage/lcov.info | coveralls",
+        "lint": "eslint src --color",
+        "p": "prettier --write 'src/**/*.js'",
+        "p:w": "onchange 'src/**/*.js' -- prettier --write {{changed}}"
+    },
+    "author": "jsheng08",
+    "license": "Apache-2.0",
+    "keywords": [
+        "triveasset",
+        "trivechain",
+        "blockchain"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/trivechain/triveasset-protocol.git"
+    },
+    "devDependencies": {
+        "eslint": "^6.8.0",
+        "eslint-config-prettier": "^6.10.1",
+        "eslint-config-standard": "^14.1.1",
+        "eslint-plugin-import": "^2.20.1",
+        "eslint-plugin-node": "^11.0.0",
+        "eslint-plugin-prettier": "^3.1.2",
+        "eslint-plugin-promise": "^4.2.1",
+        "eslint-plugin-standard": "^4.0.1",
+        "mocha": "^7.1.1",
+        "onchange": "^6.1.0",
+        "prettier": "^2.0.2"
+    }
 }

@@ -28,11 +28,11 @@
 //     for (var i = 0; i < testCase.length; i++) {
 //       var code = paymentEncode.encode(testCase[i])
 //       var decode = paymentEncode.decode(consumer(code))
-//       assert.equal(testCase[i].skip, decode.skip)
-//       assert.equal(testCase[i].range, decode.range)
-//       assert.equal(testCase[i].percent, decode.percent)
-//       assert.equal(testCase[i].output, decode.output)
-//       assert.equal(testCase[i].amount, decode.amount)
+//       assert.strictEqual(testCase[i].skip, decode.skip)
+//       assert.strictEqual(testCase[i].range, decode.range)
+//       assert.strictEqual(testCase[i].percent, decode.percent)
+//       assert.strictEqual(testCase[i].output, decode.output)
+//       assert.strictEqual(testCase[i].amount, decode.amount)
 //     }
 //     done()
 //   })
@@ -43,10 +43,10 @@
 //     var testCase3 = paymentEncode.encode({skip: false, percent: true, amount: 25, burn: true})
 //     var testCase4 = paymentEncode.encode({skip: true, percent: true, amount: 10, burn: true})
 
-//     assert.deepEqual(testCase1, new Buffer([0x1f, 0x0d]))
-//     assert.deepEqual(testCase2, new Buffer([0x9f, 0x27, 0xb0]))
-//     assert.deepEqual(testCase3, new Buffer([0x3f, 0x19]))
-//     assert.deepEqual(testCase4, new Buffer([0xbf, 0x0a]))
+//     assert.deepEqual(testCase1, Buffer.from([0x1f, 0x0d]))
+//     assert.deepEqual(testCase2, Buffer.from([0x9f, 0x27, 0xb0]))
+//     assert.deepEqual(testCase3, Buffer.from([0x3f, 0x19]))
+//     assert.deepEqual(testCase4, Buffer.from([0xbf, 0x0a]))
 //     done()
 //   })
 
@@ -61,10 +61,10 @@
 //     for (var i = 0; i < testCases.length; i++) {
 //       var code = paymentEncode.encode(testCases[i])
 //       var decode = paymentEncode.decode(consumer(code))
-//       assert.equal(testCases[i].skip, decode.skip)
-//       assert.equal(testCases[i].percent, decode.percent)
-//       assert.equal(testCases[i].burn, decode.burn)
-//       assert.equal(testCases[i].amount, decode.amount)
+//       assert.strictEqual(testCases[i].skip, decode.skip)
+//       assert.strictEqual(testCases[i].percent, decode.percent)
+//       assert.strictEqual(testCases[i].burn, decode.burn)
+//       assert.strictEqual(testCases[i].amount, decode.amount)
 //     }
 //     done()
 //   })
@@ -88,11 +88,11 @@
 //     var decode = paymentEncode.decodeBulk(consumer(code))
 
 //     for (var i = 0; i < testCase.length; i++) {
-//       assert.equal(testCase[i].skip, decode[i].skip)
-//       assert.equal(testCase[i].range, decode[i].range)
-//       assert.equal(testCase[i].percent, decode[i].percent)
-//       assert.equal(testCase[i].output, decode[i].output)
-//       assert.equal(testCase[i].amount, decode[i].amount)
+//       assert.strictEqual(testCase[i].skip, decode[i].skip)
+//       assert.strictEqual(testCase[i].range, decode[i].range)
+//       assert.strictEqual(testCase[i].percent, decode[i].percent)
+//       assert.strictEqual(testCase[i].output, decode[i].output)
+//       assert.strictEqual(testCase[i].amount, decode[i].amount)
 //     }
 //     done()
 //   })

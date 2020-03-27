@@ -28,11 +28,11 @@
 //     for (var i = 0; i < testCase.length; i++) {
 //       var code = paymentEncoder.encode(testCase[i])
 //       var decode = paymentEncoder.decode(consumer(code))
-//       assert.equal(testCase[i].skip, decode.skip, 'skip encode has problems')
-//       assert.equal(testCase[i].range, decode.range, 'range encode has problems')
-//       assert.equal(testCase[i].percent, decode.percent, 'percent encode has problems')
-//       assert.equal(testCase[i].output, decode.output, 'output encode has problems')
-//       assert.equal(testCase[i].amount, decode.amount, 'amount encode has problems')
+//       assert.strictEqual(testCase[i].skip, decode.skip, 'skip encode has problems')
+//       assert.strictEqual(testCase[i].range, decode.range, 'range encode has problems')
+//       assert.strictEqual(testCase[i].percent, decode.percent, 'percent encode has problems')
+//       assert.strictEqual(testCase[i].output, decode.output, 'output encode has problems')
+//       assert.strictEqual(testCase[i].amount, decode.amount, 'amount encode has problems')
 //     }
 //     done()
 //   })
@@ -57,11 +57,11 @@
 //     var decode = paymentEncoder.decodeBulk(consumer(code))
 
 //     for (var i = 0; i < testCase.length; i++) {
-//       assert.equal(testCase[i].skip, decode[i].skip, 'skip encode has problems')
-//       assert.equal(testCase[i].range, decode[i].range, 'range encode has problems')
-//       assert.equal(testCase[i].percent, decode[i].percent, 'percent encode has problems')
-//       assert.equal(testCase[i].output, decode[i].output, 'output encode has problems')
-//       assert.equal(testCase[i].amount, decode[i].amount, 'amount encode has problems')
+//       assert.strictEqual(testCase[i].skip, decode[i].skip, 'skip encode has problems')
+//       assert.strictEqual(testCase[i].range, decode[i].range, 'range encode has problems')
+//       assert.strictEqual(testCase[i].percent, decode[i].percent, 'percent encode has problems')
+//       assert.strictEqual(testCase[i].output, decode[i].output, 'output encode has problems')
+//       assert.strictEqual(testCase[i].amount, decode[i].amount, 'amount encode has problems')
 //     }
 //     done()
 //   })

@@ -13,13 +13,13 @@
 //   if (val.length % 2 == 1) {
 //     val = '0'+val
 //   }
-//   return new Buffer(val, 'hex')
+//   return Buffer.from(val, 'hex')
 // }
 
 // describe('Colored-Coins transfer Decoding', function () {
 //   it('should return the right decoding', function (done) {
 //     this.timeout(0)
-//     var torrentHash = new Buffer(20)
+//     var torrentHash = Buffer.from(20)
 //     torrentHash.fill(0)
 //     torrentHash[3] = 0x23
 //     torrentHash[4] = 0x2f
@@ -27,7 +27,7 @@
 //     torrentHash[12] = 0xe3
 //     torrentHash[19] = 0xa3
 //     torrentHash[11] = 0x21
-//     var sha2 = new Buffer(32)
+//     var sha2 = Buffer.from(32)
 //     sha2.fill(0)
 //     sha2[0] = 0xf3
 //     sha2[1] = 0x2f
@@ -36,7 +36,7 @@
 //     sha2[30] = 0x2f
 //     sha2[21] = 0x23
 //     sha2[11] = 0x2f
-//     var ipfsHash = new Buffer('1220f1e820d85d82f6d7493b5e4446a1b9c0a4e0321885f1e47293fd6c081affaedf', 'hex')
+//     var ipfsHash = Buffer.from('1220f1e820d85d82f6d7493b5e4446a1b9c0a4e0321885f1e47293fd6c081affaedf', 'hex')
 //     var data = {
 //       protocol: 0x0302, // Error when start with 0
 //       version: 0x03
@@ -101,8 +101,8 @@
 // describe('80 byte OP_RETURN', function () {
 //   var code
 //   var decoded
-//   var torrentHash = new Buffer('46b7e0d000d69330ac1caa48c6559763828762e1', 'hex')
-//   var sha2 = new Buffer('03ffdf3d6790a21c5fc97a62fe1abc5f66922d7dee3725261ce02e86f078d190', 'hex')
+//   var torrentHash = Buffer.from('46b7e0d000d69330ac1caa48c6559763828762e1', 'hex')
+//   var sha2 = Buffer.from('03ffdf3d6790a21c5fc97a62fe1abc5f66922d7dee3725261ce02e86f078d190', 'hex')
 //   var data = {
 //     protocol: 0x5441,
 //     version: 0x03,
@@ -125,7 +125,7 @@
 //     decoded = transferEncoder.decode(code.codeBuffer)
 //     // console.log(decoded)
 
-//     assert.equal(decoded.protocol, data.protocol)
+//     assert.strictEqual(decoded.protocol, data.protocol)
 //     assert.deepEqual(decoded.payments, data.payments)
 //     assert.deepEqual(decoded.multiSig, code.leftover)
 //     done()
@@ -150,7 +150,7 @@
 //     decoded = transferEncoder.decode(code.codeBuffer)
 //     // console.log(decoded)
 
-//     assert.equal(decoded.protocol, data.protocol)
+//     assert.strictEqual(decoded.protocol, data.protocol)
 //     assert.deepEqual(decoded.payments, data.payments)
 //     assert.deepEqual(decoded.multiSig, code.leftover)
 //     assert.deepEqual(decoded.torrentHash, torrentHash)
@@ -176,7 +176,7 @@
 //     decoded = transferEncoder.decode(code.codeBuffer)
 //     // console.log(decoded)
 
-//     assert.equal(decoded.protocol, data.protocol)
+//     assert.strictEqual(decoded.protocol, data.protocol)
 //     assert.deepEqual(decoded.payments, data.payments)
 //     assert.deepEqual(decoded.multiSig, code.leftover)
 //     assert.deepEqual(decoded.torrentHash, torrentHash)
@@ -211,7 +211,7 @@
 //     decoded = transferEncoder.decode(code.codeBuffer)
 //     // console.log(decoded)
 
-//     assert.equal(decoded.protocol, data.protocol)
+//     assert.strictEqual(decoded.protocol, data.protocol)
 //     assert.deepEqual(decoded.payments, data.payments)
 //     assert.deepEqual(decoded.multiSig, code.leftover)
 //     assert.deepEqual(decoded.torrentHash, torrentHash)
@@ -238,10 +238,10 @@
 //     decoded = transferEncoder.decode(code.codeBuffer)
 //     // console.log(decoded)
 
-//     assert.equal(decoded.protocol, data.protocol)
+//     assert.strictEqual(decoded.protocol, data.protocol)
 //     assert.deepEqual(decoded.payments, data.payments)
-//     assert.equal(decoded.multiSig.length, 1)
-//     assert.equal(decoded.multiSig.length, code.leftover.length)
+//     assert.strictEqual(decoded.multiSig.length, 1)
+//     assert.strictEqual(decoded.multiSig.length, code.leftover.length)
 //     assert.deepEqual(decoded.multiSig[0], { hashType: 'sha2', index: 1 })
 //     assert.deepEqual(code.leftover[0], sha2)
 //     assert.deepEqual(decoded.torrentHash, torrentHash)
@@ -270,10 +270,10 @@
 //     decoded = transferEncoder.decode(code.codeBuffer)
 //     // console.log(decoded)
 
-//     assert.equal(decoded.protocol, data.protocol)
+//     assert.strictEqual(decoded.protocol, data.protocol)
 //     assert.deepEqual(decoded.payments, data.payments)
-//     assert.equal(decoded.multiSig.length, 2)
-//     assert.equal(decoded.multiSig.length, code.leftover.length)
+//     assert.strictEqual(decoded.multiSig.length, 2)
+//     assert.strictEqual(decoded.multiSig.length, code.leftover.length)
 //     assert.deepEqual(decoded.multiSig[0], { hashType: 'sha2', index: 1 })
 //     assert.deepEqual(decoded.multiSig[1], { hashType: 'torrentHash', index: 2 })
 //     assert.deepEqual(code.leftover[1], sha2)
@@ -284,7 +284,7 @@
 //   it('Transfer OP_CODE 0x16 - IPFS hash of metadata in OP_RETURN', function (done) {
 //     this.timeout(0)
 
-//     var ipfsHash = new Buffer('1220f1e820d85d82f6d7493b5e4446a1b9c0a4e0321885f1e47293fd6c081affaedf', 'hex')
+//     var ipfsHash = Buffer.from('1220f1e820d85d82f6d7493b5e4446a1b9c0a4e0321885f1e47293fd6c081affaedf', 'hex')
 
 //     //pushing payments to the limit.
 //     data.payments = []
@@ -309,7 +309,7 @@
 //     decoded = transferEncoder.decode(code.codeBuffer)
 //     // console.log(decoded)
 
-//     assert.equal(decoded.protocol, data.protocol)
+//     assert.strictEqual(decoded.protocol, data.protocol)
 //     assert.deepEqual(decoded.payments, data.payments)
 //     assert.deepEqual(decoded.multiSig, code.leftover)
 //     assert.deepEqual(decoded.ipfsHash, ipfsHash)
@@ -319,7 +319,7 @@
 //   it('Transfer OP_CODE 0x17 - IPFS hash of metadata in pay-to-script', function (done) {
 //     this.timeout(0)
 
-//     var ipfsHash = new Buffer('1220f1e820d85d82f6d7493b5e4446a1b9c0a4e0321885f1e47293fd6c081affaedf', 'hex')
+//     var ipfsHash = Buffer.from('1220f1e820d85d82f6d7493b5e4446a1b9c0a4e0321885f1e47293fd6c081affaedf', 'hex')
 
 //     //pushing payments to the limit.
 //     data.payments = []
@@ -343,10 +343,10 @@
 //     decoded = transferEncoder.decode(code.codeBuffer)
 //     // console.log(decoded)
 
-//     assert.equal(decoded.protocol, data.protocol)
+//     assert.strictEqual(decoded.protocol, data.protocol)
 //     assert.deepEqual(decoded.payments, data.payments)
-//     assert.equal(decoded.multiSig.length, 1)
-//     assert.equal(decoded.multiSig.length, code.leftover.length)
+//     assert.strictEqual(decoded.multiSig.length, 1)
+//     assert.strictEqual(decoded.multiSig.length, code.leftover.length)
 //     assert.deepEqual(decoded.multiSig[0], { hashType: 'ipfsHash', index: 1 })
 //     assert.deepEqual(code.leftover[0], ipfsHash)
 //     done()
