@@ -33,6 +33,7 @@
     "url": "https://github.com/trivechain/triveasset-protocol.git"
   },
   "devDependencies": {
-    "mocha": "^7.1.1"
+    "mocha": "^7.1.1",
+    "prettier": "^2.0.2"
   }
 }

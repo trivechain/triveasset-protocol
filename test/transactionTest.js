@@ -8,7 +8,7 @@
 //   var hex3 = '434301028d5e6b9e6543d917e9a1a35e3680dabc4922750c201201201210'
 //   var data = {
 //     type: 'issuance',
-//     amount: 13232,     
+//     amount: 13232,
 //     divisibility: 2,
 //     lockStatus: false,
 //     protocol: 0x5441,

@@ -113,7 +113,7 @@
 //   it('Transfer OP_CODE 0x15 - No Metadata', function (done) {
 //     this.timeout(0)
 
-//     code = transferEncoder.encode(data, 80)    
+//     code = transferEncoder.encode(data, 80)
 
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
 //     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
@@ -137,7 +137,7 @@
 //     data.torrentHash = torrentHash
 //     data.noRules = true
 
-//     code = transferEncoder.encode(data, 80)    
+//     code = transferEncoder.encode(data, 80)
 
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
 //     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
@@ -163,7 +163,7 @@
 //     data.torrentHash = torrentHash
 //     delete data.noRules
 
-//     code = transferEncoder.encode(data, 80)    
+//     code = transferEncoder.encode(data, 80)
 
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
 //     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
@@ -195,7 +195,7 @@
 //     data.torrentHash = torrentHash
 //     data.sha2 = sha2
 
-//     code = transferEncoder.encode(data, 80)    
+//     code = transferEncoder.encode(data, 80)
 
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
 //     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
@@ -225,7 +225,7 @@
 //     //1 more transfer instruction (2 bytes in this case) should push torrent hash out
 //     data.payments.push({skip: false, range: false, percent: false, output: 1, amount: 1})
 
-//     code = transferEncoder.encode(data, 80)    
+//     code = transferEncoder.encode(data, 80)
 
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
 //     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
@@ -256,7 +256,7 @@
 //       data.payments.push({skip: false, range: false, percent: false, output: 1, amount: 1})
 //     }
 
-//     code = transferEncoder.encode(data, 80)    
+//     code = transferEncoder.encode(data, 80)
 
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
 //     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
@@ -281,7 +281,6 @@
 //     done()
 //   })
 
-  
 //   it('Transfer OP_CODE 0x16 - IPFS hash of metadata in OP_RETURN', function (done) {
 //     this.timeout(0)
 
@@ -295,7 +294,7 @@
 
 //     data.ipfsHash = ipfsHash
 
-//     code = transferEncoder.encode(data, 80)    
+//     code = transferEncoder.encode(data, 80)
 
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
 //     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
@@ -330,7 +329,7 @@
 
 //     data.ipfsHash = ipfsHash
 
-//     code = transferEncoder.encode(data, 80)    
+//     code = transferEncoder.encode(data, 80)
 
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
 //     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))

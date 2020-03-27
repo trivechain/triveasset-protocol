@@ -1,80 +1,90 @@
 /* eslint-env mocha */
-var path = require('path')
-var assetIdEncoder = require('../index').AssetIdEncoder
-var assert = require('assert')
+var path = require("path");
+var assetIdEncoder = require("../index").AssetIdEncoder;
+var assert = require("assert");
 
-describe('1st input pubkeyhash', function () {
-  describe('locked asset ID', function () {
-    var assetId
+describe("1st input pubkeyhash", function () {
+  describe("locked asset ID", function () {
+    var assetId;
     var trivechainTransaction = {
-      'ccdata': [{
-        'type': 'issuance',
-        'lockStatus': true,
-        'divisibility': 8
-      }],
-      'vin': [{
-        'txid': '12999ab38cffe40c99430931384ba31a14715bed76be176c873083e088de7930',
-        'vout': 1
-      }]
-    }
+      ccdata: [
+        {
+          type: "issuance",
+          lockStatus: true,
+          divisibility: 8,
+        },
+      ],
+      vin: [
+        {
+          txid:
+            "12999ab38cffe40c99430931384ba31a14715bed76be176c873083e088de7930",
+          vout: 1,
+        },
+      ],
+    };
 
-    it('should return correct locked asset ID', function (done) {
-      assetId = assetIdEncoder(trivechainTransaction)
-      assert.equal(assetId, 'La6QE251sQAT9GaMTWhYejJn5cNKPVNpoe7jW9')
-      done()
-    })
+    it("should return correct locked asset ID", function (done) {
+      assetId = assetIdEncoder(trivechainTransaction);
+      assert.equal(assetId, "La6QE251sQAT9GaMTWhYejJn5cNKPVNpoe7jW9");
+      done();
+    });
 
-    it('should return correct locked aggregatable asset ID', function (done) {
-      trivechainTransaction.ccdata[0].aggregationPolicy = 'aggregatable'
-      assetId = assetIdEncoder(trivechainTransaction)
-      assert.equal(assetId, 'La6QE251sQAT9GaMTWhYejJn5cNKPVNpoe7jW9')
-      done()
-    })
+    it("should return correct locked aggregatable asset ID", function (done) {
+      trivechainTransaction.ccdata[0].aggregationPolicy = "aggregatable";
+      assetId = assetIdEncoder(trivechainTransaction);
+      assert.equal(assetId, "La6QE251sQAT9GaMTWhYejJn5cNKPVNpoe7jW9");
+      done();
+    });
 
-    it('should return correct locked dispersed asset ID', function (done) {
-      trivechainTransaction.ccdata[0].aggregationPolicy = 'dispersed'
-      assetId = assetIdEncoder(trivechainTransaction)
-      assert.equal(assetId, 'Ld4rkwTrhtBsV5NCmU2NAD1rR67eS6wdQDh44n')
-      done()
-    })
-  })
+    it("should return correct locked dispersed asset ID", function (done) {
+      trivechainTransaction.ccdata[0].aggregationPolicy = "dispersed";
+      assetId = assetIdEncoder(trivechainTransaction);
+      assert.equal(assetId, "Ld4rkwTrhtBsV5NCmU2NAD1rR67eS6wdQDh44n");
+      done();
+    });
+  });
 
-  describe('unlocked asset ID', function () {
-    var assetId
+  describe("unlocked asset ID", function () {
+    var assetId;
     var trivechainTransaction = {
-      'ccdata': [{
-        'type': 'issuance',
-        'lockStatus': false,
-        'divisibility': 8
-      }],
-      'vin': [{
-        'scriptSig': {
-          'asm': '3045022100c8f4b7b3909f74472055df75fbb951020841446addebe1163f969752dc1fc3ba02206e727f15a5d9929f7df7f7411c7173a6159d91e730e3fe458d3c3d7731dc56e201 02aa4f9b75ac09f14a464f7168e4a98d1476cc702720203cb19a340f32d5239666'
-        }
-      }]
-    }
+      ccdata: [
+        {
+          type: "issuance",
+          lockStatus: false,
+          divisibility: 8,
+        },
+      ],
+      vin: [
+        {
+          scriptSig: {
+            asm:
+              "3045022100c8f4b7b3909f74472055df75fbb951020841446addebe1163f969752dc1fc3ba02206e727f15a5d9929f7df7f7411c7173a6159d91e730e3fe458d3c3d7731dc56e201 02aa4f9b75ac09f14a464f7168e4a98d1476cc702720203cb19a340f32d5239666",
+          },
+        },
+      ],
+    };
 
-    it('should return correct unlocked asset ID', function (done) {
-      assetId = assetIdEncoder(trivechainTransaction)
-      assert.equal(assetId, 'Ua4eb6vgVFhRdLk1qmyCN1X6aa99w8YsevFZY9')
-      done()
-    })
+    it("should return correct unlocked asset ID", function (done) {
+      assetId = assetIdEncoder(trivechainTransaction);
+      assert.equal(assetId, "Ua4eb6vgVFhRdLk1qmyCN1X6aa99w8YsevFZY9");
+      done();
+    });
 
-    it('should return correct unlocked aggregatable asset ID', function (done) {
-      trivechainTransaction.ccdata[0].aggregationPolicy = 'aggregatable'
-      assetId = assetIdEncoder(trivechainTransaction)
-      assert.equal(assetId, 'Ua4eb6vgVFhRdLk1qmyCN1X6aa99w8YsevFZY9')
-      done()
-    })
+    it("should return correct unlocked aggregatable asset ID", function (done) {
+      trivechainTransaction.ccdata[0].aggregationPolicy = "aggregatable";
+      assetId = assetIdEncoder(trivechainTransaction);
+      assert.equal(assetId, "Ua4eb6vgVFhRdLk1qmyCN1X6aa99w8YsevFZY9");
+      done();
+    });
 
-    it('should return correct unlocked dispersed asset ID', function (done) {
-      trivechainTransaction.ccdata[0].aggregationPolicy = 'dispersed'
-      assetId = assetIdEncoder(trivechainTransaction)
-      assert.equal(assetId, 'UdAwnLZk685zz3kVfYdKrC2rf7nYUs1G33dTLL')
-      done()
-    })
-  })
-})
+    it("should return correct unlocked dispersed asset ID", function (done) {
+      trivechainTransaction.ccdata[0].aggregationPolicy = "dispersed";
+      assetId = assetIdEncoder(trivechainTransaction);
+      assert.equal(assetId, "UdAwnLZk685zz3kVfYdKrC2rf7nYUs1G33dTLL");
+      done();
+    });
+  });
+});
 
 // describe('1st input scripthash', function () {
 //   describe('locked asset ID', function () {
@@ -179,7 +189,6 @@ describe('1st input pubkeyhash', function () {
 //     done()
 //   })
 
-
 //   it('should return correct unlocked dispersed asset ID', function (done) {
 //     trivechainTransaction.ccdata[0].aggregationPolicy = 'dispersed'
 //     assetId = assetIdEncoder(trivechainTransaction)
@@ -216,7 +225,6 @@ describe('1st input pubkeyhash', function () {
 //     console.log(assetId)
 //     done()
 //   })
-
 
 //   it('should return correct unlocked dispersed asset ID', function (done) {
 //     trivechainTransaction.ccdata[0].aggregationPolicy = 'dispersed'

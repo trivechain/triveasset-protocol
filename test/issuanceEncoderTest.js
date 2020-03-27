@@ -63,7 +63,6 @@
 //     done()
 //   })
 
-
 //   it('Issuance OP_CODE 0x05 - No Metadata, cannot add rules', function (done) {
 //     this.timeout(0)
 
@@ -76,7 +75,7 @@
 //     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
 //     assert.deepEqual(toBuffer('5441'), consume(2))
 //     assert.deepEqual(toBuffer('03'), consume(1))  //version
-//     assert.deepEqual(toBuffer('05'), consume(1))  //issuance OP_CODE 
+//     assert.deepEqual(toBuffer('05'), consume(1))  //issuance OP_CODE
 //     assert.deepEqual(toBuffer('0f'), consume(1))  //issue amount
 //     assert.deepEqual(toBuffer('010f'), consume(2))  //payments
 //     assert.deepEqual(toBuffer('28'), consume(1))  //divisibility + lockstatus + reserved bits currently 0
