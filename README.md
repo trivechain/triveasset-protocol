@@ -10,6 +10,7 @@
 <p align="center">
     <a href="https://discord.gg/mZuXBxW"><img src="https://img.shields.io/discord/571241080373116928" alt="discord"></a>
   <a href="https://travis-ci.org/trivechain/triveasset-protocol"><img src="https://img.shields.io/travis/trivechain/triveasset-protocol/master.svg" alt="travis"></a>
+  <a href='https://coveralls.io/github/trivechain/triveasset-protocol?branch=master'><img src='https://coveralls.io/repos/github/trivechain/triveasset-protocol/badge.svg?branch=master' alt='Coverage Status' /></a>
   <a href="https://standardjs.com"><img src="https://img.shields.io/badge/code_style-standard-brightgreen.svg" alt="Standard - JavaScript Style Guide"></a>
   <a href="https://github.com/prettier/prettier"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg" alt="Standard - JavaScript Style Guide"></a>
 </p>
