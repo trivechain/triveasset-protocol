@@ -8,4 +8,5 @@ module.exports = {
   IssuanceEncoder: require('./src/issuanceEncoder'),
   IssuanceFlagsEncoder: require('./src/issueFlagsEncoder'),
   PaymentEncoder: require('./src/paymentEncoder'),
+  GetAssetsOutputs: require('./src/getAssetsOutputs'),
 }
