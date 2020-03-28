@@ -5,7 +5,6 @@ var encodeAssetId = require('./assetIdEncoder')
 var TA = require('./transaction')
 var findBestMatchByNeededAssets = require('./findBestMatchByNeededAssets')
 var debug = require('debug')('transactionBuilder')
-var errors = require('triveasset-errors')
 var bufferReverse = require('buffer-reverse')
 
 var TA_TX_VERSION = 0x03
@@ -88,7 +87,7 @@ TriveAssetBuilder.prototype.buildIssueTransaction = function (args) {
   // find inputs to cover the issuance
   var ccArgs = self._addInputsForIssueTransaction(txb, args)
   if (!ccArgs.success) {
-    throw new errors.NotEnoughFundsError({ type: 'issue' })
+    throw new Error('Not enough TRVC to cover asset issuance transaction')
   }
   _.assign(ccArgs, args)
   var res = self._encodeColorScheme(ccArgs)
@@ -329,9 +328,9 @@ TriveAssetBuilder.prototype._encodeColorScheme = function (args) {
   }
 
   if (coloredAmount < 0) {
-    throw new errors.CCTransactionConstructionError({
-      explanation: 'transferring more than issued',
-    })
+    throw new Error(
+      'Error constructing transaction. Attempting to transfer more than issued'
+    )
   }
 
   // add OP_RETURN
@@ -385,12 +384,11 @@ TriveAssetBuilder.prototype._encodeColorScheme = function (args) {
   var lastOutputValue = args.totalInputs.amount - (allOutputValues + fee)
   if (lastOutputValue < self.mindustvalue) {
     var totalCost = self.mindustvalue + args.totalInputs.amount.toNumber()
-    throw new errors.NotEnoughFundsError({
-      type: 'issuance',
-      fee: fee,
-      totalCost: totalCost,
-      missing: self.mindustvalue - lastOutputValue,
-    })
+    throw new Error(
+      `Not enough TRVC to cover the transaction fee. Required additional ${
+        self.mindustvalue - lastOutputValue
+      } to cover the fee of ${totalCost}`
+    )
   }
 
   var splitChange = args.financeChangeAddress === args.coloredChangeAddress
@@ -766,12 +764,11 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
       satoshiCost
     )
   ) {
-    throw new errors.NotEnoughFundsError({
-      type: 'issuance',
-      fee: args.fee,
-      totalCost: satoshiCost,
-      missing: satoshiCost - totalInputs.amount,
-    })
+    throw new Error(
+      `Not enough TRVC to cover the transaction fee. Required additional ${
+        satoshiCost - totalInputs.amount
+      } to cover the fee of ${satoshiCost}`
+    )
   }
 
   for (asset in assetList) {
@@ -779,7 +776,7 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
     debug('encoding asset ' + asset)
     if (!currentAsset.done) {
       debug('current asset state is bad ' + asset)
-      throw new errors.NotEnoughAssetsError({ asset: asset })
+      throw new Error(`Not enough asset ${asset}`)
     }
 
     debug(currentAsset.addresses)
@@ -883,7 +880,7 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
         buffer.leftover[0]
       )
     } else {
-      throw new errors.CCTransactionConstructionError()
+      throw new Error('Error constructing transaction')
     }
   }
 
@@ -930,12 +927,11 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
         satoshiCost
       )
     ) {
-      throw new errors.NotEnoughFundsError({
-        type: 'transfer',
-        fee: args.fee,
-        totalCost: satoshiCost,
-        missing: self.mindustvalue - lastOutputValue,
-      })
+      throw new Error(
+        `Not enough TRVC to cover the transaction fee. Required additional ${
+          self.mindustvalue - lastOutputValue
+        } to cover the fee of ${satoshiCost}`
+      )
     }
     lastOutputValue = self._getChangeAmount(txb.tx, args.fee, totalInputs)
   }

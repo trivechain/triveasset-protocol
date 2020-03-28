@@ -627,7 +627,7 @@
 //         'issueTxid': 'bbb',
 //         'divisibility': 0,
 //         'lockStatus': false,
-//         'aggregationPolicy': 'aggregatable'      
+//         'aggregationPolicy': 'aggregatable'
 //       },
 //     ],
 //     [
@@ -655,7 +655,7 @@
 //         'issueTxid': 'bbb',
 //         'divisibility': 0,
 //         'lockStatus': false,
-//         'aggregationPolicy': 'aggregatable'      
+//         'aggregationPolicy': 'aggregatable'
 //       },
 //       {
 //         'assetId': 'C',

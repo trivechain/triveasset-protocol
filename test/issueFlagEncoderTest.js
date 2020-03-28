@@ -3,7 +3,7 @@ var assert = require('assert')
 
 var consumer = function (buff) {
   var curr = 0
-  return function consume (len) {
+  return function consume(len) {
     return buff.slice(curr, (curr += len))
   }
 }
@@ -25,32 +25,32 @@ describe('Test issue flags encoder', function () {
       {
         divisibility: 10,
         lockStatus: false,
-        aggregationPolicy: 'aggregatable'
+        aggregationPolicy: 'aggregatable',
       },
       {
         divisibility: 11,
         lockStatus: false,
-        aggregationPolicy: 'aggregatable'
+        aggregationPolicy: 'aggregatable',
       },
       {
         divisibility: 12,
         lockStatus: false,
-        aggregationPolicy: 'aggregatable'
+        aggregationPolicy: 'aggregatable',
       },
       {
         divisibility: 13,
         lockStatus: false,
-        aggregationPolicy: 'aggregatable'
+        aggregationPolicy: 'aggregatable',
       },
       {
         divisibility: 14,
         lockStatus: false,
-        aggregationPolicy: 'aggregatable'
+        aggregationPolicy: 'aggregatable',
       },
       {
         divisibility: 15,
         lockStatus: false,
-        aggregationPolicy: 'aggregatable'
+        aggregationPolicy: 'aggregatable',
       },
       { divisibility: 0, lockStatus: true, aggregationPolicy: 'aggregatable' },
       { divisibility: 1, lockStatus: true, aggregationPolicy: 'aggregatable' },
@@ -70,7 +70,7 @@ describe('Test issue flags encoder', function () {
       { divisibility: 15, lockStatus: true, aggregationPolicy: 'aggregatable' },
 
       { divisibility: 0, lockStatus: false, aggregationPolicy: 'dispersed' },
-      { divisibility: 0, lockStatus: true, aggregationPolicy: 'dispersed' }
+      { divisibility: 0, lockStatus: true, aggregationPolicy: 'dispersed' },
     ]
 
     for (var i = 0; i < testCase.length; i++) {
@@ -128,7 +128,7 @@ describe('Test issue flags encoder', function () {
       { divisibility: 12, lockStatus: true, aggregationPolicy: 'dispersed' },
       { divisibility: 13, lockStatus: true, aggregationPolicy: 'dispersed' },
       { divisibility: 14, lockStatus: true, aggregationPolicy: 'dispersed' },
-      { divisibility: 15, lockStatus: true, aggregationPolicy: 'dispersed' }
+      { divisibility: 15, lockStatus: true, aggregationPolicy: 'dispersed' },
     ]
 
     for (var i = 0; i < testCase.length; i++) {
@@ -161,29 +161,29 @@ describe('Test issue flags encoder', function () {
       {
         divisibility: 21,
         lockStatus: false,
-        aggregationPolicy: 'aggregatable'
+        aggregationPolicy: 'aggregatable',
       },
       { divisibility: -8, lockStatus: true, aggregationPolicy: 'aggregatable' },
       {
         divisibility: 0xff,
         lockStatus: false,
-        aggregationPolicy: 'aggregatable'
+        aggregationPolicy: 'aggregatable',
       },
       {
         divisibility: 1000,
         lockStatus: true,
-        aggregationPolicy: 'aggregatable'
+        aggregationPolicy: 'aggregatable',
       },
       {
         divisibility: -1,
         lockStatus: false,
-        aggregationPolicy: 'aggregatable'
+        aggregationPolicy: 'aggregatable',
       },
       {
         divisibility: 16,
         lockStatus: false,
-        aggregationPolicy: 'aggregatable'
-      }
+        aggregationPolicy: 'aggregatable',
+      },
     ]
 
     for (var i = 0; i < testCase.length; i++) {
@@ -206,7 +206,7 @@ describe('Test issue flags encoder', function () {
       { divisibility: 2, lockStatus: false, aggregationPolicy: 1 },
       { divisibility: 3, lockStatus: true, aggregationPolicy: 2 },
       { divisibility: 4, lockStatus: false, aggregationPolicy: 'AGGREGATABL' },
-      { divisibility: 5, lockStatus: true, aggregationPolicy: 'aggregat' }
+      { divisibility: 5, lockStatus: true, aggregationPolicy: 'aggregat' },
     ]
 
     for (var i = 0; i < testCase.length; i++) {

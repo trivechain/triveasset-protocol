@@ -7,5 +7,5 @@ module.exports = {
   AssetIdEncoder: require('./src/assetIdEncoder'),
   IssuanceEncoder: require('./src/issuanceEncoder'),
   IssuanceFlagsEncoder: require('./src/issueFlagsEncoder'),
-  PaymentEncoder: require('./src/paymentEncoder')
+  PaymentEncoder: require('./src/paymentEncoder'),
 }

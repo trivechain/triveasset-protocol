@@ -10,16 +10,16 @@ describe('1st input pubkeyhash', function () {
         {
           type: 'issuance',
           lockStatus: true,
-          divisibility: 8
-        }
+          divisibility: 8,
+        },
       ],
       vin: [
         {
           txid:
             '12999ab38cffe40c99430931384ba31a14715bed76be176c873083e088de7930',
-          vout: 1
-        }
-      ]
+          vout: 1,
+        },
+      ],
     }
 
     it('should return correct locked asset ID', function (done) {
@@ -50,17 +50,17 @@ describe('1st input pubkeyhash', function () {
         {
           type: 'issuance',
           lockStatus: false,
-          divisibility: 8
-        }
+          divisibility: 8,
+        },
       ],
       vin: [
         {
           scriptSig: {
             asm:
-              '3045022100c8f4b7b3909f74472055df75fbb951020841446addebe1163f969752dc1fc3ba02206e727f15a5d9929f7df7f7411c7173a6159d91e730e3fe458d3c3d7731dc56e201 02aa4f9b75ac09f14a464f7168e4a98d1476cc702720203cb19a340f32d5239666'
-          }
-        }
-      ]
+              '3045022100c8f4b7b3909f74472055df75fbb951020841446addebe1163f969752dc1fc3ba02206e727f15a5d9929f7df7f7411c7173a6159d91e730e3fe458d3c3d7731dc56e201 02aa4f9b75ac09f14a464f7168e4a98d1476cc702720203cb19a340f32d5239666',
+          },
+        },
+      ],
     }
 
     it('should return correct unlocked asset ID', function (done) {
