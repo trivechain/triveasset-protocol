@@ -4,6 +4,7 @@
     "description": "The encoding/decoding functions for the triveasset scheme transfer set of OP_CODES",
     "main": "index.js",
     "dependencies": {
+        "big-integer": "^1.6.48",
         "bignumber.js": "^9.0.0",
         "bitcoinjs-lib": "2.3.0",
         "bs58check": "1.0.8",
@@ -19,8 +20,7 @@
         "test": "nyc --reporter=html --reporter=text mocha",
         "coverage": "nyc report --reporter=text-lcov | coveralls",
         "lint": "eslint src --color",
-        "p": "prettier --write 'src/**/*.js'",
-        "p:w": "onchange 'src/**/*.js' -- prettier --write {{changed}}"
+        "lint:fix": "eslint src --fix"
     },
     "author": "jsheng08",
     "license": "Apache-2.0",
