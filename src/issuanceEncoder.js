@@ -52,7 +52,7 @@ module.exports = {
     }
     if (typeof data.version === 'undefined') throw new Error('Missing version')
     var opcode
-    var hash = Buffer.from(0)
+    var hash = Buffer.alloc(0)
     var protocol = Buffer.from(
       padLeadingZeros(data.protocol.toString(16), 2),
       'hex'
@@ -60,7 +60,7 @@ module.exports = {
     var version = Buffer.from([data.version])
     var issueHeader = Buffer.concat([protocol, version])
     var amount = sffc.encode(data.amount)
-    var payments = Buffer.from(0)
+    var payments = Buffer.alloc(0)
     if (data.payments) payments = paymentCodex.encodeBulk(data.payments)
     var issueFlagsByte = issueFlagsCodex.encode({
       divisibility: data.divisibility,

@@ -47,7 +47,7 @@ module.exports = {
     var OP_CODES = data.type === 'burn' ? BURN_OP_CODES : TRANSFER_OP_CODES
     var paymentEncoder =
       data.type === 'burn' ? burnPaymentEncoder : transferPaymentEncoder
-    var hash = Buffer.from(0)
+    var hash = Buffer.alloc(0)
     var protocol = Buffer.from(
       padLeadingZeros(data.protocol.toString(16), 2),
       'hex'

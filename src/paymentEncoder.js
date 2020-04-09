@@ -64,7 +64,7 @@ module.exports = {
   },
 
   encodeBulk: function (paymentsArray) {
-    var payments = Buffer.from(0)
+    var payments = Buffer.alloc(0)
     var amountOfPayments = paymentsArray.length
     for (var i = 0; i < amountOfPayments; i++) {
       var payment = paymentsArray[i]
