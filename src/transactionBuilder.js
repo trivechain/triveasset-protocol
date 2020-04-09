@@ -59,9 +59,7 @@ TriveAssetBuilder.prototype.buildIssueTransaction = function (args) {
   if (!args.utxos) {
     throw new Error('Must have "utxos"')
   }
-  if (!args.fee && !self.defaultFee) {
-    throw new Error('Must have "fee"')
-  }
+
   if (!args.issueAddress) {
     throw new Error('Must have "issueAddress"')
   }
@@ -71,6 +69,8 @@ TriveAssetBuilder.prototype.buildIssueTransaction = function (args) {
 
   if (args.fee) {
     args.fee = parseInt(args.fee)
+  } else {
+    args.fee = 5000
   }
 
   args.aggregationPolicy = args.aggregationPolicy || 'aggregatable'
@@ -165,7 +165,7 @@ TriveAssetBuilder.prototype._addInputsForIssueTransaction = function (
         )
       }
       debug('math: ' + current.toNumber() + ' ' + utxo.value)
-      current = current.add(utxo.value)
+      current = current.plus(utxo.value)
       if (args.flags && args.flags.injectPreviousOutput) {
         var chunks = bitcoinjs.script.decompile(
           Buffer.from(utxo.scriptPubKey.hex, 'hex')
@@ -361,11 +361,7 @@ TriveAssetBuilder.prototype._encodeColorScheme = function (args) {
   // need to encode hashes in first tx
   if (addMultisig) {
     if (buffer.leftover && buffer.leftover.length === 1) {
-      self._addHashesOutput(
-        txb.tx,
-        args.pubKeyReturnMultisigDust,
-        buffer.leftover[0]
-      )
+      self._addHashesOutput(txb.tx, buffer.leftover[0])
     } else {
       throw new Error('enough room for hashes: we offsetted inputs for nothing')
     }
@@ -529,7 +525,7 @@ TriveAssetBuilder.prototype._insertSatoshiToTransaction = function (
       debug('current amount ' + utxo.value + ' needed ' + missing)
       txb.addInput(utxo.txid, utxo.index)
       inputsValue.amount += utxo.value
-      currentAmount = currentAmount.add(utxo.value)
+      currentAmount = currentAmount.plus(utxo.value)
       if (metadata.flags && metadata.flags.injectPreviousOutput) {
         var chunks = bitcoinjs.script.decompile(
           Buffer.from(utxo.scriptPubKey.hex, 'hex')
@@ -652,7 +648,7 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
   args
 ) {
   var self = this
-  args.fee = 300000
+  args.fee = args.fee || 300000
   var satoshiCost = self._computeCost(true, args)
   var totalInputs = { amount: 0 }
   var reedemScripts = []
@@ -753,7 +749,7 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
   }
   debug('reached encoder')
   debug(txb.tx)
-  args.fee = txb.tx.ins.length * 500 + args.to.length * 500 + 2000 // 2000 for OP_DATA
+  args.fee = args.fee || txb.tx.ins.length * 500 + args.to.length * 500 + 2000 // 2000 for OP_DATA
   var encoder = TA.newTransaction(0x5441, TA_TX_VERSION)
   if (
     !self._tryAddingInputsForFee(
@@ -874,11 +870,7 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
     })
     buffer = encoder.encode()
     if (buffer.leftover.length === 1) {
-      self._addHashesOutput(
-        txb.tx,
-        args.pubKeyReturnMultisigDust,
-        buffer.leftover[0]
-      )
+      self._addHashesOutput(txb.tx, buffer.leftover[0])
     } else {
       throw new Error('Error constructing transaction')
     }

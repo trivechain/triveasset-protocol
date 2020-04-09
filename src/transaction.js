@@ -15,7 +15,7 @@ var OP_CODES = {
   burn: {
     start: 0x20,
     end: 0x2f,
-    encoder: require('./burnPaymentEncoder'),
+    encoder: require('./transferEncoder'),
   },
 }
 

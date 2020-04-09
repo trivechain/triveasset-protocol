@@ -1,359 +1,413 @@
-// /* eslint-env mocha */
-// var TransactionBuilder = require('../index').TransactionBuilder
-// var TA = require('../index').Transaction
-// var transactionBuilder = new TransactionBuilder({network: 'testnet'})
-// var assert = require('assert')
-// var clone = require('clone')
-// var bitcoinjs = require('bitcoinjs-lib')
-// var Transaction = bitcoinjs.Transaction
-// var script = bitcoinjs.script
-// var _ = require('lodash')
+/* eslint-env mocha */
+var TransactionBuilder = require('../index').TransactionBuilder
+var TA = require('../index').Transaction
+var transactionBuilder = new TransactionBuilder({ network: 'testnet' })
+var assert = require('assert')
+var clone = require('clone')
+var bitcoinjs = require('bitcoinjs-lib')
+var Transaction = bitcoinjs.Transaction
+var script = bitcoinjs.script
+var _ = require('lodash')
 
-// var issueArgs = {
-//   utxos: [{
-//     txid: 'b757c9f200c8ccd937ad493b2d499364640c0e2bfc62f99ef9aec635b7ff3474',
-//     index: 1,
-//     value: 598595600,
-//     scriptPubKey: {
-//       addresses: ['mrS8spZSamejRTW2HG9xshY4pZqhB1BfLY'],
-//       hex: '76a91477c0232b1c5c77f90754c9a400b825547cc30ebd88ac'
-//     }
-//   }],
-//   issueAddress: 'mrS8spZSamejRTW2HG9xshY4pZqhB1BfLY',
-//   amount: 3600,
-//   fee: 5000
-// }
+var issueArgs = {
+  utxos: [
+    {
+      index: 2,
+      txid: '26879b80504ae1251f401ecfd3c5e50ee467d994ae0b656ef321957d5e8310e7',
+      blocktime: 1584795444000,
+      blockheight: 564183,
+      value: 999976677,
+      used: false,
+      scriptPubKey: {
+        asm:
+          'OP_DUP OP_HASH160 cc9e2fae9f7c83254c79e0fc5fff047fc04fbea7 OP_EQUALVERIFY OP_CHECKSIG',
+        hex: '76a914cc9e2fae9f7c83254c79e0fc5fff047fc04fbea788ac',
+        reqSigs: 1,
+        type: 'pubkeyhash',
+        addresses: ['tRaXPu5bovE5bXx7fgZ5ANsmACdra86PPm'],
+      },
+      assets: [],
+    },
+  ],
+  issueAddress: 'tAgiixzqW2bAjWTqNyn3kSNhBNY6ozCFDm',
+  amount: 3600,
+  fee: 5000,
+}
 
-// describe('builder.buildIssueTransaction(args)', function () {
-//   it('throws: Must have "utxos"', function (done) {
-//     var args = clone(issueArgs)
-//     delete args.utxos
-//     assert.throws(function () {
-//       transactionBuilder.buildIssueTransaction(args)
-//     }, /Must have "utxos"/)
-//     done()
-//   })
+describe('builder.buildIssueTransaction(args)', function () {
+  it('throws: Must have "utxos"', function (done) {
+    var args = clone(issueArgs)
+    delete args.utxos
+    assert.throws(function () {
+      transactionBuilder.buildIssueTransaction(args)
+    }, /Must have "utxos"/)
+    done()
+  })
 
-//   it('throws: Must have "fee"', function (done) {
-//     var args = clone(issueArgs)
-//     delete args.fee
-//     assert.throws(function () {
-//       transactionBuilder.buildIssueTransaction(args)
-//     }, /Must have "fee"/)
-//     done()
-//   })
+  it('throws: Must have "issueAddress"', function (done) {
+    var args = clone(issueArgs)
+    delete args.issueAddress
+    assert.throws(function () {
+      transactionBuilder.buildIssueTransaction(args)
+    }, /Must have "issueAddress"/)
+    done()
+  })
 
-//   it('throws: Must have "issueAddress"', function (done) {
-//     var args = clone(issueArgs)
-//     delete args.issueAddress
-//     assert.throws(function () {
-//       transactionBuilder.buildIssueTransaction(args)
-//     }, /Must have "issueAddress"/)
-//     done()
-//   })
+  it('throws: Must have "amount"', function (done) {
+    var args = clone(issueArgs)
+    delete args.amount
+    assert.throws(function () {
+      transactionBuilder.buildIssueTransaction(args)
+    }, /Must have "amount"/)
+    done()
+  })
 
-//   it('throws: Must have "amount"', function (done) {
-//     var args = clone(issueArgs)
-//     delete args.amount
-//     assert.throws(function () {
-//       transactionBuilder.buildIssueTransaction(args)
-//     }, /Must have "amount"/)
-//     done()
-//   })
+  it('returns valid response with default values', function (done) {
+    var result = transactionBuilder.buildIssueTransaction(issueArgs)
+    assert(result.txHex)
+    var tx = Transaction.fromHex(result.txHex)
+    assert.strictEqual(tx.ins.length, 1)
+    assert.strictEqual(tx.outs.length, 3) // OP_RETURN + 2 changes
+    assert(result.assetId)
+    assert.deepEqual(result.coloredOutputIndexes, [2])
+    var sumValueInputs = issueArgs.utxos[0].value
+    var sumValueOutputs = _.sumBy(tx.outs, function (output) {
+      return output.value
+    })
+    assert.strictEqual(sumValueInputs - sumValueOutputs, issueArgs.fee)
+    var opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
+    var taTransaction = TA.fromHex(opReturnScriptBuffer)
+    assert.strictEqual(taTransaction.type, 'issuance')
+    assert.strictEqual(taTransaction.amount, issueArgs.amount)
+    // default values
+    assert.strictEqual(taTransaction.lockStatus, true)
+    assert.strictEqual(taTransaction.divisibility, 0)
+    assert.strictEqual(taTransaction.aggregationPolicy, 'aggregatable')
+    done()
+  })
 
-//   it('returns valid response with default values', function (done) {
-//     var result = transactionBuilder.buildIssueTransaction(issueArgs)
-//     assert(result.txHex)
-//     var tx = Transaction.fromHex(result.txHex)
-//     assert.strictEqual(tx.ins.length, 1)
-//     assert.strictEqual(tx.outs.length, 3) // OP_RETURN + 2 changes
-//     assert(result.assetId)
-//     assert.deepEqual(result.coloredOutputIndexes, [2])
-//     var sumValueInputs = issueArgs.utxos[0].value
-//     var sumValueOutputs = _.sumBy(tx.outs, function (output) { return output.value })
-//     assert.strictEqual(sumValueInputs - sumValueOutputs, issueArgs.fee)
-//     var opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
-//     var taTransaction = TA.fromHex(opReturnScriptBuffer)
-//     assert.strictEqual(taTransaction.type, 'issuance')
-//     assert.strictEqual(taTransaction.amount, issueArgs.amount)
-//     // default values
-//     assert.strictEqual(taTransaction.lockStatus, true)
-//     assert.strictEqual(taTransaction.divisibility, 0)
-//     assert.strictEqual(taTransaction.aggregationPolicy, 'aggregatable')
-//     done()
-//   })
+  it('flags.injectPreviousOutput === true: return previous output hex in inputs', function (done) {
+    var args = clone(issueArgs)
+    args.flags = { injectPreviousOutput: true }
+    var result = transactionBuilder.buildIssueTransaction(args)
+    assert(result.txHex)
+    var tx = Transaction.fromHex(result.txHex)
+    assert.strictEqual(tx.ins.length, 1)
+    assert.strictEqual(
+      tx.ins[0].script.toString('hex'),
+      args.utxos[0].scriptPubKey.hex
+    )
+    done()
+  })
 
-//   it('flags.injectPreviousOutput === true: return previous output hex in inputs', function (done) {
-//     var args = clone(issueArgs)
-//     args.flags = {injectPreviousOutput: true}
-//     var result = transactionBuilder.buildIssueTransaction(args)
-//     assert(result.txHex)
-//     var tx = Transaction.fromHex(result.txHex)
-//     assert.strictEqual(tx.ins.length, 1)
-//     assert.strictEqual(tx.ins[0].script.toString('hex'), args.utxos[0].scriptPubKey.hex)
-//     done()
-//   })
+  it('should split change', function (done) {
+    var args = clone(issueArgs)
+    args.financeChangeAddress = false
+    var result = transactionBuilder.buildIssueTransaction(args)
+    assert(result.txHex)
+    var tx = Transaction.fromHex(result.txHex)
+    assert.strictEqual(tx.ins.length, 1)
+    assert.strictEqual(tx.outs.length, 2) // OP_RETURN + 1 change
+    assert.deepEqual(result.coloredOutputIndexes, [1])
+    done()
+  })
 
-//   it('should split change', function (done) {
-//     var args = clone(issueArgs)
-//     args.financeChangeAddress = false
-//     var result = transactionBuilder.buildIssueTransaction(args)
-//     assert(result.txHex)
-//     var tx = Transaction.fromHex(result.txHex)
-//     assert.strictEqual(tx.ins.length, 1)
-//     assert.strictEqual(tx.outs.length, 2) // OP_RETURN + 1 change
-//     assert.deepEqual(result.coloredOutputIndexes, [1])
-//     done()
-//   })
+  it('should encode ipfsHash', function (done) {
+    var args = clone(issueArgs)
+    args.ipfsHash =
+      '12207fd9423c0301a82e7116483cbc194d7c3818b2e11a77c5e021b2c5d04cb48852'
+    var result = transactionBuilder.buildIssueTransaction(args)
+    var tx = Transaction.fromHex(result.txHex)
+    var opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
+    var taTransaction = TA.fromHex(opReturnScriptBuffer)
+    assert.strictEqual(taTransaction.ipfsHash.toString('hex'), args.ipfsHash)
+    done()
+  })
+})
 
-//   it('should encode torrentHash and sha2', function (done) {
-//     var args = clone(issueArgs)
-//     args.sha2 = '59040d5c3bc91b5e28e014541363c0f64d9a2429541fe6cf1c568c63c85fbb20'
-//     args.torrentHash = '02fcc3d843eaba4d278ed107c0c2b56a146f66b8'
-//     var result = transactionBuilder.buildIssueTransaction(args)
-//     var tx = Transaction.fromHex(result.txHex)
-//     var opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
-//     var taTransaction = TA.fromHex(opReturnScriptBuffer)
-//     assert.strictEqual(taTransaction.sha2.toString('hex'), args.sha2)
-//     assert.strictEqual(taTransaction.torrentHash.toString('hex'), args.torrentHash)
-//     done()
-//   })
+var sendArgs = {
+  utxos: [
+    {
+      index: 2,
+      txid: '13eb8adcf7c0c7657739df9d24d7917eb27f0e50316df75cb8d208e793134423',
+      blocktime: 1575532788000,
+      blockheight: 204359,
+      value: 5441,
+      used: false,
+      scriptPubKey: {
+        asm:
+          'OP_DUP OP_HASH160 cc9e2fae9f7c83254c79e0fc5fff047fc04fbea7 OP_EQUALVERIFY OP_CHECKSIG',
+        hex: '76a914cc9e2fae9f7c83254c79e0fc5fff047fc04fbea788ac',
+        reqSigs: 1,
+        type: 'pubkeyhash',
+        addresses: ['tRaXPu5bovE5bXx7fgZ5ANsmACdra86PPm'],
+      },
+      assets: [
+        {
+          assetId: 'La9Sa9wWN5MpAFLtRwS1jwTFsRzdRqhtpeVcya',
+          amount: 100000000000000,
+          issueTxid:
+            '13eb8adcf7c0c7657739df9d24d7917eb27f0e50316df75cb8d208e793134423',
+          divisibility: 8,
+          lockStatus: true,
+          aggregationPolicy: 'aggregatable',
+        },
+      ],
+    },
+    {
+      index: 2,
+      txid: '26879b80504ae1251f401ecfd3c5e50ee467d994ae0b656ef321957d5e8310e7',
+      blocktime: 1584795444000,
+      blockheight: 564183,
+      value: 999976677,
+      used: false,
+      scriptPubKey: {
+        asm:
+          'OP_DUP OP_HASH160 cc9e2fae9f7c83254c79e0fc5fff047fc04fbea7 OP_EQUALVERIFY OP_CHECKSIG',
+        hex: '76a914cc9e2fae9f7c83254c79e0fc5fff047fc04fbea788ac',
+        reqSigs: 1,
+        type: 'pubkeyhash',
+        addresses: ['tRaXPu5bovE5bXx7fgZ5ANsmACdra86PPm'],
+      },
+      assets: [],
+    },
+  ],
+  to: [
+    {
+      address: 'tAgiixzqW2bAjWTqNyn3kSNhBNY6ozCFDm',
+      amount: 20,
+      assetId: 'La9Sa9wWN5MpAFLtRwS1jwTFsRzdRqhtpeVcya',
+    },
+  ],
+  fee: 5000,
+}
 
-//   it('should encode torrentHash and sha2', function (done) {
-//     var args = clone(issueArgs)
-//     args.sha2 = '59040d5c3bc91b5e28e014541363c0f64d9a2429541fe6cf1c568c63c85fbb20'
-//     args.torrentHash = '02fcc3d843eaba4d278ed107c0c2b56a146f66b8'
-//     var result = transactionBuilder.buildIssueTransaction(args)
-//     var tx = Transaction.fromHex(result.txHex)
-//     var opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
-//     var taTransaction = TA.fromHex(opReturnScriptBuffer)
-//     assert.strictEqual(taTransaction.sha2.toString('hex'), args.sha2)
-//     assert.strictEqual(taTransaction.torrentHash.toString('hex'), args.torrentHash)
-//     done()
-//   })
-// })
+describe('builder.buildSendTransaction(args)', function () {
+  it('throws: Must have "utxos"', function (done) {
+    var args = clone(sendArgs)
+    delete args.utxos
+    assert.throws(function () {
+      transactionBuilder.buildSendTransaction(args)
+    }, /Must have "utxos"/)
+    done()
+  })
 
-// var sendArgs = {
-//   utxos: [
-//     {
-//       txid: '9ad3154af0fba1c7ff399935f55680810faaf1e382f419fe1247e43edb12941d',
-//       index: 3,
-//       value: 9789000,
-//       used: false,
-//       blockheight: 577969,
-//       blocktime: 1444861908000,
-//       scriptPubKey: {
-//         asm: 'OP_DUP OP_HASH160 0e8fffc70907a025e65f0bdbc5ec6bb2d326d3a7 OP_EQUALVERIFY OP_CHECKSIG',
-//         hex: '76a9140e8fffc70907a025e65f0bdbc5ec6bb2d326d3a788ac',
-//         reqSigs: 1,
-//         type: 'pubkeyhash',
-//         addresses: ['mgqxFyV13aG2HQpnQ2bLKTUwm8wTPtssQ5']
-//       },
-//       assets: [
-//         {
-//           assetId: 'Ua4XPaYTew2DiFNmLT9YDAnvRGeYnsiY1UwV9j',
-//           amount: 500,
-//           issueTxid: '3b598a4048557ab507952ee5705040ab1a184e54ed70f31e0e20b0be7549cd09',
-//           divisibility: 2,
-//           lockStatus: false,
-//           aggregationPolicy: 'aggregatable'
-//         }
-//       ]
-//     }
-//   ],
-//   to: [{ address: 'mrS8spZSamejRTW2HG9xshY4pZqhB1BfLY', amount: 20, assetId: 'Ua4XPaYTew2DiFNmLT9YDAnvRGeYnsiY1UwV9j' }],
-//   fee: 5000
-// }
+  it('throws: Must have "to"', function (done) {
+    var args = clone(sendArgs)
+    delete args.to
+    assert.throws(function () {
+      transactionBuilder.buildSendTransaction(args)
+    }, /Must have "to"/)
+    done()
+  })
 
-// describe('builder.buildSendTransaction(args)', function () {
-//   it('throws: Must have "utxos"', function (done) {
-//     var args = clone(sendArgs)
-//     delete args.utxos
-//     assert.throws(function () {
-//       transactionBuilder.buildSendTransaction(args)
-//     }, /Must have "utxos"/)
-//     done()
-//   })
+  it('returns valid response with default values', function (done) {
+    sendArgs.fee = 5000
+    var result = transactionBuilder.buildSendTransaction(sendArgs)
+    assert(result.txHex)
+    var tx = Transaction.fromHex(result.txHex)
+    assert.strictEqual(tx.ins.length, 2)
+    assert.strictEqual(tx.outs.length, 4) // transfer + OP_RETURN + 2 changes
+    assert.deepEqual(result.coloredOutputIndexes, [0, 3])
+    var sumValueInputs = sendArgs.utxos[0].value + sendArgs.utxos[1].value
+    var sumValueOutputs = _.sumBy(tx.outs, function (output) {
+      return output.value
+    })
+    assert.strictEqual(sumValueInputs - sumValueOutputs, sendArgs.fee)
+    var opReturnScriptBuffer = script.decompile(tx.outs[1].script)[1]
+    var taTransaction = TA.fromHex(opReturnScriptBuffer)
+    assert.strictEqual(taTransaction.type, 'transfer')
+    assert.strictEqual(taTransaction.payments[0].range, false)
+    assert.strictEqual(taTransaction.payments[0].output, 0)
+    assert.strictEqual(taTransaction.payments[0].input, 0)
+    assert.strictEqual(taTransaction.payments[0].percent, false)
+    assert.strictEqual(taTransaction.payments[0].amount, sendArgs.to[0].amount)
+    done()
+  })
 
-//   it('throws: Must have "to"', function (done) {
-//     var args = clone(sendArgs)
-//     delete args.to
-//     assert.throws(function () {
-//       transactionBuilder.buildSendTransaction(args)
-//     }, /Must have "to"/)
-//     done()
-//   })
+  it('returns valid response with default values', function (done) {
+    var addresses = [
+      'tQsErC77qB5X1oUbkkWeVWoCm4J7xbfays',
+      't8PezUK91pug8uY7M4piDRYj5QHLkyxC8J',
+      'tGjioXYFLLxF8caMQdwcAXiXcLBZj5Xh4Q',
+      'tNc7YX6hzMrd5HXfHMEPSkgRxTeFwNUfUp',
+      'tHLJScKjfi8c2ntrxr41WdFK9aJPMyQmV7',
+      'tMgRnGCE6JQKtWAYgwbQ12dhps2RpzyD6Y',
+      'tTnG8XvR6ps6eWBZnFPCAii47n3DgSznxE',
+      'tEjizw2dPnYXxfjfTWmUf6keEft5n1oak3',
+      'tJ3ec9RRn7MQmJ5vMCk8HNFmfRfv333gah',
+      'tGWeDgsHRSpmZf2BFZvThcy2b66YfFf3VA',
+      'tH14kK6qsm2tXGfZ6gBPyZ6sJESDPUPBvW',
+      'tVCTQzPURiBqWdRYyGwq2ahNLLPqwTHHzG',
+      'tMDjq56q5WtAURvq1SDNRiyCKism1Z1WMh',
+      'tKeRoxknf4MaWoYmqC5ExQgFfCKk9dNiJp',
+      'tNZFPR8cX97LYRVveu8tGvqnmFXhFASAjj',
+      'tAe7kgaY7LuUycaWdYkUjB1xRwDCAyAKtg',
+      't9RnjhUpBFRJ28XjTsQ6BSeUbxWWMsbGS5',
+      'tGzCUCvrK3LWcxgdoJbStbs3yKYNkwxvG3',
+      'tEsqntmm4YsriSY7JiKsKK5RaC8zBC2JFs',
+      'tARUgLr2NJsXhH63Jwvp1EdjxjJLpmCdQa',
+      't9cDKrneLkqNWJfYWQUxbweSEXA1TNivRr',
+      'tE4zdhKF83XYaGKE2HGkwrfDWQcfuiuWa7',
+      'tBLDv4JmjoTUxism3E3gr1qU53nrj41T17',
+      'tFm2EnfdHehaqJAJaHwnnQnz778UocQ1Re',
+      'tLG2RpK7bU8ouF8crY9s9fmzxQdPHLF6w3',
+      'tVCH32qqKYQX4UFE15zZAmUXnQhqs5kW4i',
+      'tNrbLTwjanrvnGJYtueL2z6Y9ALnqpghEu',
+      'tGpxRwQsNugHP6fPNqnYm2bBGdkMQuZX1Y',
+      'tE5BBJizdH6tax625VH35dGXEHqknaKTjU',
+      'tDuwND9abYovDHbdTT7HP1eHPsAfxofSPj',
+    ]
 
-//   it('throws: Must have "fee"', function (done) {
-//     var args = clone(sendArgs)
-//     delete args.fee
-//     assert.throws(function () {
-//       transactionBuilder.buildSendTransaction(args)
-//     }, /Must have "fee"/)
-//     done()
-//   })
+    var args = clone(sendArgs)
+    args.ipfsHash =
+      '122098ed210c6291c25ae9cd40a85aeced620ef2c4c169e0cdc2be2091ddf3a352e3'
+    for (var address of addresses) {
+      args.to.push({
+        address: address,
+        amount: 1,
+        assetId: 'La9Sa9wWN5MpAFLtRwS1jwTFsRzdRqhtpeVcya',
+      })
+    }
+    var result = transactionBuilder.buildSendTransaction(args)
+    assert(result.txHex)
+    var tx = Transaction.fromHex(result.txHex)
+    var opReturnScriptBuffer = script.decompile(
+      tx.outs[tx.outs.length - 3].script
+    )[1]
+    var taTransaction = TA.fromHex(opReturnScriptBuffer)
+    assert.strictEqual(taTransaction.multiSig[0].hashType, 'ipfsHash')
+    done()
+  })
 
-//   it('returns valid response with default values', function (done) {
-//     var result = transactionBuilder.buildSendTransaction(sendArgs)
-//     assert(result.txHex)
-//     var tx = Transaction.fromHex(result.txHex)
-//     assert.strictEqual(tx.ins.length, 1)
-//     assert.strictEqual(tx.outs.length, 4) // transfer + OP_RETURN + 2 changes
-//     assert.deepEqual(result.coloredOutputIndexes, [0, 3])
-//     var sumValueInputs = sendArgs.utxos[0].value
-//     var sumValueOutputs = _.sumBy(tx.outs, function (output) { return output.value })
-//     assert.strictEqual(sumValueInputs - sumValueOutputs, sendArgs.fee)
-//     var opReturnScriptBuffer = script.decompile(tx.outs[1].script)[1]
-//     var taTransaction = TA.fromHex(opReturnScriptBuffer)
-//     assert.strictEqual(taTransaction.type, 'transfer')
-//     assert.strictEqual(taTransaction.payments[0].range, false)
-//     assert.strictEqual(taTransaction.payments[0].output, 0)
-//     assert.strictEqual(taTransaction.payments[0].input, 0)
-//     assert.strictEqual(taTransaction.payments[0].percent, false)
-//     assert.strictEqual(taTransaction.payments[0].amount, sendArgs.to[0].amount)
-//     done()
-//   })
+  it('should encode ipfsHash', function (done) {
+    var args = clone(sendArgs)
+    args.ipfsHash =
+      '122098ed210c6291c25ae9cd40a85aeced620ef2c4c169e0cdc2be2091ddf3a352e3'
+    var result = transactionBuilder.buildSendTransaction(args)
+    var tx = Transaction.fromHex(result.txHex)
+    var opReturnScriptBuffer = script.decompile(tx.outs[1].script)[1]
+    var taTransaction = TA.fromHex(opReturnScriptBuffer)
+    assert.strictEqual(taTransaction.ipfsHash.toString('hex'), args.ipfsHash)
+    done()
+  })
 
-//   it('returns valid response with default values', function (done) {
-//     var addresses = [
-//       'mtr98kany9G1XYNU74pRnfBQmaCg2FZLmc',
-//       'mtrD2mBMp93bc8SmMa9WK6tteUCtYEuQQz',
-//       'mtr98kany9G1XYNU74pRnfBQmaCg2FZLmc',
-//       'mivV5HAfYpBQRy7BNUPMWHKAnEg7yVT5Wh',
-//       'mtr98kany9G1XYNU74pRnfBQmaCg2FZLmc',
-//       'n1utwqxiwFn6p6P4fjBytbwNWvFUy5tKVq',
-//       'mtr98kany9G1XYNU74pRnfBQmaCg2FZLmc',
-//       'mpp9gLXWszG4FwPM8pUEUTiqHAcUc99J5Y',
-//       'muEK4mzoFJ8XpwTZ6Nj87g7RJbTjjrhZTC',
-//       'mtaqc9M2svVynsrSunGV9LN63YcWYPGAaD',
-//       'mtmxEhx1ucf2k9XofrgmsthWnYmKeLXU1c',
-//       'mwxkhhJUnS8TUiaMB1Gmfk3zu2QJuHcEiV',
-//       'mhhzCzpJSz7LiRWwSSjQEZ4NsLKvBzY2sK',
-//       'n2ug8FVg4oBBb4qyMVPwzqj4QowHuM9Hi1',
-//       'n15wwcX6Zgu7krWV1EXEdSLLTeCvUutvTM',
-//       'mni9h4mUNsdiGBSJQoMdzeKsCXmTvxxvid',
-//       'miQ7sSXkmoek3ZcwhZHNCFnVfncTs341UC',
-//       'miYMk1nKQQWVmMH5xsJRKyqEnHfJf9pEeF',
-//       'msNcXmKjLYKgMM9TiyQjAvJ69w1L63Zp4N',
-//       'myhb6JeUJy1JvyVuq5tXJZbADU6EMH24vo',
-//       'n13Utk1gZv65R9hmBPd2B7m5v4P2gZvwrG',
-//       'mhKnKtPFCbYpC61buDMgSBB57mqiWvXCUo',
-//       'my6kMPNS5MdtfDMF9NLXNjkpkHokvoT3qR',
-//       'mhKnKtPFCbYpC61buDMgSBB57mqiWvXCUo',
-//       'mjKZeM23nEu7qViqTT3Nd6KCQYcw58WhGc',
-//       '2N3GSnGbfS36M7u6dynXVyBcbPs9mCUHwEM',
-//       '2NC8ftGyT9YhZbKvvqFwC8rct4dbqiCyGCM',
-//       'mxFfdSEbQtqe5GLzLiFFENeRYufomdtFhc',
-//       'mn5aNzZ2PeaopcyeMxzz7K5k2WK27e6oEm',
-//       'mqEk4DsCoVMav9NiEjCxJsEHnNGvity8Pz',
-//       'n2gmBqufUfkcfPF1iKkRM41gaFZLHhmCjL',
-//       'n27rLEmKU4AbVKntw3mkyQzjGSvXrdpAqc',
-//       'n1nB1jCx9ABDPvsdbw7AptyZK1WP55xY3X',
-//       'mzj9s6mgvCRhzmgVQk27K1L5tNhU2nkA3A'
-//     ]
+  it('flags.injectPreviousOutput === true: return previous output hex in inputs', function (done) {
+    var args = clone(sendArgs)
+    args.flags = { injectPreviousOutput: true }
+    var result = transactionBuilder.buildSendTransaction(args)
+    assert(result.txHex)
+    var tx = Transaction.fromHex(result.txHex)
+    assert.strictEqual(tx.ins.length, 2)
+    assert.strictEqual(
+      tx.ins[0].script.toString('hex'),
+      args.utxos[0].scriptPubKey.hex
+    )
+    done()
+  })
 
-//     var args = clone(sendArgs)
-//     for (var address of addresses) {
-//       args.to.push({ address: address, amount: 1, assetId: 'Ua4XPaYTew2DiFNmLT9YDAnvRGeYnsiY1UwV9j' })
-//     }
-//     args.sha2 = '59040d5c3bc91b5e28e014541363c0f64d9a2429541fe6cf1c568c63c85fbb20'
-//     args.torrentHash = '02fcc3d843eaba4d278ed107c0c2b56a146f66b8'
-//     var result = transactionBuilder.buildSendTransaction(args)
-//     assert(result.txHex)
-//     var tx = Transaction.fromHex(result.txHex)
-//     var opReturnScriptBuffer = script.decompile(tx.outs[tx.outs.length - 3].script)[1]
-//     var taTransaction = TA.fromHex(opReturnScriptBuffer)
-//     assert.strictEqual(taTransaction.multiSig[0].hashType, 'sha2')
-//     assert.strictEqual(taTransaction.multiSig[1].hashType, 'torrentHash')
-//     done()
-//   })
+  it('should not have finance change', function (done) {
+    var args = clone(sendArgs)
+    args.utxos[1].value = 10441
+    args.fee = 5000
+    var result = transactionBuilder.buildSendTransaction(args)
+    assert(result.txHex)
+    var tx = Transaction.fromHex(result.txHex)
+    assert.strictEqual(tx.ins.length, 2)
+    assert.strictEqual(tx.outs.length, 3) // transfer + OP_RETURN + 1 change
+    assert.deepEqual(result.coloredOutputIndexes, [0, 2])
+    done()
+  })
 
-//   it('should encode torrentHash and sha2', function (done) {
-//     var args = clone(sendArgs)
-//     args.sha2 = '59040d5c3bc91b5e28e014541363c0f64d9a2429541fe6cf1c568c63c85fbb20'
-//     args.torrentHash = '02fcc3d843eaba4d278ed107c0c2b56a146f66b8'
-//     var result = transactionBuilder.buildSendTransaction(args)
-//     var tx = Transaction.fromHex(result.txHex)
-//     var opReturnScriptBuffer = script.decompile(tx.outs[1].script)[1]
-//     var taTransaction = TA.fromHex(opReturnScriptBuffer)
-//     assert.strictEqual(taTransaction.sha2.toString('hex'), args.sha2)
-//     assert.strictEqual(taTransaction.torrentHash.toString('hex'), args.torrentHash)
-//     done()
-//   })
+  it('should not have colored change', function (done) {
+    var args = clone(sendArgs)
+    args.to[0].amount = args.utxos[0].assets[0].amount
+    args.fee = 5000
+    var result = transactionBuilder.buildSendTransaction(args)
+    assert(result.txHex)
+    var tx = Transaction.fromHex(result.txHex)
+    assert.strictEqual(tx.ins.length, 2)
+    assert.strictEqual(tx.outs.length, 3) // transfer + OP_RETURN + 1 change
+    assert.deepEqual(result.coloredOutputIndexes, [0])
+    done()
+  })
+})
 
-//   it('flags.injectPreviousOutput === true: return previous output hex in inputs', function (done) {
-//     var args = clone(sendArgs)
-//     args.flags = {injectPreviousOutput: true}
-//     var result = transactionBuilder.buildSendTransaction(args)
-//     assert(result.txHex)
-//     var tx = Transaction.fromHex(result.txHex)
-//     assert.strictEqual(tx.ins.length, 1)
-//     assert.strictEqual(tx.ins[0].script.toString('hex'), args.utxos[0].scriptPubKey.hex)
-//     done()
-//   })
+var burnArgs = {
+  utxos: [
+    {
+      index: 2,
+      txid: '13eb8adcf7c0c7657739df9d24d7917eb27f0e50316df75cb8d208e793134423',
+      blocktime: 1575532788000,
+      blockheight: 204359,
+      value: 5441,
+      used: false,
+      scriptPubKey: {
+        asm:
+          'OP_DUP OP_HASH160 cc9e2fae9f7c83254c79e0fc5fff047fc04fbea7 OP_EQUALVERIFY OP_CHECKSIG',
+        hex: '76a914cc9e2fae9f7c83254c79e0fc5fff047fc04fbea788ac',
+        reqSigs: 1,
+        type: 'pubkeyhash',
+        addresses: ['tRaXPu5bovE5bXx7fgZ5ANsmACdra86PPm'],
+      },
+      assets: [
+        {
+          assetId: 'La9Sa9wWN5MpAFLtRwS1jwTFsRzdRqhtpeVcya',
+          amount: 100000000000000,
+          issueTxid:
+            '13eb8adcf7c0c7657739df9d24d7917eb27f0e50316df75cb8d208e793134423',
+          divisibility: 8,
+          lockStatus: true,
+          aggregationPolicy: 'aggregatable',
+        },
+      ],
+    },
+    {
+      index: 2,
+      txid: '26879b80504ae1251f401ecfd3c5e50ee467d994ae0b656ef321957d5e8310e7',
+      blocktime: 1584795444000,
+      blockheight: 564183,
+      value: 999976677,
+      used: false,
+      scriptPubKey: {
+        asm:
+          'OP_DUP OP_HASH160 cc9e2fae9f7c83254c79e0fc5fff047fc04fbea7 OP_EQUALVERIFY OP_CHECKSIG',
+        hex: '76a914cc9e2fae9f7c83254c79e0fc5fff047fc04fbea788ac',
+        reqSigs: 1,
+        type: 'pubkeyhash',
+        addresses: ['tRaXPu5bovE5bXx7fgZ5ANsmACdra86PPm'],
+      },
+      assets: [],
+    },
+  ],
+  burn: [
+    { amount: 100000000000, assetId: 'La9Sa9wWN5MpAFLtRwS1jwTFsRzdRqhtpeVcya' },
+  ],
+  fee: 5000,
+}
 
-//   it('should not split change', function (done) {
-//     var args = clone(sendArgs)
-//     args.financeChangeAddress = false
-//     var result = transactionBuilder.buildSendTransaction(args)
-//     assert(result.txHex)
-//     var tx = Transaction.fromHex(result.txHex)
-//     assert.strictEqual(tx.ins.length, 1)
-//     assert.strictEqual(tx.outs.length, 3) // transfer + OP_RETURN + 1 change
-//     assert.deepEqual(result.coloredOutputIndexes, [0, 2])
-//     done()
-//   })
-// })
-
-// var burnArgs = {
-//   utxos: [
-//     {
-//       txid: '9ad3154af0fba1c7ff399935f55680810faaf1e382f419fe1247e43edb12941d',
-//       index: 3,
-//       value: 9789000,
-//       used: false,
-//       blockheight: 577969,
-//       blocktime: 1444861908000,
-//       scriptPubKey: {
-//         asm: 'OP_DUP OP_HASH160 0e8fffc70907a025e65f0bdbc5ec6bb2d326d3a7 OP_EQUALVERIFY OP_CHECKSIG',
-//         hex: '76a9140e8fffc70907a025e65f0bdbc5ec6bb2d326d3a788ac',
-//         reqSigs: 1,
-//         type: 'pubkeyhash',
-//         addresses: ['mgqxFyV13aG2HQpnQ2bLKTUwm8wTPtssQ5']
-//       },
-//       assets: [
-//         {
-//           assetId: 'Ua4XPaYTew2DiFNmLT9YDAnvRGeYnsiY1UwV9j',
-//           amount: 50,
-//           issueTxid: '3b598a4048557ab507952ee5705040ab1a184e54ed70f31e0e20b0be7549cd09',
-//           divisibility: 2,
-//           lockStatus: false,
-//           aggregationPolicy: 'aggregatable'
-//         }
-//       ]
-//     }
-//   ],
-//   burn: [{ amount: 20, assetId: 'Ua4XPaYTew2DiFNmLT9YDAnvRGeYnsiY1UwV9j' }],
-//   fee: 5000
-// }
-
-// describe('builder.buildBurnTransaction(args)', function () {
-//   it('returns valid response with default values', function (done) {
-//     var result = transactionBuilder.buildBurnTransaction(burnArgs)
-//     assert(result.txHex)
-//     var tx = Transaction.fromHex(result.txHex)
-//     assert.strictEqual(tx.ins.length, 1)
-//     assert.strictEqual(tx.outs.length, 3) // OP_RETURN + 2 changes
-//     assert.deepEqual(result.coloredOutputIndexes, [2])
-//     var sumValueInputs = sendArgs.utxos[0].value
-//     var sumValueOutputs = _.sumBy(tx.outs, function (output) { return output.value })
-//     assert.strictEqual(sumValueInputs - sumValueOutputs, burnArgs.fee)
-//     var opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
-//     var taTransaction = TA.fromHex(opReturnScriptBuffer)
-//     assert.strictEqual(taTransaction.type, 'burn')
-//     assert.strictEqual(taTransaction.payments[0].burn, true)
-//     assert.strictEqual(taTransaction.payments[0].input, 0)
-//     assert.strictEqual(taTransaction.payments[0].amount, burnArgs.burn[0].amount)
-//     done()
-//   })
-// })
+describe('builder.buildBurnTransaction(args)', function () {
+  it('returns valid response with default values', function (done) {
+    var result = transactionBuilder.buildBurnTransaction(burnArgs)
+    assert(result.txHex)
+    var tx = Transaction.fromHex(result.txHex)
+    assert.strictEqual(tx.ins.length, 2)
+    assert.strictEqual(tx.outs.length, 3) // OP_RETURN + 2 changes
+    assert.deepEqual(result.coloredOutputIndexes, [2])
+    var sumValueInputs = burnArgs.utxos[0].value + burnArgs.utxos[1].value
+    var sumValueOutputs = _.sumBy(tx.outs, function (output) {
+      return output.value
+    })
+    assert.strictEqual(sumValueInputs - sumValueOutputs, burnArgs.fee)
+    var opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
+    var taTransaction = TA.fromHex(opReturnScriptBuffer)
+    assert.strictEqual(taTransaction.type, 'burn')
+    assert.strictEqual(taTransaction.payments[0].burn, true)
+    assert.strictEqual(taTransaction.payments[0].input, 0)
+    assert.strictEqual(
+      taTransaction.payments[0].amount,
+      burnArgs.burn[0].amount
+    )
+    done()
+  })
+})
