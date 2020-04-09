@@ -96,6 +96,21 @@ describe('Test issue flags encoder', function () {
     done()
   })
 
+  it('should use aggregatable for policy if not defined', function (done) {
+    var code = issuanceFlagsEncoder.encode({
+      divisibility: 0,
+      lockStatus: false,
+    })
+    var decode = issuanceFlagsEncoder.decode(consumer(code))
+    assert.strictEqual(
+      decode.aggregationPolicy,
+      'aggregatable',
+      'Aggregate policy has problems'
+    )
+
+    done()
+  })
+
   it('should restrict the divisibility to 0 if aggregationPolicy is dispersed', function (done) {
     this.timeout(0)
     var testCase = [
