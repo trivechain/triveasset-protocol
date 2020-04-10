@@ -1,4 +1,4 @@
-# Introduction - TriveAsset
+## Introduction
 
 While originally designed to be a currency, Trivechain supports a limited scripting language that can be used to store metadata on the blockchain. TriveAsset is a concept that allows attaching metadata to Trivechain transactions and leveraging the Trivechain infrastructure for issuing and trading immutable digital assets that can represent real world value. The value of such digital assets is tied to a real-world promise by the asset issuers that they are willing to redeem those digital tokens for something of value in the real world. 
 
@@ -6,7 +6,7 @@ Digital assets on top of the Trivechain Blockchain can be used to issue Financia
 
 The advantage given by using the blockchain as the backbone for such asset manipulation is that one can rely on the blockchain’s transparency, immutability, ease of transfer and non-counterfeitability to transfer and trade such digital tokens with unprecedented security and ease.
 
-# The TriveAsset Protocol
+## The TriveAsset Protocol
 This document describes the TriveAsset protocol specification for issuing and transacting digital assets on top of the Trivechain Blockchain.
 
 This Document consists of two main parts:

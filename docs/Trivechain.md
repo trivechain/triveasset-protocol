@@ -1,5 +1,3 @@
-# Introduction
-
 ## Trivechain Blockchain
 Trivechain is a public blockchain managed by Decentralized autonomous organization (DAO) with focus on bridging businesses to enter the new era digital age with implementation of blockchain-based technology and DApps (decentralized applications)
 
@@ -9,7 +7,7 @@ All Trivechain transactions are publicly available on a ledger known as “The B
 
 Visit https://trivechain.com to learn more
 
-### Trivechain Blockchain Specs
+## Blockchain Specifications
 <table>
 <tr><td>Genesis Block Time</td><td>1st March 2018</td></tr>
 <tr><td>Decimals</td><td>8</td></tr>

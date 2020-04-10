@@ -29,9 +29,9 @@ In what follows we use the following shorthand notation to denote 1 out of N mul
 
 Currently, the triveasset protocol only uses `(1|2)` multisig addresses [where needed](#blockchain-data-recording-logic). It is possible in theory to add more data using higher `(1|N)` multisig with `N>2` but at the moment we avoid that extra complexity and resort to using an additional output if despite our compressed [transfer instructions](Transfer-Instructions) we still [run out of space](#asset-processing-capacity-per-transaction) with one OP_RETURN and a `(1|2)` multisig.
 
-## [Metadata](Metadata) and [IPFS](Metadata#ipfs)
+## Metadata and IPFS
 
-The TriveAsset protocol supports adding (potentially unlimited amounts of) metadata to asset transaction ([issuance](#issuance-transaction-encoding) or [transfer](#transfer-transaction-encoding)). Adding metadata is strictly optional.
+The TriveAsset protocol supports adding (potentially unlimited amounts of) [metadata](Metadata) to asset transaction ([issuance](#issuance-transaction-encoding) or [transfer](#transfer-transaction-encoding)). Adding metadata is strictly optional.
 
 The metadata is not stored directly on the blockchain but rather stored in plain JSON format using IPFS. [IPFS](IPFS.md) give a decentralized way to share and store data. 
 
@@ -43,7 +43,7 @@ We start by trying to fit everything into the 80 bytes available after the OP_RE
     * If metadata is required and there is **not enough** room to fit all asset manipulation instructions after the OP_RETURN, the asset manipulation instructions are stored after the OP_RETURN while the IPFS hash of metadata is stored as `(1|2)` multisig transaction
 
 
-# Asset Manipulating Transactions
+## Asset Manipulating Transactions
 The TriveAsset protocol implementation uses two types of asset manipulation transactions:
 ### Issuance (and transfer) transactions
 In an issuance transaction a new asset is created and many of the asset's attributes are being determined.
@@ -54,7 +54,7 @@ A transaction where only asset transfer occurs, no issuance.
 In a burn transaction, a specified amount is being reduced from the total supply of an asset, i.e. these units are being "burned" and will not be available for further transfer.
 Optionally, we can also transfer assets during a burn transaction.
 
-## Issuance Transaction Encoding
+### Issuance Transaction Encoding
 
 | Bytes|Description              |Comments|Stored in|
 | :----: |-------------------------------------|--------|-------|
@@ -66,7 +66,7 @@ Optionally, we can also transfer assets during a burn transaction.
 |2-9 (per<br/>instruction)| [Transfer Instruction](Transfer Instructions)| Encoding the flow of assets from inputs to outputs |OP_RETURN|
 | 1      | [Issuance Flags](#issuance-flag)     | At the moment only 6 bits are used| OP_RETURN|
 
-## Transfer Transaction Encoding
+### Transfer Transaction Encoding
 
 | Bytes |Description                   |Comments|Stored in|
 | :----: |-------------------------------------|--------|:-------:|
@@ -76,18 +76,18 @@ Optionally, we can also transfer assets during a burn transaction.
 | 34     | IPFS Hash | *OPTIONAL*, only when metadata is included| OP_RETURN<br/> or (1\|**2**) Multisig |
 | 2-9 (per<br/>instruction)| [Transfer Instruction](Transfer Instructions)| Encoding the flow of assets from inputs to outputs |OP_RETURN|
 
-## Burn Transaction Encoding
+### Burn Transaction Encoding
 Identical to [Transfer transaction encoding](#transfer-transaction-encoding), only that it uses **Burn** [OP_CODEs](OP_CODEs) instead of a Transfer OP_CODE.
 Also, the [Transfer Instructions](Transfer Instructions) will be interpreted differently under a specific encoding to allow the burn itself.
 
-#### Amount
+### Amount
 
 The number of issued units. A signed integer ranging from `1..10,000,000,000,000,000 (10^16)` encoded with our [Encoding Scheme](Number-Encoding).
 
 &#42; Relevant only in the case of an issuance transaction<br>
 &#42; Due to a bug in the original implementation, CC version 0x01 interprets the encoded amount as (amount / 10^divisiblity)
 
-#### Issuance Flags
+### Issuance Flags
 
 This flags specify some extra information about a newly issued asset. At the moment only 6 bits are used (the remaining two reserved for future uses)
 
@@ -97,7 +97,7 @@ This flags specify some extra information about a newly issued asset. At the mom
 
 &#42; Relevant only in the case of an issuance transaction
 
-#### Asset Divisibility
+### Asset Divisibility
 Asset can be assigned an integer that denotes their divisibility. For example
 * **divisibility:0** corresponds to integers (1, 2, 3, etc...)
 * **divisibility:1** corresponds to divisibility of up to 1 decimal point (Numbers like 0.1, 0.9, 1.5, etc...)
@@ -108,7 +108,7 @@ As an analogy, TRVC can be thought of as an asset with 21x10^14 units and divisi
 
 **Note: Since we are using only 4 bits for divisibility, the divisibility have to fall between 0 and 15**
 
-#### Asset Aggregation Policy
+### Asset Aggregation Policy
 Asset instances can differ from each other in their accumulated metadata, which can be attached to any issuance or transfer throughout an asset colored transactions path.  
 An example for such use case can be an issuance of some amount of a movies theater tickets, where the row and seat numbers which are described in the asset's metadata, individualize each ticket. Such assets are called **dispersed**.
 The [encoding of transfer instructions](Transfer-Instructions) *must* treat each instance of such assets identified by a different accumulated metadata, with a *separate* transfer instruction. That enforces keeping the different asset instances unique.<br>
@@ -124,7 +124,7 @@ The 2-bit codes for each policy are as follows:
 
 &#42; Note: **hybrid** is an intermediate aggregation policy and currently a placeholder for future development.
 
-#### OP_CODE
+### OP_CODE
 The [Issuance](#issuance_op_return) or [Transfer](#transfer_op_return) [OP_CODE](OP_CODEs)s to be executed during the processing of the transaction.
 
 ### Asset processing capacity per transaction

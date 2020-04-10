@@ -1,4 +1,4 @@
-## InterPlanetary File System
+## What is IPFS?
 
 InterPlanetary File System is more commonly known as IPFS. It is a distributed system for storing and accessing files, websites, applications, and data.
 Let’s say you’re doing some research on aardvarks, you might start by visiting the Wikipedia page on aardvarks at:
@@ -18,7 +18,7 @@ And, when you use IPFS, you don’t just download files from someone else — yo
 
 IPFS makes this possible for not only web pages, but also any kind of file a computer might store, whether it’s a document, an email, or even a database record.
 
-### Links don’t change on IPFS.
+## Links don’t change on IPFS.
 What about that link to the aardvark page above? It looked a little unusual:
 ```
 /ipfs/QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco/wiki/Aardvark.html

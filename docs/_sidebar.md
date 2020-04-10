@@ -9,7 +9,6 @@
     - [Transfer Instructions](Transfer-Instructions.md)
     - [Asset IDs](Asset-ID.md)
     - [Colored Addresses](Colored-Addresses.md)
-    - [Asset Verification](Asset-Verification.md)
     - [Metadata Handling](Metadata.md)
     - [Static Data](Static-Data.md)
     - [Rules](Rules.md)
