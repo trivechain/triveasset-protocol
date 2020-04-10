@@ -1,9 +1,13 @@
 language: node_js
 node_js:
-- 8
-- 9
-- 10
-- 11
-- 12
-after_success: 
+- '8'
+- '10'
+- '12'
+- 'node'
+install:
+- npm ci
+after_success:
 - npm run coverage
+notifications:
+  slack:
+    secure: EWrQbMEMdNfG61PpuuI8w8TDL5x7onN59sLsSCYnp0a2odGQJ++MpQiRkEoNtDpU+mOLn77xq5e2Ra8wt6VKLJBeE+Yj/CKMz/QCO1ChXD+HlATfmhUcg/glvyQXVWAL6PiqlUkxYBpcUx/cKxyokFxYSF2GMo7lTGWOQUDghqFH250yPImzIiS5Az28OiMbYZbkUWkorhYeEewJReHKlraIgACkbMS77IndbG2aMLtTvp/dzBERutn3zkKRGd13zerZ+7lcYDzbYueTEKGNgIr/RPKYHauOjaOZ2gB3DkQ9nuD+v2fFFRK3dm8CNruQcCY04CFBdPEpBIqBPvv2Pxm/B8S1vBFE2i4KM/bVVqKc2HBjECoa/J5jdnmJl9/KotQUDY/FBJiC1dB/4ZLGamziYLLErmnhfhiy9CMEdgmnt79dC6YLQB6BMQIerp27YjW8I9+hsQElM0eFyC7gCcauI2J1CERG0qoElOpXyHvo5tADubqFY9G9oBqodxXOf8e6aQYIv8WH1xbu5HEgCfshlz3/Ekots7FKiGiEBa/TWbEf/9kdSzDhVIHabPsODS7I+cVH/SSY6nUEKr5IQijY2XKaUM6Cyjp5Hdm+O3ASEBbp4B7kg6QY1GsENtO3HKb6WGorc3th+qp1GLq91rJ1gaB+HAk9wr1nFiHEHAY=

@@ -1,8 +1,8 @@
-var paymentEncoder = require('../index').PaymentEncoder
-var assert = require('assert')
+let paymentEncoder = require('../index').PaymentEncoder
+let assert = require('assert')
 
-var consumer = function (buff) {
-  var curr = 0
+let consumer = function (buff) {
+  let curr = 0
   return function consume(len) {
     return buff.slice(curr, (curr += len))
   }
@@ -11,7 +11,7 @@ var consumer = function (buff) {
 describe('Payment Decode Encode', function () {
   it('should return the right decoding', function (done) {
     this.timeout(0)
-    var testCase = [
+    let testCase = [
       { skip: false, range: false, percent: true, output: 12, amount: 3213213 },
       { skip: true, range: false, percent: false, output: 14, amount: 321321 },
       { skip: false, range: false, percent: false, output: 2, amount: 321321 },
@@ -55,9 +55,9 @@ describe('Payment Decode Encode', function () {
       },
     ]
 
-    for (var i = 0; i < testCase.length; i++) {
-      var code = paymentEncoder.encode(testCase[i])
-      var decode = paymentEncoder.decode(consumer(code))
+    for (let i = 0; i < testCase.length; i++) {
+      let code = paymentEncoder.encode(testCase[i])
+      let decode = paymentEncoder.decode(consumer(code))
       assert.strictEqual(
         testCase[i].skip,
         decode.skip,
@@ -89,7 +89,7 @@ describe('Payment Decode Encode', function () {
 
   it('should return the right decoding for bulk operations', function (done) {
     this.timeout(0)
-    var testCase = [
+    let testCase = [
       { skip: false, range: false, percent: true, output: 12, amount: 3213213 },
       { skip: true, range: false, percent: false, output: 14, amount: 321321 },
       { skip: false, range: false, percent: false, output: 2, amount: 321321 },
@@ -133,10 +133,10 @@ describe('Payment Decode Encode', function () {
       },
     ]
 
-    var code = paymentEncoder.encodeBulk(testCase)
-    var decode = paymentEncoder.decodeBulk(consumer(code))
+    let code = paymentEncoder.encodeBulk(testCase)
+    let decode = paymentEncoder.decodeBulk(consumer(code))
 
-    for (var i = 0; i < testCase.length; i++) {
+    for (let i = 0; i < testCase.length; i++) {
       assert.strictEqual(
         testCase[i].skip,
         decode[i].skip,
@@ -168,17 +168,17 @@ describe('Payment Decode Encode', function () {
 
   it('should throw out of bounds error', function (done) {
     this.timeout(0)
-    var testCase = [
+    let testCase = [
       { skip: false, range: false, percent: true, output: 32, amount: 3213213 },
       { skip: true, range: true, percent: false, output: 8192, amount: 321321 },
     ]
 
-    for (var i = 0; i < testCase.length; i++) {
+    for (let i = 0; i < testCase.length; i++) {
       assert.throws(
         function () {
           paymentEncoder.encode(testCase[i])
         },
-        'Output value is out of bounds',
+        /Output value is out of bounds/,
         'Should Throw Error'
       )
     }
@@ -186,7 +186,7 @@ describe('Payment Decode Encode', function () {
   })
 
   it('should throw negative error', function (done) {
-    var testCase = {
+    let testCase = {
       skip: true,
       range: true,
       percent: false,
@@ -197,14 +197,14 @@ describe('Payment Decode Encode', function () {
       function () {
         paymentEncoder.encode(testCase)
       },
-      "Output Can't be negative",
+      /Output Can't be negative/,
       'Should Throw Error'
     )
     done()
   })
 
   it('should throw not output error', function (done) {
-    var testCase = {
+    let testCase = {
       skip: true,
       range: true,
       percent: true,
@@ -214,19 +214,19 @@ describe('Payment Decode Encode', function () {
       function () {
         paymentEncoder.encode(testCase)
       },
-      'Needs output value',
+      /Needs output value/,
       'Should Throw Error'
     )
     done()
   })
 
   it('should throw not output error', function (done) {
-    var testCase = { skip: true, range: true, percent: true, output: 12 }
+    let testCase = { skip: true, range: true, percent: true, output: 12 }
     assert.throws(
       function () {
         paymentEncoder.encode(testCase)
       },
-      'Needs amount value',
+      /Needs amount value/,
       'Should Throw Error'
     )
     done()

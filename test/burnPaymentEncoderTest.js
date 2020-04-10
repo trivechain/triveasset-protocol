@@ -1,9 +1,9 @@
 /* eslint-env mocha */
-var paymentEncode = require('../index').BurnPaymentEncoder
-var assert = require('assert')
+let paymentEncode = require('../index').BurnPaymentEncoder
+let assert = require('assert')
 
-var consumer = function (buff) {
-  var curr = 0
+let consumer = function (buff) {
+  let curr = 0
   return function consume(len) {
     return buff.slice(curr, (curr += len))
   }
@@ -11,7 +11,7 @@ var consumer = function (buff) {
 
 describe('Payment Decode Encode', function () {
   it('should return the right decoding', function (done) {
-    var testCase = [
+    let testCase = [
       { skip: false, range: false, percent: true, output: 12, amount: 3213213 },
       { skip: true, range: false, percent: false, output: 14, amount: 321321 },
       { skip: false, range: false, percent: false, output: 2, amount: 321321 },
@@ -55,9 +55,9 @@ describe('Payment Decode Encode', function () {
       },
     ]
 
-    for (var i = 0; i < testCase.length; i++) {
-      var code = paymentEncode.encode(testCase[i])
-      var decode = paymentEncode.decode(consumer(code))
+    for (let i = 0; i < testCase.length; i++) {
+      let code = paymentEncode.encode(testCase[i])
+      let decode = paymentEncode.decode(consumer(code))
       assert.strictEqual(testCase[i].skip, decode.skip)
       assert.strictEqual(testCase[i].range, decode.range)
       assert.strictEqual(testCase[i].percent, decode.percent)
@@ -68,25 +68,25 @@ describe('Payment Decode Encode', function () {
   })
 
   it('should return the right encoding for burn', function (done) {
-    var testCase1 = paymentEncode.encode({
+    let testCase1 = paymentEncode.encode({
       skip: false,
       percent: false,
       amount: 13,
       burn: true,
     })
-    var testCase2 = paymentEncode.encode({
+    let testCase2 = paymentEncode.encode({
       skip: true,
       percent: false,
       amount: 123,
       burn: true,
     })
-    var testCase3 = paymentEncode.encode({
+    let testCase3 = paymentEncode.encode({
       skip: false,
       percent: true,
       amount: 25,
       burn: true,
     })
-    var testCase4 = paymentEncode.encode({
+    let testCase4 = paymentEncode.encode({
       skip: true,
       percent: true,
       amount: 10,
@@ -101,16 +101,16 @@ describe('Payment Decode Encode', function () {
   })
 
   it('should return the right decoding for burn', function (done) {
-    var testCases = [
+    let testCases = [
       { skip: false, percent: false, amount: 3213213, burn: true },
       { skip: true, percent: false, amount: 3213213, burn: true },
       { skip: false, percent: true, amount: 50, burn: true },
       { skip: true, percent: true, amount: 13, burn: true },
     ]
 
-    for (var i = 0; i < testCases.length; i++) {
-      var code = paymentEncode.encode(testCases[i])
-      var decode = paymentEncode.decode(consumer(code))
+    for (let i = 0; i < testCases.length; i++) {
+      let code = paymentEncode.encode(testCases[i])
+      let decode = paymentEncode.decode(consumer(code))
       assert.strictEqual(testCases[i].skip, decode.skip)
       assert.strictEqual(testCases[i].percent, decode.percent)
       assert.strictEqual(testCases[i].burn, decode.burn)
@@ -120,7 +120,7 @@ describe('Payment Decode Encode', function () {
   })
 
   it('should return the right decoding for bulk operations', function (done) {
-    var testCase = [
+    let testCase = [
       { skip: false, range: false, percent: true, output: 12, amount: 3213213 },
       { skip: true, range: false, percent: false, output: 14, amount: 321321 },
       { skip: false, range: false, percent: false, output: 2, amount: 321321 },
@@ -164,10 +164,10 @@ describe('Payment Decode Encode', function () {
       },
     ]
 
-    var code = paymentEncode.encodeBulk(testCase)
-    var decode = paymentEncode.decodeBulk(consumer(code))
+    let code = paymentEncode.encodeBulk(testCase)
+    let decode = paymentEncode.decodeBulk(consumer(code))
 
-    for (var i = 0; i < testCase.length; i++) {
+    for (let i = 0; i < testCase.length; i++) {
       assert.strictEqual(testCase[i].skip, decode[i].skip)
       assert.strictEqual(testCase[i].range, decode[i].range)
       assert.strictEqual(testCase[i].percent, decode[i].percent)
@@ -178,12 +178,12 @@ describe('Payment Decode Encode', function () {
   })
 
   it('should throw output value out of bounds error', function (done) {
-    var testCases = [
+    let testCases = [
       { skip: false, range: false, percent: true, output: 32, amount: 3213213 },
       { skip: true, range: true, percent: false, output: 8192, amount: 321321 },
     ]
 
-    for (var i = 0; i < testCases.length; i++) {
+    for (let i = 0; i < testCases.length; i++) {
       assert.throws(
         function () {
           paymentEncode.encode(testCases[i])
@@ -196,7 +196,7 @@ describe('Payment Decode Encode', function () {
   })
 
   it('should throw output value out of bounds for burn case', function (done) {
-    var testCase = {
+    let testCase = {
       skip: false,
       range: false,
       percent: false,
@@ -216,7 +216,7 @@ describe('Payment Decode Encode', function () {
   })
 
   it('should throw output value negative error', function (done) {
-    var testCase = {
+    let testCase = {
       skip: true,
       range: true,
       percent: false,
@@ -234,7 +234,7 @@ describe('Payment Decode Encode', function () {
   })
 
   it('should throw no output error', function (done) {
-    var testCases = [
+    let testCases = [
       { skip: true, range: true, percent: true, amount: 1323004030000 },
       {
         skip: true,
@@ -245,7 +245,7 @@ describe('Payment Decode Encode', function () {
       },
     ]
 
-    for (var i = 0; i < testCases.length; i++) {
+    for (let i = 0; i < testCases.length; i++) {
       assert.throws(
         function () {
           paymentEncode.encode(testCases[i])
@@ -258,7 +258,7 @@ describe('Payment Decode Encode', function () {
   })
 
   it('should throw both burn and output value are specified', function (done) {
-    var testCase = {
+    let testCase = {
       skip: true,
       percent: true,
       output: 12,
@@ -277,7 +277,7 @@ describe('Payment Decode Encode', function () {
   })
 
   it('should throw both burn and range are specified', function (done) {
-    var testCase = {
+    let testCase = {
       skip: true,
       range: true,
       percent: true,
@@ -296,7 +296,7 @@ describe('Payment Decode Encode', function () {
   })
 
   it('should throw no amount error', function (done) {
-    var testCase = { skip: true, range: true, percent: true, output: 12 }
+    let testCase = { skip: true, range: true, percent: true, output: 12 }
     assert.throws(
       function () {
         paymentEncode.encode(testCase)

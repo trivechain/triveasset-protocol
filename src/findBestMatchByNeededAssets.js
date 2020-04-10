@@ -1,8 +1,8 @@
-var _ = require('lodash')
-var bitcoinjs = require('bitcoinjs-lib')
-var debug = require('debug')('findBestMatchByNeededAssets')
+const _ = require('lodash')
+const bitcoinjs = require('bitcoinjs-lib')
+const debug = require('debug')('findBestMatchByNeededAssets')
 
-var findBestMatchByNeededAssets = function (
+const findBestMatchByNeededAssets = function (
   utxos,
   assetList,
   key,
@@ -12,11 +12,11 @@ var findBestMatchByNeededAssets = function (
 ) {
   debug('findBestMatchByNeededAssets: start for ' + key)
 
-  var selectedUtxos = []
-  var foundAmount = 0
+  const selectedUtxos = []
+  let foundAmount = 0
 
   // 1. try to find a utxo with such amount of the asset which is greater or equal to the target amount
-  var bestGreaterOrEqualAmountUtxo = findBestGreaterOrEqualAmountUtxo(
+  const bestGreaterOrEqualAmountUtxo = findBestGreaterOrEqualAmountUtxo(
     utxos,
     assetList,
     key
@@ -27,10 +27,10 @@ var findBestMatchByNeededAssets = function (
   } else {
     // 2. try to get the minimal number of utxos where the sum of their amount of the asset greater than or equal to the remaining target amount
     debug('try to get utxos smaller than amount')
-    var utxosSortedByAssetAmount = _.sortBy(utxos, function (utxo) {
+    const utxosSortedByAssetAmount = _.sortBy(utxos, function (utxo) {
       return -getUtxoAssetAmount(utxo, key)
     })
-    var found = utxosSortedByAssetAmount.some(function (utxo) {
+    const found = utxosSortedByAssetAmount.some(function (utxo) {
       selectedUtxos.push(utxo)
       foundAmount += getUtxoAssetAmount(utxo, key)
       return foundAmount >= assetList[key].amount
@@ -54,7 +54,7 @@ var findBestMatchByNeededAssets = function (
   }
 
   debug('adding inputs by assets and amounts')
-  var lastAssetId
+  let lastAssetId
   selectedUtxos.some(function (utxo) {
     utxo.assets.forEach(function (asset) {
       try {
@@ -68,7 +68,7 @@ var findBestMatchByNeededAssets = function (
               asset.amount
           )
           debug('adding input')
-          var inputIndex = txb.tx.ins.length
+          let inputIndex = txb.tx.ins.length
           if (
             !txb.tx.ins.some(function (txutxo, i) {
               if (
@@ -92,7 +92,7 @@ var findBestMatchByNeededAssets = function (
             inputvalues.amount += Math.round(utxo.value)
             debug('setting input in asset list')
             if (metadata.flags && metadata.flags.injectPreviousOutput) {
-              var chunks = bitcoinjs.script.decompile(
+              const chunks = bitcoinjs.script.decompile(
                 Buffer.from(utxo.scriptPubKey.hex, 'hex')
               )
               txb.tx.ins[
@@ -101,12 +101,12 @@ var findBestMatchByNeededAssets = function (
             }
           }
 
-          var aggregationPolicy = asset.aggregationPolicy || 'aggregatable' // TODO - remove after all assets have this field
-          var inputIndexInAsset = assetList[asset.assetId].inputs.length
+          const aggregationPolicy = asset.aggregationPolicy || 'aggregatable' // TODO - remove after all assets have this field
+          const inputIndexInAsset = assetList[asset.assetId].inputs.length
           debug('inputIndex = ' + inputIndex)
           debug('inputIndexInAsset = ' + inputIndexInAsset)
           if (assetList[asset.assetId].amount <= asset.amount) {
-            var totalamount = asset.amount
+            const totalamount = asset.amount
             if (
               aggregationPolicy === 'aggregatable' &&
               lastAssetId === asset.assetId &&
@@ -192,14 +192,14 @@ var findBestMatchByNeededAssets = function (
   return true
 }
 
-var findBestGreaterOrEqualAmountUtxo = function (utxos, assetList, key) {
+const findBestGreaterOrEqualAmountUtxo = function (utxos, assetList, key) {
   debug('findBestGreaterOrEqualAmountUtxo for ', key)
   debug('assetList[' + key + '].amount = ', assetList[key].amount)
-  var foundLargerOrEqualAmountUtxo = false
+  let foundLargerOrEqualAmountUtxo = false
 
   utxos.forEach(function (utxo) {
     utxo.score = 0
-    var assetAmount = getUtxoAssetAmount(utxo, key)
+    let assetAmount = getUtxoAssetAmount(utxo, key)
     if (assetAmount < assetList[key].amount) {
       // debug('for utxo ' + utxo.txid + ':' + utxo.index + ', assetAmount = ' + assetAmount + ', no score.')
       return
@@ -214,7 +214,7 @@ var findBestGreaterOrEqualAmountUtxo = function (utxos, assetList, key) {
       utxo.score += 1000
     }
 
-    for (var assetId in assetList) {
+    for (const assetId in assetList) {
       if (assetId === key) continue
 
       assetAmount = getUtxoAssetAmount(utxo, assetId)
@@ -267,7 +267,7 @@ var findBestGreaterOrEqualAmountUtxo = function (utxos, assetList, key) {
   )
 }
 
-var getUtxoAssetAmount = function (utxo, assetId) {
+const getUtxoAssetAmount = function (utxo, assetId) {
   return _(utxo.assets)
     .filter(function (asset) {
       return asset.assetId === assetId

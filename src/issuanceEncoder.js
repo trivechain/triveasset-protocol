@@ -1,8 +1,8 @@
-var sffc = require('sffc-encoder')
-var issueFlagsCodex = require('./issueFlagsEncoder.js')
-var paymentCodex = require('./paymentEncoder.js')
+const sffc = require('sffc-encoder')
+const issueFlagsCodex = require('./issueFlagsEncoder.js')
+const paymentCodex = require('./paymentEncoder.js')
 
-var OP_CODES = [
+const OP_CODES = [
   Buffer.from([0x00]), // wild-card to be defined
   Buffer.from([0x01]), // All Hashes in OP_RETURN - Pay-to-PubkeyHash
   Buffer.from([0x02]), // SHA2 in Pay-to-Script-Hash multi-sig output (1 out of 2)
@@ -14,21 +14,21 @@ var OP_CODES = [
   Buffer.from([0x08]), // IPFS Hash in Pay-to-Script-Hash multi-sig output (1 out of 2)
 ]
 
-var consumer = function (buff) {
-  var curr = 0
+const consumer = function (buff) {
+  let curr = 0
   return function consume(len) {
     return buff.slice(curr, (curr += len))
   }
 }
 
-var padLeadingZeros = function (hex, byteSize) {
+const padLeadingZeros = function (hex, byteSize) {
   return hex.length === byteSize * 2
     ? hex
     : padLeadingZeros('0' + hex, byteSize)
 }
 
-var decodeAmountByVersion = function (version, consume, divisibility) {
-  var decodedAmount = sffc.decode(consume)
+const decodeAmountByVersion = function (version, consume, divisibility) {
+  const decodedAmount = sffc.decode(consume)
   return version === 0x01
     ? decodedAmount / Math.pow(10, divisibility)
     : decodedAmount
@@ -51,30 +51,30 @@ module.exports = {
       throw new Error('Missing protocol')
     }
     if (typeof data.version === 'undefined') throw new Error('Missing version')
-    var opcode
-    var hash = Buffer.alloc(0)
-    var protocol = Buffer.from(
+    let opcode
+    let hash = Buffer.alloc(0)
+    const protocol = Buffer.from(
       padLeadingZeros(data.protocol.toString(16), 2),
       'hex'
     )
-    var version = Buffer.from([data.version])
-    var issueHeader = Buffer.concat([protocol, version])
-    var amount = sffc.encode(data.amount)
-    var payments = Buffer.alloc(0)
+    const version = Buffer.from([data.version])
+    const issueHeader = Buffer.concat([protocol, version])
+    const amount = sffc.encode(data.amount)
+    let payments = Buffer.alloc(0)
     if (data.payments) payments = paymentCodex.encodeBulk(data.payments)
-    var issueFlagsByte = issueFlagsCodex.encode({
+    const issueFlagsByte = issueFlagsCodex.encode({
       divisibility: data.divisibility,
       lockStatus: data.lockStatus,
       aggregationPolicy: data.aggregationPolicy,
     })
-    var issueTail = Buffer.concat([amount, payments, issueFlagsByte])
-    var issueByteSize = issueHeader.length + issueTail.length + 1
+    const issueTail = Buffer.concat([amount, payments, issueFlagsByte])
+    let issueByteSize = issueHeader.length + issueTail.length + 1
 
     if (issueByteSize > byteSize) {
       throw new Error('Data code is bigger then the allowed byte size')
     }
 
-    var leftover = []
+    let leftover = []
     if (data.ipfsHash) {
       leftover = [data.ipfsHash]
 
@@ -140,21 +140,21 @@ module.exports = {
   },
 
   decode: function (opCodeBuffer) {
-    var data = {}
+    const data = {}
     if (!Buffer.isBuffer(opCodeBuffer)) {
       opCodeBuffer = Buffer.from(opCodeBuffer, 'hex')
     }
-    var byteSize = opCodeBuffer.length
-    var lastByte = opCodeBuffer.slice(-1)
-    var issueTail = issueFlagsCodex.decode(consumer(lastByte))
+    const byteSize = opCodeBuffer.length
+    const lastByte = opCodeBuffer.slice(-1)
+    const issueTail = issueFlagsCodex.decode(consumer(lastByte))
     data.divisibility = issueTail.divisibility
     data.lockStatus = issueTail.lockStatus
     data.aggregationPolicy = issueTail.aggregationPolicy
-    var consume = consumer(opCodeBuffer.slice(0, byteSize - 1))
+    const consume = consumer(opCodeBuffer.slice(0, byteSize - 1))
     data.protocol = parseInt(consume(2).toString('hex'), 16)
     data.version = parseInt(consume(1).toString('hex'), 16)
     data.multiSig = []
-    var opcode = consume(1)
+    const opcode = consume(1)
     if (opcode[0] === OP_CODES[1][0]) {
       data.torrentHash = consume(20)
       data.sha2 = consume(32)

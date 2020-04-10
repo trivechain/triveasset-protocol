@@ -1,8 +1,8 @@
-var issuanceFlagsEncoder = require('../index').IssuanceFlagsEncoder
-var assert = require('assert')
+let issuanceFlagsEncoder = require('../index').IssuanceFlagsEncoder
+let assert = require('assert')
 
-var consumer = function (buff) {
-  var curr = 0
+let consumer = function (buff) {
+  let curr = 0
   return function consume(len) {
     return buff.slice(curr, (curr += len))
   }
@@ -11,7 +11,7 @@ var consumer = function (buff) {
 describe('Test issue flags encoder', function () {
   it('should return the right decoding', function (done) {
     this.timeout(0)
-    var testCase = [
+    let testCase = [
       { divisibility: 0, lockStatus: false, aggregationPolicy: 'aggregatable' },
       { divisibility: 1, lockStatus: false, aggregationPolicy: 'aggregatable' },
       { divisibility: 2, lockStatus: false, aggregationPolicy: 'aggregatable' },
@@ -73,9 +73,9 @@ describe('Test issue flags encoder', function () {
       { divisibility: 0, lockStatus: true, aggregationPolicy: 'dispersed' },
     ]
 
-    for (var i = 0; i < testCase.length; i++) {
-      var code = issuanceFlagsEncoder.encode(testCase[i])
-      var decode = issuanceFlagsEncoder.decode(consumer(code))
+    for (let i = 0; i < testCase.length; i++) {
+      let code = issuanceFlagsEncoder.encode(testCase[i])
+      let decode = issuanceFlagsEncoder.decode(consumer(code))
       assert.strictEqual(
         decode.divisibility,
         testCase[i].divisibility,
@@ -97,11 +97,11 @@ describe('Test issue flags encoder', function () {
   })
 
   it('should use aggregatable for policy if not defined', function (done) {
-    var code = issuanceFlagsEncoder.encode({
+    let code = issuanceFlagsEncoder.encode({
       divisibility: 0,
       lockStatus: false,
     })
-    var decode = issuanceFlagsEncoder.decode(consumer(code))
+    let decode = issuanceFlagsEncoder.decode(consumer(code))
     assert.strictEqual(
       decode.aggregationPolicy,
       'aggregatable',
@@ -113,7 +113,7 @@ describe('Test issue flags encoder', function () {
 
   it('should restrict the divisibility to 0 if aggregationPolicy is dispersed', function (done) {
     this.timeout(0)
-    var testCase = [
+    let testCase = [
       { divisibility: 1, lockStatus: false, aggregationPolicy: 'dispersed' },
       { divisibility: 2, lockStatus: false, aggregationPolicy: 'dispersed' },
       { divisibility: 3, lockStatus: false, aggregationPolicy: 'dispersed' },
@@ -146,9 +146,9 @@ describe('Test issue flags encoder', function () {
       { divisibility: 15, lockStatus: true, aggregationPolicy: 'dispersed' },
     ]
 
-    for (var i = 0; i < testCase.length; i++) {
-      var code = issuanceFlagsEncoder.encode(testCase[i])
-      var decode = issuanceFlagsEncoder.decode(consumer(code))
+    for (let i = 0; i < testCase.length; i++) {
+      let code = issuanceFlagsEncoder.encode(testCase[i])
+      let decode = issuanceFlagsEncoder.decode(consumer(code))
       assert.strictEqual(
         decode.divisibility,
         0,
@@ -171,7 +171,7 @@ describe('Test issue flags encoder', function () {
 
   it('should fail for wrong divisibility', function (done) {
     this.timeout(0)
-    var testCase = [
+    let testCase = [
       { divisibility: 82, lockStatus: true, aggregationPolicy: 'aggregatable' },
       {
         divisibility: 21,
@@ -201,7 +201,7 @@ describe('Test issue flags encoder', function () {
       },
     ]
 
-    for (var i = 0; i < testCase.length; i++) {
+    for (let i = 0; i < testCase.length; i++) {
       assert.throws(
         function () {
           issuanceFlagsEncoder.encode(testCase[i])
@@ -216,7 +216,7 @@ describe('Test issue flags encoder', function () {
 
   it('should fail for invalid aggregation policy', function (done) {
     this.timeout(0)
-    var testCase = [
+    let testCase = [
       // aggregatable typos are on purpose...
       { divisibility: 2, lockStatus: false, aggregationPolicy: 1 },
       { divisibility: 3, lockStatus: true, aggregationPolicy: 2 },
@@ -224,7 +224,7 @@ describe('Test issue flags encoder', function () {
       { divisibility: 5, lockStatus: true, aggregationPolicy: 'aggregat' },
     ]
 
-    for (var i = 0; i < testCase.length; i++) {
+    for (let i = 0; i < testCase.length; i++) {
       assert.throws(
         function () {
           issuanceFlagsEncoder.encode(testCase[i])

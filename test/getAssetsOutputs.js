@@ -2,7 +2,7 @@
 const getAssetsOutputs = require('../src/getAssetsOutputs')
 const assert = require('assert')
 
-var issuanceTx = {
+let issuanceTx = {
   vin: [
     {
       assets: [],
@@ -48,7 +48,7 @@ var issuanceTx = {
   ],
 }
 
-var transferTx = {
+let transferTx = {
   vin: [
     {
       assets: [
@@ -118,8 +118,7 @@ var transferTx = {
 }
 
 it('Issuance - should transfer the correct amounts, split according to payments', function (done) {
-  var res = getAssetsOutputs(issuanceTx)
-  console.log(JSON.stringify(res, null, 2))
+  let res = getAssetsOutputs(issuanceTx)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
   assert.equal(Array.isArray(res[0]), true)
@@ -145,8 +144,7 @@ it('Issuance - should transfer entire amount to last output when overflow in tot
       percent: false,
     },
   ]
-  var res = getAssetsOutputs(issuanceTx)
-  console.log(JSON.stringify(res, null, 2))
+  let res = getAssetsOutputs(issuanceTx)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
   assert.equal(res[2].length, 1)
@@ -172,8 +170,7 @@ it('Issuance - should transfer entire amount to last output there is overflow in
       percent: false,
     },
   ]
-  var res = getAssetsOutputs(issuanceTx)
-  console.log(JSON.stringify(res, null, 2))
+  let res = getAssetsOutputs(issuanceTx)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
   assert.equal(res[0], null)
@@ -184,8 +181,7 @@ it('Issuance - should transfer entire amount to last output there is overflow in
 })
 
 it('Transfer - should transfer the correct amounts, split according to payments (even when asset is aggregatable)', function (done) {
-  var res = getAssetsOutputs(transferTx)
-  console.log(JSON.stringify(res, null, 2))
+  let res = getAssetsOutputs(transferTx)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
   assert.equal(res[0].length, 2)
@@ -207,8 +203,7 @@ it('Transfer - should transfer the entire amount to last output, when there is a
       percent: false,
     },
   ]
-  var res = getAssetsOutputs(transferTx)
-  console.log(JSON.stringify(res, null, 2))
+  let res = getAssetsOutputs(transferTx)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
   assert.equal(Array.isArray(res[2]), true)
@@ -235,8 +230,7 @@ it('Transfer - should transfer correct amounts, when there is an overflow to the
       percent: false,
     },
   ]
-  var res = getAssetsOutputs(transferTx)
-  console.log(JSON.stringify(res, null, 2))
+  let res = getAssetsOutputs(transferTx)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
   assert.equal(Array.isArray(res[0]), true)
@@ -273,8 +267,7 @@ it('Transfer - should transfer correct amounts, when there is an overflow to the
       percent: false,
     },
   ]
-  var res = getAssetsOutputs(transferTx)
-  console.log(JSON.stringify(res, null, 2))
+  let res = getAssetsOutputs(transferTx)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
   assert.equal(Array.isArray(res[0]), true)
@@ -303,8 +296,7 @@ it('Transfer - should transfer the entire amount to last output, when there is a
       asset.aggregationPolicy = 'dispersed'
     })
   })
-  var res = getAssetsOutputs(transferTx)
-  console.log(JSON.stringify(res, null, 2))
+  let res = getAssetsOutputs(transferTx)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
   assert.equal(Array.isArray(res[2]), true)
@@ -339,8 +331,7 @@ it('Transfer - should transfer the entire amount to last output, when there is a
       percent: false,
     },
   ]
-  var res = getAssetsOutputs(transferTx)
-  console.log(JSON.stringify(res, null, 2))
+  let res = getAssetsOutputs(transferTx)
   assert.equal(transferTx.overflow, true)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
@@ -383,8 +374,7 @@ it('Transfer - should not have overflow with payment with amount 0', function (d
       percent: false,
     },
   ]
-  var res = getAssetsOutputs(transferTx)
-  console.log(JSON.stringify(res, null, 2))
+  let res = getAssetsOutputs(transferTx)
   assert.equal(transferTx.overflow, false)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
@@ -429,8 +419,7 @@ it('Transfer - should transfer entire amount to last output when there is a paym
       percent: false,
     },
   ]
-  var res = getAssetsOutputs(transferTx)
-  console.log(JSON.stringify(res, null, 2))
+  let res = getAssetsOutputs(transferTx)
   assert.equal(transferTx.overflow, true)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
@@ -443,7 +432,7 @@ it('Transfer - should transfer entire amount to last output when there is a paym
 })
 
 it('Transfer - should transfer remaining amounts to last output', function (done) {
-  var tx = {
+  let tx = {
     vin: [
       {
         assets: [
@@ -515,8 +504,7 @@ it('Transfer - should transfer remaining amounts to last output', function (done
       },
     ],
   }
-  var res = getAssetsOutputs(tx)
-  console.log(JSON.stringify(res, null, 2))
+  let res = getAssetsOutputs(tx)
   assert.equal(tx.overflow, false)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
@@ -535,7 +523,7 @@ it('Transfer - should transfer remaining amounts to last output', function (done
 })
 
 it('Burn - should transfer and burn assets', function (done) {
-  var burnTx = {
+  let burnTx = {
     vin: [
       {
         assets: [
@@ -613,8 +601,7 @@ it('Burn - should transfer and burn assets', function (done) {
     ],
   }
 
-  var res = getAssetsOutputs(burnTx)
-  console.log(JSON.stringify(res, null, 2))
+  let res = getAssetsOutputs(burnTx)
   assert.deepEqual(res, [
     [
       {
@@ -667,7 +654,7 @@ it('Burn - should transfer and burn assets', function (done) {
 })
 
 it('Burn - should transfer all assets to last output when there is an overflow', function (done) {
-  var burnTx = {
+  let burnTx = {
     vin: [
       {
         assets: [
@@ -727,8 +714,7 @@ it('Burn - should transfer all assets to last output when there is an overflow',
     ],
   }
 
-  var res = getAssetsOutputs(burnTx)
-  console.log(JSON.stringify(res, null, 2))
+  let res = getAssetsOutputs(burnTx)
   assert.equal(burnTx.overflow, true)
   assert.deepEqual(res[0], undefined)
   assert.deepEqual(res[1], undefined)

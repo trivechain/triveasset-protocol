@@ -1,7 +1,7 @@
-var PROTOCOL = 0x5441
-var VERSION = 0x03
-var MAXBYTESIZE = 80
-var OP_CODES = {
+const PROTOCOL = 0x5441
+const VERSION = 0x03
+const MAXBYTESIZE = 80
+const OP_CODES = {
   issuance: {
     start: 0x00,
     end: 0x0f,
@@ -19,11 +19,11 @@ var OP_CODES = {
   },
 }
 
-var encodingLookup = {}
+const encodingLookup = {}
 
-for (var transactionType in OP_CODES) {
+for (const transactionType in OP_CODES) {
   for (
-    var j = OP_CODES[transactionType].start;
+    let j = OP_CODES[transactionType].start;
     j <= OP_CODES[transactionType].end;
     j++
   ) {
@@ -34,13 +34,13 @@ for (var transactionType in OP_CODES) {
   }
 }
 
-var paymentsInputToSkip = function (payments) {
-  var result = JSON.parse(JSON.stringify(payments))
+const paymentsInputToSkip = function (payments) {
+  const result = JSON.parse(JSON.stringify(payments))
   result.sort(function (a, b) {
     return a.input - b.input
   })
-  for (var i = 0; i < result.length; i++) {
-    var skip = false
+  for (let i = 0; i < result.length; i++) {
+    let skip = false
     if (result[i + 1] && result[i + 1].input > result[i].input) {
       skip = true
     }
@@ -50,11 +50,11 @@ var paymentsInputToSkip = function (payments) {
   return result
 }
 
-var paymentsSkipToInput = function (payments) {
-  var paymentsDecoded = []
-  var input = 0
-  for (var i = 0; i < payments.length; i++) {
-    var paymentDecoded = payments[i].burn
+const paymentsSkipToInput = function (payments) {
+  const paymentsDecoded = []
+  let input = 0
+  for (let i = 0; i < payments.length; i++) {
+    const paymentDecoded = payments[i].burn
       ? { burn: true }
       : { range: payments[i].range, output: payments[i].output }
     paymentDecoded.input = input
@@ -85,8 +85,8 @@ Transaction.fromHex = function (opReturn) {
   if (!Buffer.isBuffer(opReturn)) {
     opReturn = Buffer.from(opReturn, 'hex')
   }
-  var decoder = encodingLookup[opReturn[3]]
-  var rawData = decoder.decode(opReturn)
+  const decoder = encodingLookup[opReturn[3]]
+  const rawData = decoder.decode(opReturn)
   rawData.type = decoder.type
   rawData.payments = paymentsSkipToInput(rawData.payments)
   return new Transaction(rawData)
@@ -167,15 +167,15 @@ Transaction.prototype.setHash = function (ipfsHash) {
 }
 
 Transaction.prototype.encode = function () {
-  var encoder = OP_CODES[this.type].encoder
+  const encoder = OP_CODES[this.type].encoder
   this.payments = paymentsInputToSkip(this.payments)
-  var result = encoder.encode(this, MAXBYTESIZE)
+  const result = encoder.encode(this, MAXBYTESIZE)
   this.payments = paymentsSkipToInput(this.payments)
   return result
 }
 
 Transaction.prototype.toJson = function () {
-  var data = {}
+  const data = {}
   data.payments = this.payments
   data.protocol = this.protocol
   data.version = this.version

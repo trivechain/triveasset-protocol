@@ -1,12 +1,12 @@
-// var Transaction = require('../index').Transaction
-// var assert = require('assert')
+// let Transaction = require('../index').Transaction
+// let assert = require('assert')
 
 // describe('Create Transaction from raw data', function () {
 //   this.timeout(0)
-//   var torrentHash = Buffer.from(20)
-//   var sha2 = Buffer.from(32)
-//   var hex3 = '434301028d5e6b9e6543d917e9a1a35e3680dabc4922750c201201201210'
-//   var data = {
+//   let torrentHash = Buffer.from(20)
+//   let sha2 = Buffer.from(32)
+//   let hex3 = '434301028d5e6b9e6543d917e9a1a35e3680dabc4922750c201201201210'
+//   let data = {
 //     type: 'issuance',
 //     amount: 13232,
 //     divisibility: 2,
@@ -24,8 +24,8 @@
 //       {input: 3, range: false, percent: false, output: 5, amount: 6}
 //     ]
 //   }
-//   var transaction = new Transaction(data)
-//   var transactionJson1, transactionJson2, code, multiSig
+//   let transaction = new Transaction(data)
+//   let transactionJson1, transactionJson2, code, multiSig
 
 //   it('should return the right encoding/decoding for raw created transaction', function (done) {
 //     transactionJson1 = transaction.toJson()
@@ -47,14 +47,14 @@
 //   })
 
 //   it('should return right encoded amount for version 0x02', function (done) {
-//     var consumer = function (buff) {
-//       var curr = 0
+//     let consumer = function (buff) {
+//       let curr = 0
 //       return function consume (len) {
 //         return buff.slice(curr, curr += len)
 //       }
 //     }
 
-//     var toBuffer = function (val) {
+//     let toBuffer = function (val) {
 //       val = val.toString(16)
 //       if (val.length % 2 == 1) {
 //         val = '0'+val
@@ -62,7 +62,7 @@
 //       return Buffer.from(val, 'hex')
 //     }
 
-//     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length - 1))
+//     let consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length - 1))
 //     assert.deepEqual(toBuffer(transactionJson1.protocol), consume(2))
 //     assert.deepEqual(toBuffer(transactionJson1.version), consume(1))
 //     assert.deepEqual(toBuffer('01'), consume(1))  //issuance OP_CODE
@@ -136,7 +136,7 @@
 
 //   it('should encode an empty issuance transaction', function (done) {
 //     transaction = Transaction.newTransaction(0x5441, 0x03)
-//     var a = {}
+//     let a = {}
 //     assert.throws(function () {
 //       transaction.setAmount(a.c, a.d)
 //     }, 'Amount has to be defined'

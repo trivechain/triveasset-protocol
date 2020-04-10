@@ -1,10 +1,10 @@
-var flagMask = 0xe0
-var skipFlag = 0x80
-var rangeFlag = 0x40
-var percentFlag = 0x20
-var sffc = require('sffc-encoder')
+const flagMask = 0xe0
+const skipFlag = 0x80
+const rangeFlag = 0x40
+const percentFlag = 0x20
+const sffc = require('sffc-encoder')
 
-var padLeadingZeros = function (hex, byteSize) {
+const padLeadingZeros = function (hex, byteSize) {
   return (
     (hex.length === byteSize * 2 && hex) || padLeadingZeros('0' + hex, byteSize)
   )
@@ -12,18 +12,18 @@ var padLeadingZeros = function (hex, byteSize) {
 
 module.exports = {
   encode: function (paymentObject) {
-    var skip = paymentObject.skip || false
-    var range = paymentObject.range || false
-    var percent = paymentObject.percent || false
+    const skip = paymentObject.skip || false
+    const range = paymentObject.range || false
+    const percent = paymentObject.percent || false
     if (typeof paymentObject.output === 'undefined') {
       throw new Error('Needs output value')
     }
-    var output = paymentObject.output
+    const output = paymentObject.output
     if (typeof paymentObject.amount === 'undefined') {
       throw new Error('Needs amount value')
     }
-    var amount = paymentObject.amount
-    var outputBinaryLength = output.toString(2).length
+    const amount = paymentObject.amount
+    const outputBinaryLength = output.toString(2).length
     if (output < 0) throw new Error("Output Can't be negative")
     if (
       (!range && outputBinaryLength > 5) ||
@@ -31,8 +31,8 @@ module.exports = {
     ) {
       throw new Error('Output value is out of bounds')
     }
-    var outputString = padLeadingZeros(output.toString(16), +range + 1)
-    var buf = Buffer.from(outputString, 'hex')
+    const outputString = padLeadingZeros(output.toString(16), +range + 1)
+    const buf = Buffer.from(outputString, 'hex')
     if (skip) buf[0] = buf[0] | skipFlag
     if (range) buf[0] = buf[0] | rangeFlag
     if (percent) buf[0] = buf[0] | percentFlag
@@ -41,19 +41,19 @@ module.exports = {
   },
 
   decode: function (consume) {
-    var flagsBuffer = consume(1)[0]
+    const flagsBuffer = consume(1)[0]
     if (typeof flagsBuffer === 'undefined') {
       throw new Error('No flags are found')
     }
-    var output = Buffer.from([flagsBuffer & ~flagMask])
-    var flags = flagsBuffer & flagMask
-    var skip = !!(flags & skipFlag)
-    var range = !!(flags & rangeFlag)
-    var percent = !!(flags & percentFlag)
+    let output = Buffer.from([flagsBuffer & ~flagMask])
+    const flags = flagsBuffer & flagMask
+    const skip = !!(flags & skipFlag)
+    const range = !!(flags & rangeFlag)
+    const percent = !!(flags & percentFlag)
     if (range) {
       output = Buffer.concat([output, consume(1)])
     }
-    var amount = sffc.decode(consume)
+    const amount = sffc.decode(consume)
     return {
       skip: skip,
       range: range,
@@ -64,11 +64,11 @@ module.exports = {
   },
 
   encodeBulk: function (paymentsArray) {
-    var payments = Buffer.alloc(0)
-    var amountOfPayments = paymentsArray.length
-    for (var i = 0; i < amountOfPayments; i++) {
-      var payment = paymentsArray[i]
-      var paymentCode = this.encode(payment)
+    let payments = Buffer.alloc(0)
+    const amountOfPayments = paymentsArray.length
+    for (let i = 0; i < amountOfPayments; i++) {
+      const payment = paymentsArray[i]
+      const paymentCode = this.encode(payment)
       payments = Buffer.concat([payments, paymentCode])
     }
     return payments

@@ -1,14 +1,14 @@
-var bitcoinjs = require('bitcoinjs-lib')
-var BigNumber = require('bignumber.js')
-var _ = require('lodash')
-var encodeAssetId = require('./assetIdEncoder')
-var TA = require('./transaction')
-var findBestMatchByNeededAssets = require('./findBestMatchByNeededAssets')
-var debug = require('debug')('transactionBuilder')
-var bufferReverse = require('buffer-reverse')
+const bitcoinjs = require('bitcoinjs-lib')
+const BigNumber = require('bignumber.js')
+const _ = require('lodash')
+const encodeAssetId = require('./assetIdEncoder')
+const TA = require('./transaction')
+const findBestMatchByNeededAssets = require('./findBestMatchByNeededAssets')
+const debug = require('debug')('transactionBuilder')
+const bufferReverse = require('buffer-reverse')
 
-var TA_TX_VERSION = 0x03
-var trivechainTestnetNetwork = {
+const TA_TX_VERSION = 0x03
+const trivechainTestnetNetwork = {
   messagePrefix: '\x18Trivechain Signed Message:\n',
   bip32: {
     public: 0x043587cf,
@@ -20,7 +20,7 @@ var trivechainTestnetNetwork = {
   dustThreshold: 546,
 }
 
-var trivechainMainnetNetwork = {
+const trivechainMainnetNetwork = {
   messagePrefix: '\x18Trivechain Signed Message:\n',
   bip32: {
     public: 0x0488b21e,
@@ -32,7 +32,7 @@ var trivechainMainnetNetwork = {
   dustThreshold: 546,
 }
 
-var TriveAssetBuilder = function (properties) {
+const TriveAssetBuilder = function (properties) {
   properties = properties || {}
 
   if (
@@ -55,7 +55,7 @@ var TriveAssetBuilder = function (properties) {
 }
 
 TriveAssetBuilder.prototype.buildIssueTransaction = function (args) {
-  var self = this
+  const self = this
   if (!args.utxos) {
     throw new Error('Must have "utxos"')
   }
@@ -79,18 +79,18 @@ TriveAssetBuilder.prototype.buildIssueTransaction = function (args) {
       ? args.divisibility
       : 0
 
-  var txb = new bitcoinjs.TransactionBuilder(
+  const txb = new bitcoinjs.TransactionBuilder(
     self.network === 'testnet'
       ? trivechainTestnetNetwork
       : trivechainMainnetNetwork
   )
   // find inputs to cover the issuance
-  var ccArgs = self._addInputsForIssueTransaction(txb, args)
+  const ccArgs = self._addInputsForIssueTransaction(txb, args)
   if (!ccArgs.success) {
     throw new Error('Not enough TRVC to cover asset issuance transaction')
   }
   _.assign(ccArgs, args)
-  var res = self._encodeColorScheme(ccArgs)
+  const res = self._encodeColorScheme(ccArgs)
   res.assetId = ccArgs.assetId
   return res
 }
@@ -99,11 +99,11 @@ TriveAssetBuilder.prototype._addInputsForIssueTransaction = function (
   txb,
   args
 ) {
-  var self = this
-  var utxos = args.utxos
-  var assetId = ''
-  var current
-  var cost
+  const self = this
+  const utxos = args.utxos
+  let assetId = ''
+  let current
+  let cost
 
   // simple mode
   if (args.financeOutput) {
@@ -112,7 +112,7 @@ TriveAssetBuilder.prototype._addInputsForIssueTransaction = function (
 
     txb.addInput(args.financeOutputTxid, args.financeOutput.n)
     if (args.flags && args.flags.injectPreviousOutput) {
-      var chunks = bitcoinjs.script.decompile(
+      const chunks = bitcoinjs.script.decompile(
         Buffer.from(args.financeOutput.scriptPubKey.hex, 'hex')
       )
       txb.tx.ins[txb.tx.ins.length - 1].script = bitcoinjs.script.compile(
@@ -142,8 +142,8 @@ TriveAssetBuilder.prototype._addInputsForIssueTransaction = function (
   // send change if any back to us
   current = new BigNumber(0)
   cost = new BigNumber(self._getIssuanceCost(args))
-  var change = new BigNumber(0)
-  var hasEnoughEquity = utxos.some(function (utxo) {
+  let change = new BigNumber(0)
+  const hasEnoughEquity = utxos.some(function (utxo) {
     if (
       !isInputInTx(txb.tx, utxo.txid, utxo.index) &&
       !(utxo.assets && utxo.assets.length)
@@ -167,7 +167,7 @@ TriveAssetBuilder.prototype._addInputsForIssueTransaction = function (
       debug('math: ' + current.toNumber() + ' ' + utxo.value)
       current = current.plus(utxo.value)
       if (args.flags && args.flags.injectPreviousOutput) {
-        var chunks = bitcoinjs.script.decompile(
+        const chunks = bitcoinjs.script.decompile(
           Buffer.from(utxo.scriptPubKey.hex, 'hex')
         )
         txb.tx.ins[txb.tx.ins.length - 1].script = bitcoinjs.script.compile(
@@ -210,9 +210,9 @@ TriveAssetBuilder.prototype._addInputsForIssueTransaction = function (
 }
 
 TriveAssetBuilder.prototype._getIssuanceCost = function (args) {
-  var self = this
-  var fee = args.fee || self.defaultFee
-  var totalCost = fee
+  const self = this
+  const fee = args.fee || self.defaultFee
+  let totalCost = fee
   debug('_getTotalIssuenceCost: fee =', fee)
   if (args.transfer && args.transfer.length) {
     args.transfer.forEach(function (to) {
@@ -240,7 +240,7 @@ TriveAssetBuilder.prototype._encodeAssetId = function (
   divisibility,
   aggregationPolicy
 ) {
-  var opts = {
+  const opts = {
     ccdata: [
       {
         type: 'issuance',
@@ -271,21 +271,21 @@ TriveAssetBuilder.prototype._encodeAssetId = function (
 
   debug('encoding asset is locked: ' + !reissueable)
   debug(opts)
-  var assetId = encodeAssetId(opts)
+  const assetId = encodeAssetId(opts)
   debug('assetId: ' + assetId)
   return assetId
 }
 
 TriveAssetBuilder.prototype._encodeColorScheme = function (args) {
-  var self = this
-  var addMultisig = false
-  var encoder = TA.newTransaction(0x5441, TA_TX_VERSION)
-  var reedemScripts = []
-  var coloredOutputIndexes = []
-  var txb = args.txb
-  var coloredAmount = args.amount
-  var fee = args.fee || self.defaultFee
-  var lockStatus
+  const self = this
+  let addMultisig = false
+  const encoder = TA.newTransaction(0x5441, TA_TX_VERSION)
+  const reedemScripts = []
+  const coloredOutputIndexes = []
+  const txb = args.txb
+  let coloredAmount = args.amount
+  const fee = args.fee || self.defaultFee
+  let lockStatus
   if (typeof args.lockStatus !== 'undefined') {
     lockStatus = args.lockStatus
   } else if (typeof args.reissueable !== 'undefined') {
@@ -311,7 +311,7 @@ TriveAssetBuilder.prototype._encodeColorScheme = function (args) {
       coloredAmount -= transferobj.amount
       // check multisig
       if (transferobj.pubKeys && transferobj.m) {
-        var multisig = self._generateMultisigAddress(
+        const multisig = self._generateMultisigAddress(
           transferobj.pubKeys,
           transferobj.m
         )
@@ -335,7 +335,7 @@ TriveAssetBuilder.prototype._encodeColorScheme = function (args) {
 
   // add OP_RETURN
   debug('before encode done')
-  var buffer = encoder.encode()
+  let buffer = encoder.encode()
 
   debug('encoding done, buffer: ', buffer)
   if (buffer.leftover && buffer.leftover.length > 0) {
@@ -346,7 +346,7 @@ TriveAssetBuilder.prototype._encodeColorScheme = function (args) {
       item.index += 1
     })
   }
-  var ret = bitcoinjs.script.compile([
+  const ret = bitcoinjs.script.compile([
     bitcoinjs.opcodes.OP_RETURN,
     buffer.codeBuffer,
   ])
@@ -368,7 +368,7 @@ TriveAssetBuilder.prototype._encodeColorScheme = function (args) {
   }
 
   // add change
-  var allOutputValues = _.sumBy(txb.tx.outs, function (output) {
+  const allOutputValues = _.sumBy(txb.tx.outs, function (output) {
     return output.value
   })
   debug(
@@ -377,9 +377,9 @@ TriveAssetBuilder.prototype._encodeColorScheme = function (args) {
       ' all outputs: ' +
       allOutputValues
   )
-  var lastOutputValue = args.totalInputs.amount - (allOutputValues + fee)
+  let lastOutputValue = args.totalInputs.amount - (allOutputValues + fee)
   if (lastOutputValue < self.mindustvalue) {
-    var totalCost = self.mindustvalue + args.totalInputs.amount.toNumber()
+    const totalCost = self.mindustvalue + args.totalInputs.amount.toNumber()
     throw new Error(
       `Not enough TRVC to cover the transaction fee. Required additional ${
         self.mindustvalue - lastOutputValue
@@ -387,15 +387,15 @@ TriveAssetBuilder.prototype._encodeColorScheme = function (args) {
     )
   }
 
-  var splitChange = args.financeChangeAddress === args.coloredChangeAddress
-  var changeAddress = args.financeChangeAddress || args.issueAddress
+  const splitChange = args.financeChangeAddress === args.coloredChangeAddress
+  const changeAddress = args.financeChangeAddress || args.issueAddress
 
   if (
     splitChange &&
     lastOutputValue >= 2 * self.mindustvalue &&
     coloredAmount > 0
   ) {
-    var bitcoinChange = lastOutputValue - self.mindustvalue
+    const bitcoinChange = lastOutputValue - self.mindustvalue
     lastOutputValue = self.mindustvalue
     debug('adding bitcoin change output with: ' + bitcoinChange)
     txb.addOutput(changeAddress, bitcoinChange)
@@ -421,23 +421,23 @@ TriveAssetBuilder.prototype._encodeColorScheme = function (args) {
 }
 
 TriveAssetBuilder.prototype._generateMultisigAddress = function (pubKeys, m) {
-  var self = this
-  var ecpubkeys = []
+  const self = this
+  const ecpubkeys = []
   pubKeys.forEach(function (key) {
     ecpubkeys.push(bitcoinjs.ECPubKey.fromHex(key))
   })
-  var script = bitcoinjs.scripts.multisigOutput(m, ecpubkeys)
-  var hash = bitcoinjs.crypto.hash160(script)
-  var multisigAdress = new bitcoinjs.Address(
+  const script = bitcoinjs.scripts.multisigOutput(m, ecpubkeys)
+  const hash = bitcoinjs.crypto.hash160(script)
+  const multisigAdress = new bitcoinjs.Address(
     hash,
     self.network === 'testnet' ? 0x13 : 0x12
   )
-  var sendto = multisigAdress.toBase58Check()
+  const sendto = multisigAdress.toBase58Check()
   return { address: sendto, reedemScript: script.toHex() }
 }
 
 TriveAssetBuilder.prototype._addHashesOutput = function (tx, ipfsHash) {
-  var chunks = []
+  const chunks = []
   chunks.push(bitcoinjs.opcodes.OP_1)
   chunks.push(
     Buffer.from(
@@ -451,7 +451,7 @@ TriveAssetBuilder.prototype._addHashesOutput = function (tx, ipfsHash) {
 
   debug('chunks', chunks)
 
-  var script = bitcoinjs.script.compile(chunks)
+  const script = bitcoinjs.script.compile(chunks)
 
   // try compute value to pass mindust
   // TODO: actually comput it with the fee from the api request, this assumes static fee per kb
@@ -459,14 +459,14 @@ TriveAssetBuilder.prototype._addHashesOutput = function (tx, ipfsHash) {
 }
 
 TriveAssetBuilder.prototype._getNoneMinDustByScript = function (script) {
-  var self = this
+  const self = this
   // add 9 to aacount for bitcoind SER_DISK serilaztion before the multiplication
   return ((self.defaultFeePerKb * (script.length + 148 + 9)) / 1000) * 3
 }
 
 function isInputInTx(tx, txid, index) {
   return tx.ins.some(function (input) {
-    var id = bufferReverse(input.hash)
+    const id = bufferReverse(input.hash)
     return id.toString('hex') === txid && input.index === index
   })
 }
@@ -479,10 +479,10 @@ TriveAssetBuilder.prototype._insertSatoshiToTransaction = function (
   metadata
 ) {
   debug('missing: ' + missing)
-  var paymentDone = false
-  var missingbn = new BigNumber(missing)
-  var financeValue = new BigNumber(0)
-  var currentAmount = new BigNumber(0)
+  let paymentDone = false
+  const missingbn = new BigNumber(missing)
+  let financeValue = new BigNumber(0)
+  let currentAmount = new BigNumber(0)
   if (metadata.financeOutput && metadata.financeOutputTxid) {
     if (
       isInputInTx(txb.tx, metadata.financeOutputTxid, metadata.financeOutput.n)
@@ -497,7 +497,7 @@ TriveAssetBuilder.prototype._insertSatoshiToTransaction = function (
       txb.tx.addInput(metadata.financeOutputTxid, metadata.financeOutput.n)
       inputsValue.amount += financeValue.toNumber()
       if (metadata.flags && metadata.flags.injectPreviousOutput) {
-        var chunks = bitcoinjs.script.decompile(
+        const chunks = bitcoinjs.script.decompile(
           Buffer.from(metadata.financeOutput.scriptPubKey.hex, 'hex')
         )
         txb.tx.ins[txb.ins.length - 1].script = bitcoinjs.script.compile(chunks)
@@ -516,7 +516,7 @@ TriveAssetBuilder.prototype._insertSatoshiToTransaction = function (
     debug('no financeOutput was given')
   }
 
-  var hasEnoughEquity = utxos.some(function (utxo) {
+  const hasEnoughEquity = utxos.some(function (utxo) {
     utxo.value = Math.round(utxo.value)
     if (
       !isInputInTx(txb.tx, utxo.txid, utxo.index) &&
@@ -527,7 +527,7 @@ TriveAssetBuilder.prototype._insertSatoshiToTransaction = function (
       inputsValue.amount += utxo.value
       currentAmount = currentAmount.plus(utxo.value)
       if (metadata.flags && metadata.flags.injectPreviousOutput) {
-        var chunks = bitcoinjs.script.decompile(
+        const chunks = bitcoinjs.script.decompile(
           Buffer.from(utxo.scriptPubKey.hex, 'hex')
         )
         txb.tx.ins[txb.tx.ins.length - 1].script = bitcoinjs.script.compile(
@@ -550,7 +550,7 @@ TriveAssetBuilder.prototype._tryAddingInputsForFee = function (
   metadata,
   satoshiCost
 ) {
-  var self = this
+  const self = this
   debug(
     'tryAddingInputsForFee: current transaction value: ' +
       totalInputs.amount +
@@ -577,7 +577,7 @@ TriveAssetBuilder.prototype._tryAddingInputsForFee = function (
 }
 
 TriveAssetBuilder.prototype.buildSendTransaction = function (args) {
-  var self = this
+  const self = this
   if (!args.utxos) {
     throw new Error('Must have "utxos"')
   }
@@ -589,7 +589,7 @@ TriveAssetBuilder.prototype.buildSendTransaction = function (args) {
     args.fee = parseInt(args.fee)
   }
 
-  var txb = new bitcoinjs.TransactionBuilder(
+  const txb = new bitcoinjs.TransactionBuilder(
     self.network === 'testnet'
       ? trivechainTestnetNetwork
       : trivechainMainnetNetwork
@@ -599,8 +599,8 @@ TriveAssetBuilder.prototype.buildSendTransaction = function (args) {
 }
 
 TriveAssetBuilder.prototype._computeCost = function (withfee, args) {
-  var self = this
-  var fee = withfee ? args.fee || args.minfee : 0
+  const self = this
+  let fee = withfee ? args.fee || args.minfee : 0
 
   if (args.to && args.to.length) {
     args.to.forEach(function (to) {
@@ -618,8 +618,8 @@ TriveAssetBuilder.prototype._computeCost = function (withfee, args) {
 }
 
 TriveAssetBuilder.prototype._getInputAmountNeededForTx = function (tx, fee) {
-  var self = this
-  var total = fee
+  const self = this
+  let total = fee
   tx.outs.forEach(function (output) {
     total += self._getNoneMinDustByScript(output.script, fee)
   })
@@ -631,7 +631,7 @@ TriveAssetBuilder.prototype._getChangeAmount = function (
   fee,
   totalInputValue
 ) {
-  var allOutputValues = _.sumBy(tx.outs, function (output) {
+  const allOutputValues = _.sumBy(tx.outs, function (output) {
     return output.value
   })
   debug(
@@ -647,12 +647,12 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
   txb,
   args
 ) {
-  var self = this
+  const self = this
   args.fee = args.fee || 300000
-  var satoshiCost = self._computeCost(true, args)
-  var totalInputs = { amount: 0 }
-  var reedemScripts = []
-  var coloredOutputIndexes = []
+  let satoshiCost = self._computeCost(true, args)
+  const totalInputs = { amount: 0 }
+  const reedemScripts = []
+  const coloredOutputIndexes = []
 
   debug('addInputsForSendTransaction')
 
@@ -669,7 +669,7 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
       args.from = args.utxos[0].scriptPubKey.addresses[0]
     }
   }
-  var assetList = {}
+  const assetList = {}
   args.to.forEach(function (to) {
     debug(to.assetId)
     if (!assetList[to.assetId]) {
@@ -690,7 +690,7 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
       })
     } else if (!to.address && to.pubKeys && to.m) {
       // generate a multisig address, remember to return the redeem scripts
-      var multisig = self._generateMultisigAddress(to.pubKeys, to.m)
+      const multisig = self._generateMultisigAddress(to.pubKeys, to.m)
       assetList[to.assetId].addresses.push({
         address: multisig.address,
         amount: to.amount,
@@ -705,10 +705,10 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
   })
 
   debug('finished creating per asset list')
-  for (var asset in assetList) {
+  for (const asset in assetList) {
     debug('working on asset: ' + asset)
     debug(args.utxos)
-    var assetUtxos = args.utxos.filter(function (element, index, array) {
+    const assetUtxos = args.utxos.filter(function (element, index, array) {
       if (!element.assets) {
         return false
       }
@@ -719,7 +719,7 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
     })
     if (assetUtxos && assetUtxos.length > 0) {
       debug('have utxo list')
-      var key = asset
+      const key = asset
       assetUtxos.forEach(function (utxo) {
         if (utxo.used) {
           debug('utxo', utxo)
@@ -750,7 +750,7 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
   debug('reached encoder')
   debug(txb.tx)
   args.fee = args.fee || txb.tx.ins.length * 500 + args.to.length * 500 + 2000 // 2000 for OP_DATA
-  var encoder = TA.newTransaction(0x5441, TA_TX_VERSION)
+  const encoder = TA.newTransaction(0x5441, TA_TX_VERSION)
   if (
     !self._tryAddingInputsForFee(
       txb,
@@ -767,8 +767,8 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
     )
   }
 
-  for (asset in assetList) {
-    var currentAsset = assetList[asset]
+  for (const asset in assetList) {
+    const currentAsset = assetList[asset]
     debug('encoding asset ' + asset)
     if (!currentAsset.done) {
       debug('current asset state is bad ' + asset)
@@ -776,7 +776,7 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
     }
 
     debug(currentAsset.addresses)
-    var uniqAssets = _.uniqBy(currentAsset.addresses, function (item) {
+    const uniqAssets = _.uniqBy(currentAsset.addresses, function (item) {
       return item.address
     })
     debug('uniqAssets = ', uniqAssets)
@@ -791,7 +791,7 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
           ' asset value: ' +
           address.amount
       )
-      var addressAmountLeft = address.amount
+      let addressAmountLeft = address.amount
       debug(
         'currentAsset = ',
         currentAsset,
@@ -827,7 +827,7 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
               addressAmountLeft
           )
           if (address.address === 'burn') {
-            encoder.addBurn(input.index, addressAmountLeft)
+            encoder.addBurn(addressAmountLeft)
           } else {
             encoder.addPayment(
               input.index,
@@ -862,7 +862,7 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
   if (args.ipfsHash && self.writemultisig) {
     encoder.setHash(args.ipfsHash)
   }
-  var buffer = encoder.encode()
+  let buffer = encoder.encode()
   if (buffer.leftover && buffer.leftover.length > 0) {
     encoder.shiftOutputs()
     reedemScripts.forEach(function (item) {
@@ -884,22 +884,22 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
   })
 
   debug('encoding done')
-  var ret = bitcoinjs.script.compile([
+  const ret = bitcoinjs.script.compile([
     bitcoinjs.opcodes.OP_RETURN,
     buffer.codeBuffer,
   ])
 
   txb.addOutput(ret, 0)
-  var lastOutputValue = self._getChangeAmount(txb.tx, args.fee, totalInputs)
-  var coloredChange = _.keys(assetList).some(function (assetId) {
+  let lastOutputValue = self._getChangeAmount(txb.tx, args.fee, totalInputs)
+  const coloredChange = _.keys(assetList).some(function (assetId) {
     return assetList[assetId].change > 0
   })
 
-  var changeAddress =
+  const changeAddress =
     args.financeChangeAddress ||
     (Array.isArray(args.from) ? args.from[0] : args.from)
 
-  var numOfChanges = coloredChange ? 2 : 1
+  const numOfChanges = coloredChange ? (lastOutputValue !== 5441 ? 2 : 1) : 1
 
   if (lastOutputValue < numOfChanges * self.mindustvalue) {
     debug('trying to add additionl inputs to cover transaction')
@@ -952,10 +952,10 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
 }
 
 TriveAssetBuilder.prototype.buildBurnTransaction = function (args) {
-  var self = this
+  const self = this
   args = args || {}
-  var to = args.transfer || []
-  var burn = args.burn || []
+  const to = args.transfer || []
+  const burn = args.burn || []
   burn.forEach(function (burnItem) {
     burnItem.burn = true
   })

@@ -1,11 +1,11 @@
-var assetIdencoder = require('./assetIdEncoder')
-var debug = require('debug')('getAssetsOutputs')
-var _ = require('lodash')
+const assetIdencoder = require('./assetIdEncoder')
+const debug = require('debug')('getAssetsOutputs')
+const _ = require('lodash')
 
 module.exports = function (rawTransaction) {
-  var transactionData = JSON.parse(JSON.stringify(rawTransaction))
-  var ccdata = transactionData.ccdata[0]
-  var assets = []
+  const transactionData = JSON.parse(JSON.stringify(rawTransaction))
+  const ccdata = transactionData.ccdata[0]
+  const assets = []
   if (ccdata.type === 'issuance') {
     transactionData.vin[0].assets = transactionData.vin[0].assets || []
     transactionData.vin[0].assets.unshift({
@@ -18,8 +18,8 @@ module.exports = function (rawTransaction) {
     })
   }
 
-  var payments = ccdata.payments
-  var overflow = !transfer(assets, payments, transactionData)
+  const payments = ccdata.payments
+  const overflow = !transfer(assets, payments, transactionData)
   if (overflow) {
     // transfer failed. transfer all assets in inputs to last output, aggregate those possible
     assets.length = 0
@@ -38,15 +38,15 @@ module.exports = function (rawTransaction) {
 // returns true if succeeds to apply payments to the given assets array, false if runs into an invalid payment
 function transfer(assets, payments, transactionData) {
   debug('transfer')
-  var _payments = _.cloneDeep(payments)
-  var _inputs = _.cloneDeep(transactionData.vin)
-  var currentInputIndex = 0
-  var currentAssetIndex = 0
-  var payment
-  var currentAsset
-  var currentAmount
-  var lastPaymentIndex // aggregate only if paying the same payment
-  for (var i = 0; i < _payments.length; i++) {
+  const _payments = _.cloneDeep(payments)
+  const _inputs = _.cloneDeep(transactionData.vin)
+  let currentInputIndex = 0
+  let currentAssetIndex = 0
+  let payment
+  let currentAsset
+  let currentAmount
+  let lastPaymentIndex // aggregate only if paying the same payment
+  for (let i = 0; i < _payments.length; i++) {
     payment = _payments[i]
     debug('payment = ', payment)
     if (!isPaymentSimple(payment)) {
@@ -171,12 +171,12 @@ function transfer(assets, payments, transactionData) {
 
 // transfer all positive amount assets from inputs to last output. aggregate if possible.
 function transferToLastOutput(assets, inputs, lastOutputIndex) {
-  var assetsToTransfer = []
+  let assetsToTransfer = []
   inputs.forEach(function (input) {
     assetsToTransfer = _.concat(assetsToTransfer, input.assets)
   })
-  var assetsIndexes = {}
-  var lastOutputAssets = []
+  const assetsIndexes = {}
+  const lastOutputAssets = []
   assetsToTransfer.forEach(function (asset, index) {
     if (
       asset.aggregationPolicy === 'aggregatable' &&

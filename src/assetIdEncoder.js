@@ -1,28 +1,28 @@
-var bitcoin = require('bitcoinjs-lib')
-var bs58check = require('bs58check')
-var hash = require('crypto-hashing')
-var debug = require('debug')('assetIdEncoder')
-var UNLOCKEPADDING = {
+const bitcoin = require('bitcoinjs-lib')
+const bs58check = require('bs58check')
+const hash = require('crypto-hashing')
+const debug = require('debug')('assetIdEncoder')
+const UNLOCKEPADDING = {
   aggregatable: 0x2e37,
   dispersed: 0x2e4e,
 }
-var LOCKEPADDING = {
+const LOCKEPADDING = {
   aggregatable: 0x20ce,
   dispersed: 0x20e4,
 }
-var TRVC_P2PKH = 0x41
-var TRVC_TESTNET_P2PKH = 0x7f
-var TRVC_P2SH = 0x12
-var TRVC_TESTNET_P2SH = 0x7d
-var NETWORKVERSIONS = [
+const TRVC_P2PKH = 0x41
+const TRVC_TESTNET_P2PKH = 0x7f
+const TRVC_P2SH = 0x12
+const TRVC_TESTNET_P2SH = 0x7d
+const NETWORKVERSIONS = [
   TRVC_P2PKH,
   TRVC_TESTNET_P2PKH,
   TRVC_P2SH,
   TRVC_TESTNET_P2SH,
 ]
-var POSTFIXBYTELENGTH = 2
+const POSTFIXBYTELENGTH = 2
 
-var padLeadingZeros = function (hex, byteSize) {
+const padLeadingZeros = function (hex, byteSize) {
   if (!byteSize) {
     byteSize = Math.ceil(hex.length / 2)
   }
@@ -31,100 +31,112 @@ var padLeadingZeros = function (hex, byteSize) {
     : padLeadingZeros('0' + hex, byteSize)
 }
 
-var createIdFromTxidIndex = function (txid, index, padding, divisibility) {
+const createIdFromTxidIndex = function (txid, index, padding, divisibility) {
   debug('createIdFromTxidIndex')
   debug('txid = ', txid, ', index = ', index)
-  var str = txid + ':' + index
+  const str = txid + ':' + index
   return hashAndBase58CheckEncode(str, padding, divisibility)
 }
 
-var createIdFromPreviousOutputScriptPubKey = function (
+const createIdFromPreviousOutputScriptPubKey = function (
   previousOutputHex,
   padding,
   divisibility
 ) {
-  var buffer = Buffer.from(previousOutputHex, 'hex')
+  const buffer = Buffer.from(previousOutputHex, 'hex')
   debug('buffer = ', buffer)
   return hashAndBase58CheckEncode(buffer, padding, divisibility)
 }
 
-var createIdFromPubKeyHashInput = function (scriptSig, padding, divisibility) {
+const createIdFromPubKeyHashInput = function (
+  scriptSig,
+  padding,
+  divisibility
+) {
   debug('createIdFromPubKeyHashInput')
   if (!scriptSig.asm) {
-    var buffer = Buffer.from(scriptSig.hex, 'hex')
+    const buffer = Buffer.from(scriptSig.hex, 'hex')
     scriptSig.asm = bitcoin.script.toASM(buffer)
   }
-  var publicKey = scriptSig.asm.split(' ')[1]
+  let publicKey = scriptSig.asm.split(' ')[1]
   debug('publicKey = ', publicKey)
   publicKey = Buffer.from(publicKey, 'hex')
-  var hash256 = hash.sha256(publicKey)
-  var pubKeyHash = hash.ripemd160(hash256)
+  const hash256 = hash.sha256(publicKey)
+  const pubKeyHash = hash.ripemd160(hash256)
   debug('pubKeyHash = ', pubKeyHash)
-  var pubKeyHashOutput = bitcoin.script.pubKeyHashOutput(pubKeyHash)
+  const pubKeyHashOutput = bitcoin.script.pubKeyHashOutput(pubKeyHash)
   debug('pubKeyHashOutput = ', pubKeyHashOutput)
   return hashAndBase58CheckEncode(pubKeyHashOutput, padding, divisibility)
 }
 
-var createIdFromScriptHashInput = function (scriptSig, padding, divisibility) {
+const createIdFromScriptHashInput = function (
+  scriptSig,
+  padding,
+  divisibility
+) {
   debug('createIdFromScriptHashInput')
-  var buffer = scriptSig.hex
+  const buffer = scriptSig.hex
     ? Buffer.from(scriptSig.hex, 'hex')
     : bitcoin.script.fromASM(scriptSig.asm)
   debug('buffer = ', buffer)
-  var chunks = bitcoin.script.decompile(buffer)
-  var lastChunk = chunks[chunks.length - 1]
+  const chunks = bitcoin.script.decompile(buffer)
+  const lastChunk = chunks[chunks.length - 1]
   debug('lastChunk = ', lastChunk)
-  var redeemScriptChunks = bitcoin.script.decompile(lastChunk)
+  let redeemScriptChunks = bitcoin.script.decompile(lastChunk)
   redeemScriptChunks = redeemScriptChunks.map(function (chunk) {
     return Buffer.isBuffer(chunk)
       ? chunk
       : Buffer.from(chunk.toString(16), 'hex')
   })
-  var redeemScript = Buffer.concat(redeemScriptChunks)
+  const redeemScript = Buffer.concat(redeemScriptChunks)
   debug('redeemScript = ', redeemScript)
-  var hash256 = hash.sha256(redeemScript)
-  var scriptHash = hash.ripemd160(hash256)
-  var scriptHashOutput = bitcoin.script.scriptHashOutput(scriptHash)
+  const hash256 = hash.sha256(redeemScript)
+  const scriptHash = hash.ripemd160(hash256)
+  const scriptHashOutput = bitcoin.script.scriptHashOutput(scriptHash)
   return hashAndBase58CheckEncode(scriptHashOutput, padding, divisibility)
 }
 
-var createIdFromAddress = function (address, padding, divisibility) {
+const createIdFromAddress = function (address, padding, divisibility) {
   debug('createIdFromAddress')
-  var addressBuffer = bs58check.decode(address)
-  var versionBuffer = addressBuffer.slice(0, 1)
-  var version = parseInt(versionBuffer.toString('hex'), 16)
+  const addressBuffer = bs58check.decode(address)
+  const versionBuffer = addressBuffer.slice(0, 1)
+  const version = parseInt(versionBuffer.toString('hex'), 16)
   debug('version = ', version)
   if (NETWORKVERSIONS.indexOf(version) === -1) {
     throw new Error('Unrecognized address network')
   }
   if (version === TRVC_P2SH || version === TRVC_TESTNET_P2SH) {
-    var scriptHash = addressBuffer.slice(versionBuffer.length, 21)
-    var scriptHashOutput = bitcoin.script.scriptHashOutput(scriptHash)
+    const scriptHash = addressBuffer.slice(versionBuffer.length, 21)
+    const scriptHashOutput = bitcoin.script.scriptHashOutput(scriptHash)
     debug('scriptHashOutput = ', scriptHashOutput)
     return hashAndBase58CheckEncode(scriptHashOutput, padding, divisibility)
   }
   if (version === TRVC_P2PKH || version === TRVC_TESTNET_P2PKH) {
-    var pubKeyHash = addressBuffer.slice(versionBuffer.length, 21)
-    var pubKeyHashOutput = bitcoin.script.pubKeyHashOutput(pubKeyHash)
+    const pubKeyHash = addressBuffer.slice(versionBuffer.length, 21)
+    const pubKeyHashOutput = bitcoin.script.pubKeyHashOutput(pubKeyHash)
     debug('pubKeyHashOutput = ', pubKeyHashOutput)
     return hashAndBase58CheckEncode(pubKeyHashOutput, padding, divisibility)
   }
 }
 
-var hashAndBase58CheckEncode = function (payloadToHash, padding, divisibility) {
+const hashAndBase58CheckEncode = function (
+  payloadToHash,
+  padding,
+  divisibility
+) {
   debug('hashAndBase58CheckEncode')
   debug(
     'padding and divisibility = ' + padding.toString(16) + ', ' + divisibility
   )
-  var hash256 = hash.sha256(payloadToHash)
-  var hash160 = hash.ripemd160(hash256)
+  const hash256 = hash.sha256(payloadToHash)
+  const hash160 = hash.ripemd160(hash256)
   debug('hash160 = ', hash160)
   padding = Buffer.from(padLeadingZeros(padding.toString(16)), 'hex')
   divisibility = Buffer.from(
     padLeadingZeros(divisibility.toString(16), POSTFIXBYTELENGTH),
     'hex'
   )
-  var concatenation = Buffer.concat([padding, hash160, divisibility])
+  const concatenation = Buffer.concat([padding, hash160, divisibility])
   return bs58check.encode(concatenation)
 }
 
@@ -139,16 +151,16 @@ module.exports = function (trivechainTransaction) {
   if (typeof trivechainTransaction.ccdata[0].lockStatus === 'undefined') {
     throw new Error('Missing Lock Status data')
   }
-  var lockStatus = trivechainTransaction.ccdata[0].lockStatus
-  var aggregationPolicy =
+  const lockStatus = trivechainTransaction.ccdata[0].lockStatus
+  const aggregationPolicy =
     trivechainTransaction.ccdata[0].aggregationPolicy || 'aggregatable'
-  var divisibility =
+  const divisibility =
     aggregationPolicy === 'aggregatable' &&
     trivechainTransaction.ccdata[0].divisibility
       ? trivechainTransaction.ccdata[0].divisibility
       : 0
-  var firstInput = trivechainTransaction.vin[0]
-  var padding
+  const firstInput = trivechainTransaction.vin[0]
+  let padding
   if (lockStatus) {
     padding = LOCKEPADDING[aggregationPolicy]
     return createIdFromTxidIndex(
@@ -172,12 +184,12 @@ module.exports = function (trivechainTransaction) {
     firstInput.scriptSig &&
     (firstInput.scriptSig.hex || firstInput.scriptSig.asm)
   ) {
-    var scriptSig = firstInput.scriptSig
+    const scriptSig = firstInput.scriptSig
     scriptSig.hex =
       scriptSig.hex || bitcoin.script.fromASM(scriptSig.asm).toString('hex')
     debug('scriptSig.hex = ', scriptSig.hex)
-    var buffer = Buffer.from(scriptSig.hex, 'hex')
-    var type = bitcoin.script.classifyInput(buffer)
+    const buffer = Buffer.from(scriptSig.hex, 'hex')
+    const type = bitcoin.script.classifyInput(buffer)
     if (type === 'pubkeyhash') {
       return createIdFromPubKeyHashInput(scriptSig, padding, divisibility)
     }

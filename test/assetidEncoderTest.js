@@ -1,11 +1,11 @@
 /* eslint-env mocha */
-var assetIdEncoder = require('../index').AssetIdEncoder
-var assert = require('assert')
+let assetIdEncoder = require('../index').AssetIdEncoder
+let assert = require('assert')
 
 describe('1st input pubkeyhash', function () {
   describe('locked asset ID', function () {
-    var assetId
-    var trivechainTransaction = {
+    let assetId
+    let trivechainTransaction = {
       ccdata: [
         {
           type: 'issuance',
@@ -44,8 +44,8 @@ describe('1st input pubkeyhash', function () {
   })
 
   describe('unlocked asset ID', function () {
-    var assetId
-    var trivechainTransaction = {
+    let assetId
+    let trivechainTransaction = {
       ccdata: [
         {
           type: 'issuance',
@@ -87,8 +87,8 @@ describe('1st input pubkeyhash', function () {
 
 // describe('1st input scripthash', function () {
 //   describe('locked asset ID', function () {
-//     var assetId
-//     var trivechainTransaction = {
+//     let assetId
+//     let trivechainTransaction = {
 //       ccdata: [{
 //         type: 'issuance',
 //         divisibility: 3,
@@ -127,8 +127,8 @@ describe('1st input pubkeyhash', function () {
 //   })
 
 //   describe('unlocked asset ID', function () {
-//     var assetId
-//     var trivechainTransaction = {
+//     let assetId
+//     let trivechainTransaction = {
 //       ccdata: [{
 //         type: 'issuance',
 //         divisibility: 3,
@@ -167,7 +167,7 @@ describe('1st input pubkeyhash', function () {
 // })
 
 // describe('1st input multisig, create asset ID from previousOutput.hex', function () {
-//   var trivechainTransaction = {
+//   let trivechainTransaction = {
 //     ccdata: [{
 //       type: 'issuance',
 //       divisibility: 3,
@@ -179,7 +179,7 @@ describe('1st input pubkeyhash', function () {
 //       }
 //     }]
 //   }
-//   var assetId
+//   let assetId
 
 //   it('should return correct unlocked aggregatable asset ID', function (done) {
 //     assetId = assetIdEncoder(trivechainTransaction)
@@ -198,8 +198,8 @@ describe('1st input pubkeyhash', function () {
 // })
 
 // describe('create unlocked assetID from address', function () {
-//   var assetId
-//   var trivechainTransaction = {
+//   let assetId
+//   let trivechainTransaction = {
 //     ccdata: [{
 //       type: 'issuance',
 //       divisibility: 3,
@@ -235,8 +235,8 @@ describe('1st input pubkeyhash', function () {
 // })
 
 // describe('create unlocked assetID from pay-to-scripthash address', function () {
-//   var assetId
-//   var trivechainTransaction = {
+//   let assetId
+//   let trivechainTransaction = {
 //     ccdata: [{
 //       type: 'issuance',
 //       divisibility: 3,
@@ -272,8 +272,8 @@ describe('1st input pubkeyhash', function () {
 // })
 
 // describe('create assetID from scriptSig.hex', function () {
-//   var assetId
-//   var trivechainTransaction = {
+//   let assetId
+//   let trivechainTransaction = {
 //     'ccdata': [{
 //       'type': 'issuance',
 //       'lockStatus': false,

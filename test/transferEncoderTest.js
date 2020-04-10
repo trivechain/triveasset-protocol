@@ -1,14 +1,14 @@
-// var transferEncoder = require('../index').TransferEncoder
-// var assert = require('assert')
+// let transferEncoder = require('../index').TransferEncoder
+// let assert = require('assert')
 
-// var consumer = function (buff) {
-//   var curr = 0
+// let consumer = function (buff) {
+//   let curr = 0
 //   return function consume (len) {
 //     return buff.slice(curr, curr += len)
 //   }
 // }
 
-// var toBuffer = function (val) {
+// let toBuffer = function (val) {
 //   val = val.toString(16)
 //   if (val.length % 2 == 1) {
 //     val = '0'+val
@@ -19,7 +19,7 @@
 // describe('Colored-Coins transfer Decoding', function () {
 //   it('should return the right decoding', function (done) {
 //     this.timeout(0)
-//     var torrentHash = Buffer.from(20)
+//     let torrentHash = Buffer.from(20)
 //     torrentHash.fill(0)
 //     torrentHash[3] = 0x23
 //     torrentHash[4] = 0x2f
@@ -27,7 +27,7 @@
 //     torrentHash[12] = 0xe3
 //     torrentHash[19] = 0xa3
 //     torrentHash[11] = 0x21
-//     var sha2 = Buffer.from(32)
+//     let sha2 = Buffer.from(32)
 //     sha2.fill(0)
 //     sha2[0] = 0xf3
 //     sha2[1] = 0x2f
@@ -36,8 +36,8 @@
 //     sha2[30] = 0x2f
 //     sha2[21] = 0x23
 //     sha2[11] = 0x2f
-//     var ipfsHash = Buffer.from('1220f1e820d85d82f6d7493b5e4446a1b9c0a4e0321885f1e47293fd6c081affaedf', 'hex')
-//     var data = {
+//     let ipfsHash = Buffer.from('1220f1e820d85d82f6d7493b5e4446a1b9c0a4e0321885f1e47293fd6c081affaedf', 'hex')
+//     let data = {
 //       protocol: 0x0302, // Error when start with 0
 //       version: 0x03
 //     }
@@ -47,7 +47,7 @@
 
 //     data.payments = []
 //     data.payments.push({skip: false, range: false, percent: true, output: 12, amount: 3213213})
-//     var result = transferEncoder.encode(data, 40)
+//     let result = transferEncoder.encode(data, 40)
 //     // console.log(result.codeBuffer.toString('hex'), result.leftover)
 //     // console.log(transferEncoder.decode(result.codeBuffer))
 
@@ -99,11 +99,11 @@
 // })
 
 // describe('80 byte OP_RETURN', function () {
-//   var code
-//   var decoded
-//   var torrentHash = Buffer.from('46b7e0d000d69330ac1caa48c6559763828762e1', 'hex')
-//   var sha2 = Buffer.from('03ffdf3d6790a21c5fc97a62fe1abc5f66922d7dee3725261ce02e86f078d190', 'hex')
-//   var data = {
+//   let code
+//   let decoded
+//   let torrentHash = Buffer.from('46b7e0d000d69330ac1caa48c6559763828762e1', 'hex')
+//   let sha2 = Buffer.from('03ffdf3d6790a21c5fc97a62fe1abc5f66922d7dee3725261ce02e86f078d190', 'hex')
+//   let data = {
 //     protocol: 0x5441,
 //     version: 0x03,
 //     payments: []
@@ -116,7 +116,7 @@
 //     code = transferEncoder.encode(data, 80)
 
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
-//     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
+//     let consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
 //     assert.deepEqual(toBuffer('5441'), consume(2))
 //     assert.deepEqual(toBuffer('03'), consume(1))  //version
 //     assert.deepEqual(toBuffer('15'), consume(1))  //trasnfer OP_CODE
@@ -140,7 +140,7 @@
 //     code = transferEncoder.encode(data, 80)
 
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
-//     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
+//     let consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
 //     assert.deepEqual(toBuffer('5441'), consume(2))
 //     assert.deepEqual(toBuffer('03'), consume(1))  //version
 //     assert.deepEqual(toBuffer('14'), consume(1))  //trasnfer OP_CODE
@@ -166,7 +166,7 @@
 //     code = transferEncoder.encode(data, 80)
 
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
-//     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
+//     let consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
 //     assert.deepEqual(toBuffer('5441'), consume(2))
 //     assert.deepEqual(toBuffer('03'), consume(1))  //version
 //     assert.deepEqual(toBuffer('13'), consume(1))  //trasnfer OP_CODE
@@ -188,7 +188,7 @@
 
 //     //pushing payments to the limit.
 //     data.payments = []
-//     for (var i = 0 ; i < 12 ; i++) {
+//     for (let i = 0 ; i < 12 ; i++) {
 //       data.payments.push({skip: false, range: false, percent: false, output: 1, amount: 1})
 //     }
 
@@ -198,13 +198,13 @@
 //     code = transferEncoder.encode(data, 80)
 
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
-//     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
+//     let consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
 //     assert.deepEqual(toBuffer('5441'), consume(2))
 //     assert.deepEqual(toBuffer('03'), consume(1))  //version
 //     assert.deepEqual(toBuffer('10'), consume(1))  //trasnfer OP_CODE
 //     assert.deepEqual(toBuffer('46b7e0d000d69330ac1caa48c6559763828762e1'), consume(20))   //torrent hash
 //     assert.deepEqual(toBuffer('03ffdf3d6790a21c5fc97a62fe1abc5f66922d7dee3725261ce02e86f078d190'), consume(32))   //metadata sha2
-//     for (var i = 0 ; i < data.payments.length ; i++) {
+//     for (let i = 0 ; i < data.payments.length ; i++) {
 //       assert.deepEqual(toBuffer('0101'), consume(2))    //payment
 //     }
 
@@ -228,7 +228,7 @@
 //     code = transferEncoder.encode(data, 80)
 
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
-//     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
+//     let consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
 //     assert.deepEqual(toBuffer('5441'), consume(2))
 //     assert.deepEqual(toBuffer('03'), consume(1))  //version
 //     assert.deepEqual(toBuffer('11'), consume(1))  //trasnfer OP_CODE
@@ -252,18 +252,18 @@
 //     this.timeout(0)
 
 //     //32 more bytes (16 of 2 bytes each in this case) should push torrent hash out
-//     for (var i = 0 ; i < 16 ; i++) {
+//     for (let i = 0 ; i < 16 ; i++) {
 //       data.payments.push({skip: false, range: false, percent: false, output: 1, amount: 1})
 //     }
 
 //     code = transferEncoder.encode(data, 80)
 
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
-//     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
+//     let consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
 //     assert.deepEqual(toBuffer('5441'), consume(2))
 //     assert.deepEqual(toBuffer('03'), consume(1))  //version
 //     assert.deepEqual(toBuffer('12'), consume(1))  //trasnfer OP_CODE
-//     for (var i = 0 ; i < data.payments.length ; i++) {
+//     for (let i = 0 ; i < data.payments.length ; i++) {
 //       assert.deepEqual(toBuffer('0101'), consume(2))    //payment
 //     }
 
@@ -284,11 +284,11 @@
 //   it('Transfer OP_CODE 0x16 - IPFS hash of metadata in OP_RETURN', function (done) {
 //     this.timeout(0)
 
-//     var ipfsHash = Buffer.from('1220f1e820d85d82f6d7493b5e4446a1b9c0a4e0321885f1e47293fd6c081affaedf', 'hex')
+//     let ipfsHash = Buffer.from('1220f1e820d85d82f6d7493b5e4446a1b9c0a4e0321885f1e47293fd6c081affaedf', 'hex')
 
 //     //pushing payments to the limit.
 //     data.payments = []
-//     for (var i = 0 ; i < 12 ; i++) {
+//     for (let i = 0 ; i < 12 ; i++) {
 //       data.payments.push({skip: false, range: false, percent: false, output: 1, amount: 1})
 //     }
 
@@ -297,12 +297,12 @@
 //     code = transferEncoder.encode(data, 80)
 
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
-//     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
+//     let consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
 //     assert.deepEqual(toBuffer('5441'), consume(2))
 //     assert.deepEqual(toBuffer('03'), consume(1))  //version
 //     assert.deepEqual(toBuffer('16'), consume(1))  //trasnfer OP_CODE
 //     assert.deepEqual(toBuffer('1220f1e820d85d82f6d7493b5e4446a1b9c0a4e0321885f1e47293fd6c081affaedf'), consume(34))   //ipfs hash
-//     for (var i = 0 ; i < data.payments.length ; i++) {
+//     for (let i = 0 ; i < data.payments.length ; i++) {
 //       assert.deepEqual(toBuffer('0101'), consume(2))    //payment
 //     }
 
@@ -319,11 +319,11 @@
 //   it('Transfer OP_CODE 0x17 - IPFS hash of metadata in pay-to-script', function (done) {
 //     this.timeout(0)
 
-//     var ipfsHash = Buffer.from('1220f1e820d85d82f6d7493b5e4446a1b9c0a4e0321885f1e47293fd6c081affaedf', 'hex')
+//     let ipfsHash = Buffer.from('1220f1e820d85d82f6d7493b5e4446a1b9c0a4e0321885f1e47293fd6c081affaedf', 'hex')
 
 //     //pushing payments to the limit.
 //     data.payments = []
-//     for (var i = 0 ; i < 35 ; i++) {
+//     for (let i = 0 ; i < 35 ; i++) {
 //       data.payments.push({skip: false, range: false, percent: false, output: 1, amount: 1})
 //     }
 
@@ -332,11 +332,11 @@
 //     code = transferEncoder.encode(data, 80)
 
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
-//     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
+//     let consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
 //     assert.deepEqual(toBuffer('5441'), consume(2))
 //     assert.deepEqual(toBuffer('03'), consume(1))  //version
 //     assert.deepEqual(toBuffer('17'), consume(1))  //trasnfer OP_CODE
-//     for (var i = 0 ; i < data.payments.length ; i++) {
+//     for (let i = 0 ; i < data.payments.length ; i++) {
 //       assert.deepEqual(toBuffer('0101'), consume(2))    //payment
 //     }
 

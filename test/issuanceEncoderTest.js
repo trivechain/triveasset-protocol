@@ -1,14 +1,14 @@
-// var issuanceEncoder = require('../index').IssuanceEncoder
-// var assert = require('assert')
+// let issuanceEncoder = require('../index').IssuanceEncoder
+// let assert = require('assert')
 
-// var consumer = function (buff) {
-//   var curr = 0
+// let consumer = function (buff) {
+//   let curr = 0
 //   return function consume (len) {
 //     return buff.slice(curr, curr += len)
 //   }
 // }
 
-// var toBuffer = function (val) {
+// let toBuffer = function (val) {
 //   val = val.toString(16)
 //   if (val.length % 2 == 1) {
 //     val = '0'+val
@@ -18,12 +18,12 @@
 
 // describe('80 byte OP_RETURN', function() {
 
-//   var code
-//   var decoded
-//   var torrentHash = Buffer.from('46b7e0d000d69330ac1caa48c6559763828762e1', 'hex')
-//   var sha2 = Buffer.from('03ffdf3d6790a21c5fc97a62fe1abc5f66922d7dee3725261ce02e86f078d190', 'hex')
-//   var ipfsHash = Buffer.from('1220f1e820d85d82f6d7493b5e4446a1b9c0a4e0321885f1e47293fd6c081affaedf', 'hex')
-//   var data = {
+//   let code
+//   let decoded
+//   let torrentHash = Buffer.from('46b7e0d000d69330ac1caa48c6559763828762e1', 'hex')
+//   let sha2 = Buffer.from('03ffdf3d6790a21c5fc97a62fe1abc5f66922d7dee3725261ce02e86f078d190', 'hex')
+//   let ipfsHash = Buffer.from('1220f1e820d85d82f6d7493b5e4446a1b9c0a4e0321885f1e47293fd6c081affaedf', 'hex')
+//   let data = {
 //     amount: 15,
 //     divisibility: 2,
 //     lockStatus: false,
@@ -42,7 +42,7 @@
 
 //     // console.log(code);
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
-//     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
+//     let consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
 //     assert.deepEqual(toBuffer('5441'), consume(2))
 //     assert.deepEqual(toBuffer('03'), consume(1))  //version
 //     assert.deepEqual(toBuffer('06'), consume(1))  //issuance OP_CODE
@@ -72,7 +72,7 @@
 //     // console.log(code);
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
 
-//     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
+//     let consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
 //     assert.deepEqual(toBuffer('5441'), consume(2))
 //     assert.deepEqual(toBuffer('03'), consume(1))  //version
 //     assert.deepEqual(toBuffer('05'), consume(1))  //issuance OP_CODE
@@ -104,7 +104,7 @@
 //     // console.log(code);
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
 
-//     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
+//     let consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
 //     assert.deepEqual(toBuffer('5441'), consume(2))
 //     assert.deepEqual(toBuffer('03'), consume(1))  //version
 //     assert.deepEqual(toBuffer('04'), consume(1))  //issuance OP_CODE
@@ -134,7 +134,7 @@
 
 //     //pushing payments to the limit.
 //     data.payments = []
-//     for (var i = 0 ; i < 11 ; i++) {
+//     for (let i = 0 ; i < 11 ; i++) {
 //       data.payments.push({skip: false, range: false, percent: false, output: 1, amount: 1})
 //     }
 
@@ -145,14 +145,14 @@
 //     // console.log(code);
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
 
-//     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
+//     let consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
 //     assert.deepEqual(toBuffer('5441'), consume(2))
 //     assert.deepEqual(toBuffer('03'), consume(1))  //version
 //     assert.deepEqual(toBuffer('01'), consume(1))  //issuance OP_CODE
 //     assert.deepEqual(toBuffer('46b7e0d000d69330ac1caa48c6559763828762e1'), consume(20))   //torrent hash
 //     assert.deepEqual(toBuffer('03ffdf3d6790a21c5fc97a62fe1abc5f66922d7dee3725261ce02e86f078d190'), consume(32))   //metadata sha2
 //     assert.deepEqual(toBuffer('0f'), consume(1))  //issue amount
-//     for (var i = 0 ; i < data.payments.length ; i++) {
+//     for (let i = 0 ; i < data.payments.length ; i++) {
 //       assert.deepEqual(toBuffer('0101'), consume(2))    //payment
 //     }
 //     assert.deepEqual(toBuffer('28'), consume(1))  //divisibility + lockstatus + reserved bits currently 0
@@ -187,13 +187,13 @@
 //     // console.log(code);
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
 
-//     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
+//     let consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
 //     assert.deepEqual(toBuffer('5441'), consume(2))
 //     assert.deepEqual(toBuffer('03'), consume(1))  //version
 //     assert.deepEqual(toBuffer('02'), consume(1))  //issuance OP_CODE
 //     assert.deepEqual(toBuffer('46b7e0d000d69330ac1caa48c6559763828762e1'), consume(20))   //torrent hash
 //     assert.deepEqual(toBuffer('0f'), consume(1))  //issue amount
-//     for (var i = 0 ; i < data.payments.length ; i++) {
+//     for (let i = 0 ; i < data.payments.length ; i++) {
 //       assert.deepEqual(toBuffer('0101'), consume(2))    //payment
 //     }
 //     assert.deepEqual(toBuffer('28'), consume(1))  //divisibility + lockstatus + reserved bits currently 0
@@ -215,7 +215,7 @@
 
 //     //had 1 too many bytes to keep SHA2 in 80 byte.
 //     //this means that we can push up to 31 more bytes to stay with the same OP_CODE (here we push 2 per instruction)
-//     for (var i = 0 ; i < 15 ; i++) {
+//     for (let i = 0 ; i < 15 ; i++) {
 //       data.payments.push({skip: false, range: false, percent: false, output: 1, amount: 1})
 //     }
 
@@ -252,12 +252,12 @@
 //     // console.log(code);
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
 
-//     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
+//     let consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
 //     assert.deepEqual(toBuffer('5441'), consume(2))
 //     assert.deepEqual(toBuffer('03'), consume(1))  //version
 //     assert.deepEqual(toBuffer('03'), consume(1))  //issuance OP_CODE
 //     assert.deepEqual(toBuffer('0f'), consume(1))  //issue amount
-//     for (var i = 0 ; i < data.payments.length ; i++) {
+//     for (let i = 0 ; i < data.payments.length ; i++) {
 //       assert.deepEqual(toBuffer('0101'), consume(2))    //payment
 //     }
 //     assert.deepEqual(toBuffer('28'), consume(1))  //divisibility + lockstatus + reserved bits currently 0
@@ -287,7 +287,7 @@
 
 //     //pushing payments to the limit.
 //     data.payments = []
-//     for (var i = 0 ; i < 11 ; i++) {
+//     for (let i = 0 ; i < 11 ; i++) {
 //       data.payments.push({skip: false, range: false, percent: false, output: 1, amount: 1})
 //     }
 
@@ -297,13 +297,13 @@
 //     // console.log(code);
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
 
-//     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
+//     let consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
 //     assert.deepEqual(toBuffer('5441'), consume(2))
 //     assert.deepEqual(toBuffer('03'), consume(1))  //version
 //     assert.deepEqual(toBuffer('07'), consume(1))  //issuance OP_CODE
 //     assert.deepEqual(toBuffer('1220f1e820d85d82f6d7493b5e4446a1b9c0a4e0321885f1e47293fd6c081affaedf'), consume(34))   //ipfs hash
 //     assert.deepEqual(toBuffer('0f'), consume(1))  //issue amount
-//     for (var i = 0 ; i < data.payments.length ; i++) {
+//     for (let i = 0 ; i < data.payments.length ; i++) {
 //       assert.deepEqual(toBuffer('0101'), consume(2))    //payment
 //     }
 //     assert.deepEqual(toBuffer('28'), consume(1))  //divisibility + lockstatus + reserved bits currently 0
@@ -329,7 +329,7 @@
 
 //     //pushing payments to the limit.
 //     data.payments = []
-//     for (var i = 0 ; i < 30 ; i++) {
+//     for (let i = 0 ; i < 30 ; i++) {
 //       data.payments.push({skip: false, range: false, percent: false, output: 1, amount: 1})
 //     }
 
@@ -339,12 +339,12 @@
 //     // console.log(code);
 //     // console.log(code.codeBuffer.toString('hex'), code.leftover)
 
-//     var consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
+//     let consume = consumer(code.codeBuffer.slice(0, code.codeBuffer.length))
 //     assert.deepEqual(toBuffer('5441'), consume(2))
 //     assert.deepEqual(toBuffer('03'), consume(1))  //version
 //     assert.deepEqual(toBuffer('08'), consume(1))  //issuance OP_CODE
 //     assert.deepEqual(toBuffer('0f'), consume(1))  //issue amount
-//     for (var i = 0 ; i < data.payments.length ; i++) {
+//     for (let i = 0 ; i < data.payments.length ; i++) {
 //       assert.deepEqual(toBuffer('0101'), consume(2))    //payment
 //     }
 //     assert.deepEqual(toBuffer('28'), consume(1))  //divisibility + lockstatus + reserved bits currently 0
