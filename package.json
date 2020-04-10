@@ -1,7 +1,7 @@
 {
-    "name": "triveasset-protocol",
+    "name": "@trivechain/triveasset-protocol",
     "version": "1.0.0",
-    "description": "The encoding/decoding functions for the triveasset scheme transfer set of OP_CODES",
+    "description": "TriveAsset Protocol provides the definition, encode and decode functions that recognize a TriveAsset Encoding",
     "main": "index.js",
     "dependencies": {
         "big-integer": "^1.6.48",
