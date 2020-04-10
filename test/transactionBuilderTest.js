@@ -1,15 +1,15 @@
 /* eslint-env mocha */
-let TransactionBuilder = require('../index').TransactionBuilder
-let TA = require('../index').Transaction
-let transactionBuilder = new TransactionBuilder({ network: 'testnet' })
-let assert = require('assert')
-let clone = require('clone')
-let bitcoinjs = require('bitcoinjs-lib')
-let Transaction = bitcoinjs.Transaction
-let script = bitcoinjs.script
-let _ = require('lodash')
+const TransactionBuilder = require('../index').TransactionBuilder
+const TA = require('../index').Transaction
+const transactionBuilder = new TransactionBuilder({ network: 'testnet' })
+const assert = require('assert')
+const clone = require('clone')
+const bitcoinjs = require('bitcoinjs-lib')
+const Transaction = bitcoinjs.Transaction
+const script = bitcoinjs.script
+const _ = require('lodash')
 
-let issueArgs = {
+const issueArgs = {
   utxos: [
     {
       index: 2,
@@ -36,7 +36,7 @@ let issueArgs = {
 
 describe('builder.buildIssueTransaction(args)', function () {
   it('throws: Must have "utxos"', function (done) {
-    let args = clone(issueArgs)
+    const args = clone(issueArgs)
     delete args.utxos
     assert.throws(function () {
       transactionBuilder.buildIssueTransaction(args)
@@ -45,7 +45,7 @@ describe('builder.buildIssueTransaction(args)', function () {
   })
 
   it('throws: Must have "issueAddress"', function (done) {
-    let args = clone(issueArgs)
+    const args = clone(issueArgs)
     delete args.issueAddress
     assert.throws(function () {
       transactionBuilder.buildIssueTransaction(args)
@@ -54,7 +54,7 @@ describe('builder.buildIssueTransaction(args)', function () {
   })
 
   it('throws: Must have "amount"', function (done) {
-    let args = clone(issueArgs)
+    const args = clone(issueArgs)
     delete args.amount
     assert.throws(function () {
       transactionBuilder.buildIssueTransaction(args)
@@ -63,20 +63,20 @@ describe('builder.buildIssueTransaction(args)', function () {
   })
 
   it('returns valid response with default values', function (done) {
-    let result = transactionBuilder.buildIssueTransaction(issueArgs)
+    const result = transactionBuilder.buildIssueTransaction(issueArgs)
     assert(result.txHex)
-    let tx = Transaction.fromHex(result.txHex)
+    const tx = Transaction.fromHex(result.txHex)
     assert.strictEqual(tx.ins.length, 1)
     assert.strictEqual(tx.outs.length, 3) // OP_RETURN + 2 changes
     assert(result.assetId)
     assert.deepEqual(result.coloredOutputIndexes, [2])
-    let sumValueInputs = issueArgs.utxos[0].value
-    let sumValueOutputs = _.sumBy(tx.outs, function (output) {
+    const sumValueInputs = issueArgs.utxos[0].value
+    const sumValueOutputs = _.sumBy(tx.outs, function (output) {
       return output.value
     })
     assert.strictEqual(sumValueInputs - sumValueOutputs, issueArgs.fee)
-    let opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
-    let taTransaction = TA.fromHex(opReturnScriptBuffer)
+    const opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
+    const taTransaction = TA.fromHex(opReturnScriptBuffer)
     assert.strictEqual(taTransaction.type, 'issuance')
     assert.strictEqual(taTransaction.amount, issueArgs.amount)
     // default values
@@ -87,11 +87,11 @@ describe('builder.buildIssueTransaction(args)', function () {
   })
 
   it('flags.injectPreviousOutput === true: return previous output hex in inputs', function (done) {
-    let args = clone(issueArgs)
+    const args = clone(issueArgs)
     args.flags = { injectPreviousOutput: true }
-    let result = transactionBuilder.buildIssueTransaction(args)
+    const result = transactionBuilder.buildIssueTransaction(args)
     assert(result.txHex)
-    let tx = Transaction.fromHex(result.txHex)
+    const tx = Transaction.fromHex(result.txHex)
     assert.strictEqual(tx.ins.length, 1)
     assert.strictEqual(
       tx.ins[0].script.toString('hex'),
@@ -101,11 +101,11 @@ describe('builder.buildIssueTransaction(args)', function () {
   })
 
   it('should split change', function (done) {
-    let args = clone(issueArgs)
+    const args = clone(issueArgs)
     args.financeChangeAddress = false
-    let result = transactionBuilder.buildIssueTransaction(args)
+    const result = transactionBuilder.buildIssueTransaction(args)
     assert(result.txHex)
-    let tx = Transaction.fromHex(result.txHex)
+    const tx = Transaction.fromHex(result.txHex)
     assert.strictEqual(tx.ins.length, 1)
     assert.strictEqual(tx.outs.length, 2) // OP_RETURN + 1 change
     assert.deepEqual(result.coloredOutputIndexes, [1])
@@ -113,19 +113,19 @@ describe('builder.buildIssueTransaction(args)', function () {
   })
 
   it('should encode ipfsHash', function (done) {
-    let args = clone(issueArgs)
+    const args = clone(issueArgs)
     args.ipfsHash =
       '12207fd9423c0301a82e7116483cbc194d7c3818b2e11a77c5e021b2c5d04cb48852'
-    let result = transactionBuilder.buildIssueTransaction(args)
-    let tx = Transaction.fromHex(result.txHex)
-    let opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
-    let taTransaction = TA.fromHex(opReturnScriptBuffer)
+    const result = transactionBuilder.buildIssueTransaction(args)
+    const tx = Transaction.fromHex(result.txHex)
+    const opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
+    const taTransaction = TA.fromHex(opReturnScriptBuffer)
     assert.strictEqual(taTransaction.ipfsHash.toString('hex'), args.ipfsHash)
     done()
   })
 })
 
-let sendArgs = {
+const sendArgs = {
   utxos: [
     {
       index: 2,
@@ -184,7 +184,7 @@ let sendArgs = {
 
 describe('builder.buildSendTransaction(args)', function () {
   it('throws: Must have "utxos"', function (done) {
-    let args = clone(sendArgs)
+    const args = clone(sendArgs)
     delete args.utxos
     assert.throws(function () {
       transactionBuilder.buildSendTransaction(args)
@@ -193,7 +193,7 @@ describe('builder.buildSendTransaction(args)', function () {
   })
 
   it('throws: Must have "to"', function (done) {
-    let args = clone(sendArgs)
+    const args = clone(sendArgs)
     delete args.to
     assert.throws(function () {
       transactionBuilder.buildSendTransaction(args)
@@ -203,19 +203,19 @@ describe('builder.buildSendTransaction(args)', function () {
 
   it('returns valid response with default values', function (done) {
     sendArgs.fee = 5000
-    let result = transactionBuilder.buildSendTransaction(sendArgs)
+    const result = transactionBuilder.buildSendTransaction(sendArgs)
     assert(result.txHex)
-    let tx = Transaction.fromHex(result.txHex)
+    const tx = Transaction.fromHex(result.txHex)
     assert.strictEqual(tx.ins.length, 2)
     assert.strictEqual(tx.outs.length, 4) // transfer + OP_RETURN + 2 changes
     assert.deepEqual(result.coloredOutputIndexes, [0, 3])
-    let sumValueInputs = sendArgs.utxos[0].value + sendArgs.utxos[1].value
-    let sumValueOutputs = _.sumBy(tx.outs, function (output) {
+    const sumValueInputs = sendArgs.utxos[0].value + sendArgs.utxos[1].value
+    const sumValueOutputs = _.sumBy(tx.outs, function (output) {
       return output.value
     })
     assert.strictEqual(sumValueInputs - sumValueOutputs, sendArgs.fee)
-    let opReturnScriptBuffer = script.decompile(tx.outs[1].script)[1]
-    let taTransaction = TA.fromHex(opReturnScriptBuffer)
+    const opReturnScriptBuffer = script.decompile(tx.outs[1].script)[1]
+    const taTransaction = TA.fromHex(opReturnScriptBuffer)
     assert.strictEqual(taTransaction.type, 'transfer')
     assert.strictEqual(taTransaction.payments[0].range, false)
     assert.strictEqual(taTransaction.payments[0].output, 0)
@@ -226,7 +226,7 @@ describe('builder.buildSendTransaction(args)', function () {
   })
 
   it('returns valid response with default values', function (done) {
-    let addresses = [
+    const addresses = [
       'tQsErC77qB5X1oUbkkWeVWoCm4J7xbfays',
       't8PezUK91pug8uY7M4piDRYj5QHLkyxC8J',
       'tGjioXYFLLxF8caMQdwcAXiXcLBZj5Xh4Q',
@@ -259,45 +259,45 @@ describe('builder.buildSendTransaction(args)', function () {
       'tDuwND9abYovDHbdTT7HP1eHPsAfxofSPj',
     ]
 
-    let args = clone(sendArgs)
+    const args = clone(sendArgs)
     args.ipfsHash =
       '122098ed210c6291c25ae9cd40a85aeced620ef2c4c169e0cdc2be2091ddf3a352e3'
-    for (let address of addresses) {
+    for (const address of addresses) {
       args.to.push({
         address: address,
         amount: 1,
         assetId: 'La9Sa9wWN5MpAFLtRwS1jwTFsRzdRqhtpeVcya',
       })
     }
-    let result = transactionBuilder.buildSendTransaction(args)
+    const result = transactionBuilder.buildSendTransaction(args)
     assert(result.txHex)
-    let tx = Transaction.fromHex(result.txHex)
-    let opReturnScriptBuffer = script.decompile(
+    const tx = Transaction.fromHex(result.txHex)
+    const opReturnScriptBuffer = script.decompile(
       tx.outs[tx.outs.length - 3].script
     )[1]
-    let taTransaction = TA.fromHex(opReturnScriptBuffer)
+    const taTransaction = TA.fromHex(opReturnScriptBuffer)
     assert.strictEqual(taTransaction.multiSig[0].hashType, 'ipfsHash')
     done()
   })
 
   it('should encode ipfsHash', function (done) {
-    let args = clone(sendArgs)
+    const args = clone(sendArgs)
     args.ipfsHash =
       '122098ed210c6291c25ae9cd40a85aeced620ef2c4c169e0cdc2be2091ddf3a352e3'
-    let result = transactionBuilder.buildSendTransaction(args)
-    let tx = Transaction.fromHex(result.txHex)
-    let opReturnScriptBuffer = script.decompile(tx.outs[1].script)[1]
-    let taTransaction = TA.fromHex(opReturnScriptBuffer)
+    const result = transactionBuilder.buildSendTransaction(args)
+    const tx = Transaction.fromHex(result.txHex)
+    const opReturnScriptBuffer = script.decompile(tx.outs[1].script)[1]
+    const taTransaction = TA.fromHex(opReturnScriptBuffer)
     assert.strictEqual(taTransaction.ipfsHash.toString('hex'), args.ipfsHash)
     done()
   })
 
   it('flags.injectPreviousOutput === true: return previous output hex in inputs', function (done) {
-    let args = clone(sendArgs)
+    const args = clone(sendArgs)
     args.flags = { injectPreviousOutput: true }
-    let result = transactionBuilder.buildSendTransaction(args)
+    const result = transactionBuilder.buildSendTransaction(args)
     assert(result.txHex)
-    let tx = Transaction.fromHex(result.txHex)
+    const tx = Transaction.fromHex(result.txHex)
     assert.strictEqual(tx.ins.length, 2)
     assert.strictEqual(
       tx.ins[0].script.toString('hex'),
@@ -307,12 +307,12 @@ describe('builder.buildSendTransaction(args)', function () {
   })
 
   it('should not have finance change', function (done) {
-    let args = clone(sendArgs)
+    const args = clone(sendArgs)
     args.utxos[1].value = 10441
     args.fee = 5000
-    let result = transactionBuilder.buildSendTransaction(args)
+    const result = transactionBuilder.buildSendTransaction(args)
     assert(result.txHex)
-    let tx = Transaction.fromHex(result.txHex)
+    const tx = Transaction.fromHex(result.txHex)
     assert.strictEqual(tx.ins.length, 2)
     assert.strictEqual(tx.outs.length, 3) // transfer + OP_RETURN + 1 change
     assert.deepEqual(result.coloredOutputIndexes, [0, 2])
@@ -320,12 +320,12 @@ describe('builder.buildSendTransaction(args)', function () {
   })
 
   it('should not have colored change', function (done) {
-    let args = clone(sendArgs)
+    const args = clone(sendArgs)
     args.to[0].amount = args.utxos[0].assets[0].amount
     args.fee = 5000
-    let result = transactionBuilder.buildSendTransaction(args)
+    const result = transactionBuilder.buildSendTransaction(args)
     assert(result.txHex)
-    let tx = Transaction.fromHex(result.txHex)
+    const tx = Transaction.fromHex(result.txHex)
     assert.strictEqual(tx.ins.length, 2)
     assert.strictEqual(tx.outs.length, 3) // transfer + OP_RETURN + 1 change
     assert.deepEqual(result.coloredOutputIndexes, [0])
@@ -333,7 +333,7 @@ describe('builder.buildSendTransaction(args)', function () {
   })
 })
 
-let burnArgs = {
+const burnArgs = {
   utxos: [
     {
       index: 2,
@@ -388,19 +388,19 @@ let burnArgs = {
 
 describe('builder.buildBurnTransaction(args)', function () {
   it('returns valid response when burn completely', function (done) {
-    let result = transactionBuilder.buildBurnTransaction(burnArgs)
+    const result = transactionBuilder.buildBurnTransaction(burnArgs)
     assert(result.txHex)
-    let tx = Transaction.fromHex(result.txHex)
+    const tx = Transaction.fromHex(result.txHex)
     assert.strictEqual(tx.ins.length, 2)
     assert.strictEqual(tx.outs.length, 3) // OP_RETURN + 2 changes
     assert.deepEqual(result.coloredOutputIndexes, [2])
-    let sumValueInputs = burnArgs.utxos[0].value + burnArgs.utxos[1].value
-    let sumValueOutputs = _.sumBy(tx.outs, function (output) {
+    const sumValueInputs = burnArgs.utxos[0].value + burnArgs.utxos[1].value
+    const sumValueOutputs = _.sumBy(tx.outs, function (output) {
       return output.value
     })
     assert.strictEqual(sumValueInputs - sumValueOutputs, burnArgs.fee)
-    let opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
-    let taTransaction = TA.fromHex(opReturnScriptBuffer)
+    const opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
+    const taTransaction = TA.fromHex(opReturnScriptBuffer)
     assert.strictEqual(taTransaction.type, 'burn')
     assert.strictEqual(taTransaction.payments[0].burn, true)
     assert.strictEqual(taTransaction.payments[0].input, 0)
@@ -413,19 +413,19 @@ describe('builder.buildBurnTransaction(args)', function () {
 
   it('returns valid response when burn partially', function (done) {
     burnArgs.burn[0].amount = 100
-    let result = transactionBuilder.buildBurnTransaction(burnArgs)
+    const result = transactionBuilder.buildBurnTransaction(burnArgs)
     assert(result.txHex)
-    let tx = Transaction.fromHex(result.txHex)
+    const tx = Transaction.fromHex(result.txHex)
     assert.strictEqual(tx.ins.length, 2)
     assert.strictEqual(tx.outs.length, 3) // OP_RETURN + 2 changes
     assert.deepEqual(result.coloredOutputIndexes, [2])
-    let sumValueInputs = burnArgs.utxos[0].value + burnArgs.utxos[1].value
-    let sumValueOutputs = _.sumBy(tx.outs, function (output) {
+    const sumValueInputs = burnArgs.utxos[0].value + burnArgs.utxos[1].value
+    const sumValueOutputs = _.sumBy(tx.outs, function (output) {
       return output.value
     })
     assert.strictEqual(sumValueInputs - sumValueOutputs, burnArgs.fee)
-    let opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
-    let taTransaction = TA.fromHex(opReturnScriptBuffer)
+    const opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
+    const taTransaction = TA.fromHex(opReturnScriptBuffer)
     assert.strictEqual(taTransaction.type, 'burn')
     assert.strictEqual(taTransaction.payments[0].burn, true)
     assert.strictEqual(taTransaction.payments[0].input, 0)

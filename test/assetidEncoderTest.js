@@ -1,11 +1,11 @@
 /* eslint-env mocha */
-let assetIdEncoder = require('../index').AssetIdEncoder
-let assert = require('assert')
+const assetIdEncoder = require('../index').AssetIdEncoder
+const assert = require('assert')
 
 describe('1st input pubkeyhash', function () {
   describe('locked asset ID', function () {
     let assetId
-    let trivechainTransaction = {
+    const trivechainTransaction = {
       ccdata: [
         {
           type: 'issuance',
@@ -45,7 +45,7 @@ describe('1st input pubkeyhash', function () {
 
   describe('unlocked asset ID', function () {
     let assetId
-    let trivechainTransaction = {
+    const trivechainTransaction = {
       ccdata: [
         {
           type: 'issuance',

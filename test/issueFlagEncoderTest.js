@@ -1,7 +1,7 @@
-let issuanceFlagsEncoder = require('../index').IssuanceFlagsEncoder
-let assert = require('assert')
+const issuanceFlagsEncoder = require('../index').IssuanceFlagsEncoder
+const assert = require('assert')
 
-let consumer = function (buff) {
+const consumer = function (buff) {
   let curr = 0
   return function consume(len) {
     return buff.slice(curr, (curr += len))
@@ -11,7 +11,7 @@ let consumer = function (buff) {
 describe('Test issue flags encoder', function () {
   it('should return the right decoding', function (done) {
     this.timeout(0)
-    let testCase = [
+    const testCase = [
       { divisibility: 0, lockStatus: false, aggregationPolicy: 'aggregatable' },
       { divisibility: 1, lockStatus: false, aggregationPolicy: 'aggregatable' },
       { divisibility: 2, lockStatus: false, aggregationPolicy: 'aggregatable' },
@@ -74,8 +74,8 @@ describe('Test issue flags encoder', function () {
     ]
 
     for (let i = 0; i < testCase.length; i++) {
-      let code = issuanceFlagsEncoder.encode(testCase[i])
-      let decode = issuanceFlagsEncoder.decode(consumer(code))
+      const code = issuanceFlagsEncoder.encode(testCase[i])
+      const decode = issuanceFlagsEncoder.decode(consumer(code))
       assert.strictEqual(
         decode.divisibility,
         testCase[i].divisibility,
@@ -97,11 +97,11 @@ describe('Test issue flags encoder', function () {
   })
 
   it('should use aggregatable for policy if not defined', function (done) {
-    let code = issuanceFlagsEncoder.encode({
+    const code = issuanceFlagsEncoder.encode({
       divisibility: 0,
       lockStatus: false,
     })
-    let decode = issuanceFlagsEncoder.decode(consumer(code))
+    const decode = issuanceFlagsEncoder.decode(consumer(code))
     assert.strictEqual(
       decode.aggregationPolicy,
       'aggregatable',
@@ -113,7 +113,7 @@ describe('Test issue flags encoder', function () {
 
   it('should restrict the divisibility to 0 if aggregationPolicy is dispersed', function (done) {
     this.timeout(0)
-    let testCase = [
+    const testCase = [
       { divisibility: 1, lockStatus: false, aggregationPolicy: 'dispersed' },
       { divisibility: 2, lockStatus: false, aggregationPolicy: 'dispersed' },
       { divisibility: 3, lockStatus: false, aggregationPolicy: 'dispersed' },
@@ -147,8 +147,8 @@ describe('Test issue flags encoder', function () {
     ]
 
     for (let i = 0; i < testCase.length; i++) {
-      let code = issuanceFlagsEncoder.encode(testCase[i])
-      let decode = issuanceFlagsEncoder.decode(consumer(code))
+      const code = issuanceFlagsEncoder.encode(testCase[i])
+      const decode = issuanceFlagsEncoder.decode(consumer(code))
       assert.strictEqual(
         decode.divisibility,
         0,
@@ -171,7 +171,7 @@ describe('Test issue flags encoder', function () {
 
   it('should fail for wrong divisibility', function (done) {
     this.timeout(0)
-    let testCase = [
+    const testCase = [
       { divisibility: 82, lockStatus: true, aggregationPolicy: 'aggregatable' },
       {
         divisibility: 21,
@@ -216,7 +216,7 @@ describe('Test issue flags encoder', function () {
 
   it('should fail for invalid aggregation policy', function (done) {
     this.timeout(0)
-    let testCase = [
+    const testCase = [
       // aggregatable typos are on purpose...
       { divisibility: 2, lockStatus: false, aggregationPolicy: 1 },
       { divisibility: 3, lockStatus: true, aggregationPolicy: 2 },

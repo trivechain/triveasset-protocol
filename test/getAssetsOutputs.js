@@ -2,7 +2,7 @@
 const getAssetsOutputs = require('../src/getAssetsOutputs')
 const assert = require('assert')
 
-let issuanceTx = {
+const issuanceTx = {
   vin: [
     {
       assets: [],
@@ -48,7 +48,7 @@ let issuanceTx = {
   ],
 }
 
-let transferTx = {
+const transferTx = {
   vin: [
     {
       assets: [
@@ -118,7 +118,7 @@ let transferTx = {
 }
 
 it('Issuance - should transfer the correct amounts, split according to payments', function (done) {
-  let res = getAssetsOutputs(issuanceTx)
+  const res = getAssetsOutputs(issuanceTx)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
   assert.equal(Array.isArray(res[0]), true)
@@ -144,7 +144,7 @@ it('Issuance - should transfer entire amount to last output when overflow in tot
       percent: false,
     },
   ]
-  let res = getAssetsOutputs(issuanceTx)
+  const res = getAssetsOutputs(issuanceTx)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
   assert.equal(res[2].length, 1)
@@ -170,7 +170,7 @@ it('Issuance - should transfer entire amount to last output there is overflow in
       percent: false,
     },
   ]
-  let res = getAssetsOutputs(issuanceTx)
+  const res = getAssetsOutputs(issuanceTx)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
   assert.equal(res[0], null)
@@ -181,7 +181,7 @@ it('Issuance - should transfer entire amount to last output there is overflow in
 })
 
 it('Transfer - should transfer the correct amounts, split according to payments (even when asset is aggregatable)', function (done) {
-  let res = getAssetsOutputs(transferTx)
+  const res = getAssetsOutputs(transferTx)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
   assert.equal(res[0].length, 2)
@@ -203,7 +203,7 @@ it('Transfer - should transfer the entire amount to last output, when there is a
       percent: false,
     },
   ]
-  let res = getAssetsOutputs(transferTx)
+  const res = getAssetsOutputs(transferTx)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
   assert.equal(Array.isArray(res[2]), true)
@@ -230,7 +230,7 @@ it('Transfer - should transfer correct amounts, when there is an overflow to the
       percent: false,
     },
   ]
-  let res = getAssetsOutputs(transferTx)
+  const res = getAssetsOutputs(transferTx)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
   assert.equal(Array.isArray(res[0]), true)
@@ -267,7 +267,7 @@ it('Transfer - should transfer correct amounts, when there is an overflow to the
       percent: false,
     },
   ]
-  let res = getAssetsOutputs(transferTx)
+  const res = getAssetsOutputs(transferTx)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
   assert.equal(Array.isArray(res[0]), true)
@@ -296,7 +296,7 @@ it('Transfer - should transfer the entire amount to last output, when there is a
       asset.aggregationPolicy = 'dispersed'
     })
   })
-  let res = getAssetsOutputs(transferTx)
+  const res = getAssetsOutputs(transferTx)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
   assert.equal(Array.isArray(res[2]), true)
@@ -331,7 +331,7 @@ it('Transfer - should transfer the entire amount to last output, when there is a
       percent: false,
     },
   ]
-  let res = getAssetsOutputs(transferTx)
+  const res = getAssetsOutputs(transferTx)
   assert.equal(transferTx.overflow, true)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
@@ -374,7 +374,7 @@ it('Transfer - should not have overflow with payment with amount 0', function (d
       percent: false,
     },
   ]
-  let res = getAssetsOutputs(transferTx)
+  const res = getAssetsOutputs(transferTx)
   assert.equal(transferTx.overflow, false)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
@@ -419,7 +419,7 @@ it('Transfer - should transfer entire amount to last output when there is a paym
       percent: false,
     },
   ]
-  let res = getAssetsOutputs(transferTx)
+  const res = getAssetsOutputs(transferTx)
   assert.equal(transferTx.overflow, true)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
@@ -432,7 +432,7 @@ it('Transfer - should transfer entire amount to last output when there is a paym
 })
 
 it('Transfer - should transfer remaining amounts to last output', function (done) {
-  let tx = {
+  const tx = {
     vin: [
       {
         assets: [
@@ -504,7 +504,7 @@ it('Transfer - should transfer remaining amounts to last output', function (done
       },
     ],
   }
-  let res = getAssetsOutputs(tx)
+  const res = getAssetsOutputs(tx)
   assert.equal(tx.overflow, false)
   assert.equal(Array.isArray(res), true)
   assert.equal(res.length, 3)
@@ -523,7 +523,7 @@ it('Transfer - should transfer remaining amounts to last output', function (done
 })
 
 it('Burn - should transfer and burn assets', function (done) {
-  let burnTx = {
+  const burnTx = {
     vin: [
       {
         assets: [
@@ -601,7 +601,7 @@ it('Burn - should transfer and burn assets', function (done) {
     ],
   }
 
-  let res = getAssetsOutputs(burnTx)
+  const res = getAssetsOutputs(burnTx)
   assert.deepEqual(res, [
     [
       {
@@ -654,7 +654,7 @@ it('Burn - should transfer and burn assets', function (done) {
 })
 
 it('Burn - should transfer all assets to last output when there is an overflow', function (done) {
-  let burnTx = {
+  const burnTx = {
     vin: [
       {
         assets: [
@@ -714,7 +714,7 @@ it('Burn - should transfer all assets to last output when there is an overflow',
     ],
   }
 
-  let res = getAssetsOutputs(burnTx)
+  const res = getAssetsOutputs(burnTx)
   assert.equal(burnTx.overflow, true)
   assert.deepEqual(res[0], undefined)
   assert.deepEqual(res[1], undefined)

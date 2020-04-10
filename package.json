@@ -19,8 +19,8 @@
     "scripts": {
         "test": "nyc --reporter=html --reporter=text mocha",
         "coverage": "nyc report --reporter=text-lcov | coveralls",
-        "lint": "eslint src --color",
-        "lint:fix": "eslint src --fix"
+        "lint": "eslint src/**/*.js test/**/*.js --color",
+        "lint:fix": "eslint src/**/*.js test/**/*.js --fix"
     },
     "author": "jsheng08",
     "license": "Apache-2.0",
