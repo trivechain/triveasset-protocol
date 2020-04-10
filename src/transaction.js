@@ -114,12 +114,11 @@ Transaction.prototype.addPayment = function (
   })
 }
 
-Transaction.prototype.addBurn = function (input, amount, percent) {
+Transaction.prototype.addBurn = function (amount, percent) {
   if (this.type === 'issuance') {
     throw new Error("Can't add burn payment to an issuance transaction")
   }
   this.payments.push({
-    input: input,
     amount: amount,
     percent: percent,
     burn: true,

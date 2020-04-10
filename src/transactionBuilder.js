@@ -807,7 +807,7 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
             'mapping to input ' + input.index + ' with amount ' + input.amount
           )
           if (address.address === 'burn') {
-            encoder.addBurn(input.index, input.amount)
+            encoder.addBurn(input.amount)
           } else {
             encoder.addPayment(
               input.index,
@@ -895,15 +895,11 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
     return assetList[assetId].change > 0
   })
 
-  var splitChange = args.financeChangeAddress === args.coloredChangeAddress
   var changeAddress =
     args.financeChangeAddress ||
     (Array.isArray(args.from) ? args.from[0] : args.from)
 
-  var numOfChanges =
-    splitChange && coloredChange && lastOutputValue >= 2 * self.mindustvalue
-      ? 2
-      : 1
+  var numOfChanges = coloredChange ? 2 : 1
 
   if (lastOutputValue < numOfChanges * self.mindustvalue) {
     debug('trying to add additionl inputs to cover transaction')
