@@ -807,7 +807,7 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
             'mapping to input ' + input.index + ' with amount ' + input.amount
           )
           if (address.address === 'burn') {
-            encoder.addBurn(input.amount)
+            encoder.addBurn(input.index, input.amount)
           } else {
             encoder.addPayment(
               input.index,
@@ -827,7 +827,7 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
               addressAmountLeft
           )
           if (address.address === 'burn') {
-            encoder.addBurn(addressAmountLeft)
+            encoder.addBurn(input.index, addressAmountLeft)
           } else {
             encoder.addPayment(
               input.index,

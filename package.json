@@ -20,7 +20,8 @@
         "test": "nyc --reporter=html --reporter=text mocha",
         "coverage": "nyc report --reporter=text-lcov | coveralls",
         "lint": "eslint src/**/*.js test/**/*.js --color",
-        "lint:fix": "eslint src/**/*.js test/**/*.js --fix"
+        "lint:fix": "eslint src/**/*.js test/**/*.js --fix",
+        "docsify": "docsify serve docs"
     },
     "author": "jsheng08",
     "license": "Apache-2.0",
@@ -35,6 +36,7 @@
     },
     "devDependencies": {
         "coveralls": "^3.0.11",
+        "docsify": "^4.11.3",
         "eslint": "^6.8.0",
         "eslint-config-prettier": "^6.10.1",
         "eslint-config-standard": "^14.1.1",
