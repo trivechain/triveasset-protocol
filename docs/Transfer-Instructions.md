@@ -59,8 +59,8 @@ The rules by which the colored coins software transfers assets between inputs an
 
 * All assets with remaining amounts are automatically transferred to the last output.
 
-## Bitcoin requirements
-* A minimal dust amount in real satoshis is sent to each output for validity
+## TRVC requirements
+* A minimal dust amount (0.000005441 TRVC) is sent to each output for validity
 * A transaction fee is left for miners to finance the processing of the transaction
 
 ## Examples

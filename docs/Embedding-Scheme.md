@@ -92,7 +92,7 @@ The number of issued units. A signed integer ranging from `1..10,000,000,000,000
 This flags specify some extra information about a newly issued asset. At the moment only 6 bits are used (the remaining two reserved for future uses)
 
 * The first 4 bits describe the [divisibility](Embedding-Scheme#asset-divisibility) of the asset
-* The next bit designates whether the asset is [locked](Benefits#locked-assets) or [unlocked](Benefits#unlocked-assets)
+* The next bit designates whether the asset is [locked](Triveasset#coherent-issuance-policy) or [unlocked](Triveasset#coherent-issuance-policy)
 * The next 2 bits determine the [aggregation policy](Embedding-Scheme#asset-aggregation-policy) of the asset
 
 &#42; Relevant only in the case of an issuance transaction

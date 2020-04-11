@@ -1,6 +1,6 @@
 The asset ID is an immutable identifier of an asset that is created at issuance and is derived from the issuance transaction and the asset's [divisibility](Embedding-Scheme#asset-divisibility) and [aggregation policy](Embedding-Scheme#asset-aggregation-policy). 
 
-There are two types of Asset IDs corresponding to the two types of assets supported by the TriveAsset protocol: [locked](Benefits#locked-assets) and [unlocked](Benefits#unlocked-assets).
+There are two types of Asset IDs corresponding to the two types of assets supported by the TriveAsset protocol: [locked](Triveasset#coherent-issuance-policy) and [unlocked](Triveasset#coherent-issuance-policy).
 
 ## Unlocked Asset IDs
 Unlocked asset IDs look similar to Bitcoin addresses, except instead of starting with the number **1** start with the capital letter **U**.
@@ -109,7 +109,7 @@ Then, we can construct and encode the predicted pubkey script.
         {
             "value": "0.00000000",
             "scriptPubKey": "OP_RETURN 43430201d36854c461e1ce4d90dd73857ae9fa5349f6ba4ada9f9603314dcbc0225f39b9313b7d67a5059e00e0b179e01cf8f879eaaa7fa31a001a48",
-            "coloredCoinsData": {
+            "ccdata": {
                 "payments": [
                     {
                         "input": 0,
@@ -139,7 +139,7 @@ Then, we can construct and encode the predicted pubkey script.
 }
 </pre>
 
-In this example JSON we can see the `coloredCoinsData` decoded from the OP_RETURN:
+In this example JSON we can see the `ccdata` decoded from the OP_RETURN:
 the asset lockStatus is false, its divisibility is 2, and the aggregation policy is "dispersed".
 So we apply the [unlocked asset](#unlocked) ID derivation:
 ```

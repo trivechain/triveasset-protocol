@@ -1,11 +1,11 @@
 
-This part of the metadata is one of novel features of the TriveAsset protocol which opens up the possibility of creating [smart contracts](http://www.fastcolabs.com/3035723/app-economy/smart-contracts-could-be-cryptocurrencys-killer-app) with colored coins.
+This part of the metadata is one of novel features of the TriveAsset protocol which opens up the possibility of creating rules with triveasset.
 
-The current implementation of the colored coins protocol supports 4 kinds of rules:
+The current implementation of the triveasset protocol supports 4 kinds of rules:
 * [Fees](#fees): Pay a fee to specific address on each transfer
 * [Expiration](#expiration): The asset expires after a while
 * [Minters](#minters): Recipients of the asset can issue more of it
-* [Holders](#holders): Only certain Bitcoin addresses can receive this asset
+* [Holders](#holders): Only certain Trivechain addresses can receive this asset
 
 Each one of the above 4 rule types accepts a JSON object (or objects) with two keys
 ### params
@@ -54,7 +54,7 @@ By default the expiration rule is empty and [open](#inheritance).
 
 ### params
 The Expiration rule can accept JSON object with two parameters:
-* **blocks**: [encoded](Number Encoding) integer specifying a block-height or a range.
+* **blocks**: [encoded](Number-Encoding) integer specifying a block-height or a range.
 * **range**: A boolean specifying whether 
  * range = 0 : The block parameter is the height of a specific block that when reached the asset expires, or
  * range = 1 : The block parameter designates range `N`. The asset will expire when `N` blocks were mined on top of the block of the issuance transaction. 
@@ -82,9 +82,9 @@ By default the minters rule is empty and [Locked](#inheritance).
 
 ### params
 The Minter rule can accept a list of JSON object with a single parameter:
-* **address**: A Bitcoin address. Anyone with the private key to this address can issue more units of the asset, even if it is
- * [locked](Benefits#locked-assets)
- * [unlocked](Benefits#unlocked-assets) but the minter doesn't have the private key for the address where it was originally issued . 
+* **address**: A Trivechain address. Anyone with the private key to this address can issue more units of the asset, even if it is
+ * [locked](Triveasset#coherent-issuance-policy)
+ * [unlocked](Triveasset#coherent-issuance-policy) but the minter doesn't have the private key for the address where it was originally issued . 
 
 ### Inheritance
 
@@ -92,7 +92,7 @@ The Minter rule can accept a list of JSON object with a single parameter:
 * **1** : The new recipient of the asset can add minters, but only of inheritance level 0
 * **2** : The new recipient of the asset can add minters without restriction
 
-Note that, for the sake of performance optimization, in case of reissuing an asset by a minter (regardless if the asset is [locked](Benefits#locked-assets) or not) the [Asset_Genesis](Metadata)  pointing to the transaction and block of the first issuance, must be provided in the metadata. 
+Note that, for the sake of performance optimization, in case of reissuing an asset by a minter (regardless if the asset is [locked](Triveasset#coherent-issuance-policy) or not) the [Asset_Genesis](Metadata)  pointing to the transaction and block of the first issuance, must be provided in the metadata. 
 
 ### Use case
 Give "Admin" permission to predefined addresses to issue more of the same assets or add meta data. 
@@ -111,7 +111,7 @@ by default the holders rule is empty and Open.
 
 ### params
 The Holders rule can accept a list of JSON object with a single parameter:
-* **address**: A Bitcoin address. The asset can only be sent to one of those addresses, so only the limited group that controls this list of addresses can hold the asset.
+* **address**: A Trivechain address. The asset can only be sent to one of those addresses, so only the limited group that controls this list of addresses can hold the asset.
 
 ### Inheritance
 

@@ -1,6 +1,6 @@
 # Data storage on the blockchain
 
-There are several ways to store data on top of the Bitcoin blockchain.
+There are several ways to store data on top of the Bitcoin based blockchain.
 #### Value
 Encode data in the number of satoshis being sent to an address.
 

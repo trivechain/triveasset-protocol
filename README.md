@@ -20,7 +20,6 @@ https://trivechain.github.io/triveasset-protocol
     - [Number Encoding](https://trivechain.github.io/triveasset-protocol/#/Number-Encoding.md)
     - [Transfer Instructions](https://trivechain.github.io/triveasset-protocol/#/Transfer-Instructions.md)
     - [Asset IDs](https://trivechain.github.io/triveasset-protocol/#/Asset-ID.md)
-    - [Colored Addresses](https://trivechain.github.io/triveasset-protocol/#/Colored-Addresses.md)
     - [Metadata Handling](https://trivechain.github.io/triveasset-protocol/#/Metadata.md)
     - [Static Data](https://trivechain.github.io/triveasset-protocol/#/Static-Data.md)
     - [Rules](https://trivechain.github.io/triveasset-protocol/#/Rules.md)

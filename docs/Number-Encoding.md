@@ -4,7 +4,7 @@
 The TriveAsset implementation uses a precision encoding scheme for encoding the integral amount of an asset's units during issuance and transfer.
 This scheme supports numbers with up to **16 significant digits** and favors **round** and **small** numbers, since it is anticipated that in most use cases an asset will be issued (or reissued) in either small or round number amounts.
 
-The Colored Coins protocol will only use numbers with up to 15 significant digits as are customary supported by the [Double-precision](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) floating-point format.
+The TriveAsset protocol will only use numbers with up to 15 significant digits as are customary supported by the [Double-precision](https://en.wikipedia.org/wiki/Double-precision_floating-point_format) floating-point format.
 
 
 ## Technical Details
