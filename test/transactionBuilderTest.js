@@ -9,6 +9,21 @@ const Transaction = bitcoinjs.Transaction
 const script = bitcoinjs.script
 const _ = require('lodash')
 
+const consumer = function (buff) {
+  let curr = 0
+  return function consume(len) {
+    return buff.slice(curr, (curr += len))
+  }
+}
+
+const toBuffer = function (val) {
+  val = val.toString(16)
+  if (val.length % 2 === 1) {
+    val = '0' + val
+  }
+  return Buffer.from(val, 'hex')
+}
+
 const issueArgs = {
   utxos: [
     {
@@ -432,6 +447,72 @@ describe('builder.buildBurnTransaction(args)', function () {
     assert.strictEqual(
       taTransaction.payments[0].amount,
       burnArgs.burn[0].amount
+    )
+    done()
+  })
+
+  it('Burn OP_CODE 0x25 - No Metadata', function (done) {
+    const result = transactionBuilder.buildBurnTransaction(burnArgs)
+    assert(result.txHex)
+    const tx = Transaction.fromHex(result.txHex)
+    assert.strictEqual(tx.ins.length, 2)
+    assert.strictEqual(tx.outs.length, 3) // OP_RETURN + 2 changes
+    assert.deepEqual(result.coloredOutputIndexes, [2])
+    const sumValueInputs = burnArgs.utxos[0].value + burnArgs.utxos[1].value
+    const sumValueOutputs = _.sumBy(tx.outs, function (output) {
+      return output.value
+    })
+    assert.strictEqual(sumValueInputs - sumValueOutputs, burnArgs.fee)
+    const opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
+    const consume = consumer(opReturnScriptBuffer)
+    assert.deepEqual(toBuffer('5441'), consume(2))
+    assert.deepEqual(toBuffer('03'), consume(1)) // version
+    assert.deepEqual(toBuffer('25'), consume(1)) // trasnfer OP_CODE
+
+    const taTransaction = TA.fromHex(opReturnScriptBuffer)
+    assert.strictEqual(taTransaction.type, 'burn')
+    assert.strictEqual(taTransaction.payments[0].burn, true)
+    assert.strictEqual(taTransaction.payments[0].input, 0)
+    assert.strictEqual(
+      taTransaction.payments[0].amount,
+      burnArgs.burn[0].amount
+    )
+    done()
+  })
+
+  it('Burn OP_CODE 0x26 - Burn Instruction & Metadata in OP_RETURN', function (done) {
+    burnArgs.ipfsHash =
+      '12207fd9423c0301a82e7116483cbc194d7c3818b2e11a77c5e021b2c5d04cb48852'
+    const result = transactionBuilder.buildBurnTransaction(burnArgs)
+    assert(result.txHex)
+    const tx = Transaction.fromHex(result.txHex)
+    assert.strictEqual(tx.ins.length, 2)
+    assert.strictEqual(tx.outs.length, 3) // OP_RETURN + 2 changes
+    assert.deepEqual(result.coloredOutputIndexes, [2])
+    const sumValueInputs = burnArgs.utxos[0].value + burnArgs.utxos[1].value
+    const sumValueOutputs = _.sumBy(tx.outs, function (output) {
+      return output.value
+    })
+    assert.strictEqual(sumValueInputs - sumValueOutputs, burnArgs.fee)
+    const opReturnScriptBuffer = script.decompile(tx.outs[0].script)[1]
+    console.log(opReturnScriptBuffer)
+
+    const consume = consumer(opReturnScriptBuffer)
+    assert.deepEqual(toBuffer('5441'), consume(2))
+    assert.deepEqual(toBuffer('03'), consume(1)) // version
+    assert.deepEqual(toBuffer('26'), consume(1)) // trasnfer OP_CODE
+
+    const taTransaction = TA.fromHex(opReturnScriptBuffer)
+    assert.strictEqual(taTransaction.type, 'burn')
+    assert.strictEqual(taTransaction.payments[0].burn, true)
+    assert.strictEqual(taTransaction.payments[0].input, 0)
+    assert.strictEqual(
+      taTransaction.payments[0].amount,
+      burnArgs.burn[0].amount
+    )
+    assert.strictEqual(
+      taTransaction.ipfsHash.toString('hex'),
+      burnArgs.ipfsHash
     )
     done()
   })

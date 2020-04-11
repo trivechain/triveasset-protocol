@@ -8,7 +8,6 @@
     - [Number Encoding](Number-Encoding.md)
     - [Transfer Instructions](Transfer-Instructions.md)
     - [Asset IDs](Asset-ID.md)
-    - [Colored Addresses](Colored-Addresses.md)
     - [Metadata Handling](Metadata.md)
     - [Static Data](Static-Data.md)
     - [Rules](Rules.md)
