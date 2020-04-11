@@ -4,6 +4,8 @@
 <a href="https://travis-ci.org/trivechain/triveasset-protocol"><img src="https://img.shields.io/travis/trivechain/triveasset-protocol/master.svg" alt="travis"></a>
 <a href='https://coveralls.io/github/trivechain/triveasset-protocol?branch=master'><img src='https://coveralls.io/repos/github/trivechain/triveasset-protocol/badge.svg?branch=master' alt='Coverage Status' /></a>
 <a href="https://standardjs.com"><img src="https://img.shields.io/badge/code_style-standard-brightgreen.svg" alt="Standard - JavaScript Style Guide"></a>
+<a href='https://www.npmjs.com/package/@trivechain/triveasset-protocol'><img alt="node" src="https://img.shields.io/node/v/@trivechain/triveasset-protocol"></a>
+<a href='https://www.npmjs.com/package/@trivechain/triveasset-protocol'><img alt="npm" src="https://img.shields.io/npm/dm/@trivechain/triveasset-protocol"></a>
 <a href="https://github.com/trivechain/triveasset-protocol"><img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/trivechain/triveasset-protocol"></a>
 </p>
 
