@@ -110,7 +110,7 @@ TriveAssetBuilder.prototype._addInputsForIssueTransaction = function (
     current = new BigNumber(args.financeOutput.value)
     cost = new BigNumber(self._getIssuanceCost(args))
 
-    txb.addInput(args.financeOutputTxid, args.financeOutput.n)
+    txb.addInput(args.financeOutputTxid, args.financeOutput.n, undefined, Buffer.from(args.financeOutput.scriptPubKey.hex, 'hex'))
     if (args.flags && args.flags.injectPreviousOutput) {
       const chunks = bitcoinjs.script.decompile(
         Buffer.from(args.financeOutput.scriptPubKey.hex, 'hex')
@@ -151,7 +151,7 @@ TriveAssetBuilder.prototype._addInputsForIssueTransaction = function (
       debug('current amount ' + utxo.value + ' needed ' + cost)
       debug('utxo.txid', utxo.txid)
       debug('utxo.index', utxo.index)
-      txb.addInput(utxo.txid, utxo.index)
+      txb.addInput(utxo.txid, utxo.index, undefined, Buffer.from(utxo.scriptPubKey.hex, 'hex'))
       if (txb.tx.ins.length === 1) {
         // encode asset
         debug(txb.tx.ins[0].script)
@@ -414,6 +414,7 @@ TriveAssetBuilder.prototype._encodeColorScheme = function (args) {
   debug('txHex ', txb.tx.toHex())
 
   return {
+    txb: txb,
     txHex: txb.tx.toHex(),
     multisigOutputs: reedemScripts,
     coloredOutputIndexes: _.uniq(coloredOutputIndexes),
@@ -523,7 +524,7 @@ TriveAssetBuilder.prototype._insertSatoshiToTransaction = function (
       !(utxo.assets && utxo.assets.length)
     ) {
       debug('current amount ' + utxo.value + ' needed ' + missing)
-      txb.addInput(utxo.txid, utxo.index)
+      txb.addInput(utxo.txid, utxo.index, undefined, Buffer.from(utxo.scriptPubKey.hex, 'hex'))
       inputsValue.amount += utxo.value
       currentAmount = currentAmount.plus(utxo.value)
       if (metadata.flags && metadata.flags.injectPreviousOutput) {
@@ -944,6 +945,7 @@ TriveAssetBuilder.prototype._addInputsForSendTransaction = function (
   )
   debug('success')
   return {
+    txb: txb,
     txHex: txb.tx.toHex(),
     metadata: args.ipfsHash,
     multisigOutputs: reedemScripts,

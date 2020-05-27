@@ -82,7 +82,7 @@ const findBestMatchByNeededAssets = function (
               return false
             })
           ) {
-            txb.addInput(utxo.txid, utxo.index)
+            txb.addInput(utxo.txid, utxo.index, undefined, Buffer.from(utxo.scriptPubKey.hex, 'hex'))
             debug(
               'setting input value ' +
                 utxo.value +
