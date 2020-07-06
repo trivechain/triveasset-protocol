@@ -387,11 +387,9 @@ TriveAssetBuilder.prototype._encodeColorScheme = function (args) {
     )
   }
 
-  const splitChange = args.financeChangeAddress === args.coloredChangeAddress
   const changeAddress = args.financeChangeAddress || args.issueAddress
 
   if (
-    splitChange &&
     lastOutputValue >= 2 * self.mindustvalue &&
     coloredAmount > 0
   ) {
